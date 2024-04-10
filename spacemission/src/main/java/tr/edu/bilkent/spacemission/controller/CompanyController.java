@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.model.CompanyModel;
 import tr.edu.bilkent.spacemission.service.CompanyService;
 
@@ -35,7 +36,7 @@ public class CompanyController {
     // @requestParam IS USED TO TAKE A PARAMETER AND RECOMMENDED TO USE WITH 'GET' TYPE REQUESTS
     // @requestBody IS USED TO TAKE BODY DIRECTLY AND RECOMMENDED TO USE WITH 'PUT' TYPE REQUESTS
     @GetMapping("/")
-    public List<CompanyModel> getaLLCompanies(){
+    public List<CompanyDto> getAllCompanies(){
         return null;
     }
 }

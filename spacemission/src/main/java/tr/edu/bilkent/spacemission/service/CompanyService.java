@@ -1,6 +1,8 @@
 package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.stereotype.Service;
+import tr.edu.bilkent.spacemission.dto.CompanyDto;
+import tr.edu.bilkent.spacemission.dto.Login;
 import tr.edu.bilkent.spacemission.model.CompanyModel;
 import tr.edu.bilkent.spacemission.repository.CompanyRepository;
 
@@ -16,7 +18,12 @@ public class CompanyService {
         this.companyRepository = companyRepository;
     }
 
-    public List<CompanyModel> getAllCompanies(){
+    public List<CompanyDto> getAllCompanies(){
         return companyRepository.getAllCompaniesRepo();
+    }
+
+    public CompanyDto isCompanyExists(Login logInfo){
+        CompanyDto dto = companyRepository.getByLogInfo(logInfo);
+        return dto;
     }
 }
