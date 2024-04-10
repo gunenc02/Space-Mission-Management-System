@@ -16,9 +16,10 @@ import lombok.NoArgsConstructor;
 public class CompanyModel {
 
     @Id
-    @Column(name = "company_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long companyId;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "company_id")
+    @MapsId
+    UserModel user;
 
     @Column(name = "company_name")
     String companyName;

@@ -27,38 +27,28 @@ public class CompanyRepository {
     public List<CompanyDto> getAllCompaniesRepo() {
         String query = "SELECT * FROM company";
         return jdbcTemplate.query(query,
-                (rs, rowNum) -> new CompanyDto(
-                        rs.getLong("company_id"),
-                        rs.getString("company_name"),
-                        rs.getString("company_mail"),
-                        rs.getString("company_country"),
-                        rs.getLong("company_budget"),
-                        rs.getString("company_type")
-                ));
+            (rs, rowNum) -> new CompanyDto(
+                rs.getLong("company_id"),
+                rs.getString("company_name"),
+                rs.getString("company_mail"),
+                rs.getString("company_country"),
+                rs.getLong("company_budget"),
+                rs.getString("company_type")
+            )
+        );
     }
 
     public CompanyDto getByLogInfo(Login logInfo) {
         String query = "SELECT * FROM company WHERE company_mail = ? AND company_password = ?";
-        Object[] args = { logInfo.getUsername(), logInfo.getPassword() };
-
-        try {
-            return jdbcTemplate.queryForObject(query, args, new RowMapper<CompanyDto>() {
-                @Override
-                public CompanyDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new CompanyDto(
-                            rs.getInt("id"),
-                            rs.getString("company_name"),
-                            rs.getString("company_mail"),
-                            rs.getString("company_country"),
-                            rs.getInt("company_budget"),
-                            rs.getString("company_type")
-                    );
-                }
-            });
-        } catch (EmptyResultDataAccessException e) {
-            // Handle the case where no company matches the login info
-            // This could mean returning null or throwing a custom exception
-            return null; // or throw new CustomNotFoundException("Company not found.");
-        }
+        return jdbcTemplate.queryForObject(query,
+             (rs, rowNum) -> new CompanyDto(
+                  rs.getInt("id"),
+                  rs.getString("company_name"),
+                  rs.getString("company_mail"),
+                  rs.getString("company_country"),
+                  rs.getInt("company_budget"),
+                  rs.getString("company_type")
+             ), logInfo.getUsername(), logInfo.getPassword()
+        );
     }
 }
