@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS user (
-                         user_id INT AUTO INCREMENT PRIMARY KEY,
+                         user_id INT AUTO_INCREMENT PRIMARY KEY,
                          user_mail VARCHAR(255) NOT NULL UNIQUE,
                          user_password VARCHAR(255) NOT NULL
 );
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS astronaut (
 );
 
 CREATE TABLE IF NOT EXISTS health_record (
-                         health_record_id INT AUTO INCREMENT PRIMARY KEY,
+                         health_record_id INT AUTO_INCREMENT PRIMARY KEY,
                          date DATE NOT NULL,
                          availibility_for_mission VARCHAR(255) NOT NULL,
                          weight DECIMAL(10,2) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS health_record (
 );
 
 CREATE TABLE IF NOT EXISTS platform (
-                         platform_id INT AUTO INCREMENT PRIMARY KEY,
+                         platform_id INT AUTO_INCREMENT PRIMARY KEY,
                          model_name VARCHAR(255) NOT NULL,
                          production_year YEAR NOT NULL,
                          platform_image BLOB,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS company (
 );
 
 CREATE TABLE IF NOT EXISTS space_mission (
-                         mission_id INT AUTO INCREMENT PRIMARY KEY,
+                         mission_id INT AUTO_INCREMENT PRIMARY KEY,
                          mission_name VARCHAR(255) NOT NULL,
                          mission_image BLOB,
                          objective TEXT NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS space_mission (
 );
 
 CREATE TABLE IF NOT EXISTS space_mission_performings (
-                         perform_id INT AUTO INCREMENT PRIMARY KEY,
+                         perform_id INT AUTO_INCREMENT PRIMARY KEY,
                          perform_status TEXT NOT NULL,
                          space_mission_id INT NOT NULL,
                          astronaut_id INT NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS expert (
 );
 
 CREATE TABLE IF NOT EXISTS expert_examine_astronaut (
-                         examine_id INT AUTO INCREMENT PRIMARY KEY,
+                         examine_id INT AUTO_INCREMENT PRIMARY KEY,
                          expert_id INT NOT NULL,
                          astronaut_id INT NOT NULL,
                          FOREIGN KEY (expert_id) REFERENCES expert(expert_id),
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS expert_examine_astronaut (
 );
 
 CREATE TABLE IF NOT EXISTS astronaut_health_record (
-                         id INT AUTO INCREMENT PRIMARY KEY,
+                         id INT AUTO_INCREMENT PRIMARY KEY,
                          astronaut_id INT NOT NULL,
                          health_record_id INT NOT NULL,
                          FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),

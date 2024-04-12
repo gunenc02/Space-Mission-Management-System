@@ -22,7 +22,10 @@ public class CompanyService {
     }
 
     public CompanyDto isCompanyExists(Login logInfo){
-        CompanyDto dto = companyRepository.getByLogInfo(logInfo);
-        return dto;
+        return companyRepository.getByLogInfo(logInfo);
+    }
+
+    public void offerJob(long astronautId) {
+        companyRepository.offerJob(astronautId);
     }
 }

@@ -46,4 +46,7 @@ public class CompanyRepository {
              ), logInfo.getUsername(), logInfo.getPassword()
         );
     }
+
+    public void offerJob(long astronautId) {
+    }
 }
