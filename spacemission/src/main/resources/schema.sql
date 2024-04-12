@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS astronaut (
 CREATE TABLE IF NOT EXISTS health_record (
                          health_record_id INT AUTO_INCREMENT PRIMARY KEY,
                          date DATE NOT NULL,
-                         availibility_for_mission VARCHAR(255) NOT NULL,
+                         availibility_for_mission BINARY NOT NULL,
                          weight DECIMAL(10,2) NOT NULL,
                          height DECIMAL(10,2) NOT NULL,
                          heart_rate INT NOT NULL,
