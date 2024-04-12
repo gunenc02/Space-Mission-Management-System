@@ -3,7 +3,6 @@ package tr.edu.bilkent.spacemission.service;
 import org.springframework.stereotype.Service;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.Login;
-import tr.edu.bilkent.spacemission.model.CompanyModel;
 import tr.edu.bilkent.spacemission.repository.CompanyRepository;
 
 import java.util.List;

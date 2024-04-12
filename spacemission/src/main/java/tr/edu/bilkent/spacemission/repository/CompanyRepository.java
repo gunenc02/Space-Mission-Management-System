@@ -1,15 +1,10 @@
 package tr.edu.bilkent.spacemission.repository;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.Login;
-import tr.edu.bilkent.spacemission.model.CompanyModel;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 // THIS IS OUR REPOSITORY THIS IS WHERE OUR QUERIES TAKE PLACE
