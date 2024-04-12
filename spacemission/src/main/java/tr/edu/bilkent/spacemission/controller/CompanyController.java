@@ -1,12 +1,8 @@
 package tr.edu.bilkent.spacemission.controller;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
-import tr.edu.bilkent.spacemission.model.CompanyModel;
 import tr.edu.bilkent.spacemission.service.CompanyService;
 
 import java.util.List;
@@ -35,8 +31,13 @@ public class CompanyController {
     // YOU CAN CREATE SAME URL FOR DIFFERENT REQUEST TYPES
     // @requestParam IS USED TO TAKE A PARAMETER AND RECOMMENDED TO USE WITH 'GET' TYPE REQUESTS
     // @requestBody IS USED TO TAKE BODY DIRECTLY AND RECOMMENDED TO USE WITH 'PUT' TYPE REQUESTS
-    @GetMapping("/")
+    @GetMapping
     public List<CompanyDto> getAllCompanies(){
-        return null;
+        return companyService.getAllCompanies();
+    }
+
+    @PostMapping("/offerJob/{astronautId}")
+    public void offerJob(@PathVariable long astronautId){
+        companyService.offerJob(astronautId);
     }
 }

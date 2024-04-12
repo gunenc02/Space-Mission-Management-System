@@ -1,17 +1,24 @@
 package tr.edu.bilkent.spacemission.repository;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.dto.CompanyDto;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import tr.edu.bilkent.spacemission.dto.AstronautDto;
-import tr.edu.bilkent.spacemission.model.AstronautModel;
-import tr.edu.bilkent.spacemission.dto.Login;
+import java.util.List;
 
-//Usage of this class is for executing queries relevant to astronaut entity
 @Repository
 public class AstronautRepository {
+    
+    private final JdbcTemplate jdbcTemplate;
+
+    public AstronautRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public List<CompanyDto> getExperienceById(long id) {
+        return null;
+    }
+
+    public void joinCompany(long companyId) {
+    }
 }
