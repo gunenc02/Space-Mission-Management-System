@@ -8,17 +8,19 @@ import java.util.List;
 
 @Repository
 public class AstronautRepository {
-    
+    String query;
     private final JdbcTemplate jdbcTemplate;
 
     public AstronautRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
+// This method lists the background of the specific astronaut
     public List<CompanyDto> getExperienceById(long id) {
         return null;
     }
-
-    public void joinCompany(long companyId) {
+//This method joins the astronaut into company
+    public void joinCompany(long companyId, long userId) {
+        query = "UPDATE astronaut SET astronaut_company_id = ? WHERE astronaut_id = ?";
+        jdbcTemplate.update(query, companyId, userId);
     }
 }

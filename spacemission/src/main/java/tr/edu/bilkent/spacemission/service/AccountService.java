@@ -1,6 +1,7 @@
 package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.stereotype.Service;
+import tr.edu.bilkent.spacemission.dto.AdminRegisterDto;
 import tr.edu.bilkent.spacemission.dto.AgencyRegisterDto;
 import tr.edu.bilkent.spacemission.dto.AstronautRegisterDto;
 import tr.edu.bilkent.spacemission.dto.CompanyRegisterDto;
@@ -13,6 +14,10 @@ public class AccountService {
 
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
+    }
+
+    public void registerAdmin(AdminRegisterDto ardto) {
+        accountRepository.saveAdmin(ardto);
     }
 
     public void registerAgency(AgencyRegisterDto ardto){
@@ -34,11 +39,24 @@ public class AccountService {
     public void approveAstronaut(long astronautId) {
         accountRepository.approveAstronaut(astronautId);
     }
+
     public void approveCompany(long companyId) {
         accountRepository.approveCompany(companyId);
     }
 
-    public void alterAccount(String mail, String password) {
-        accountRepository.alterAccount(mail, password);
+    public void alterUser(long userId, String mail, String password) {
+        accountRepository.alterUser(userId, mail, password);
+    }
+
+    public void alterAgency(long agencyId, String username, byte[]image) {
+        accountRepository.alterAgency(agencyId, username, image);
+    }
+
+    public void alterCompany(long companyId, String username, byte[] logo) {
+        accountRepository.alterCompany(companyId, username, logo);
+    }
+
+    public void alterAstronaut(long astronautId, String username, byte[] logo) {
+        accountRepository.alterAstronaut(astronautId, username, logo);
     }
 }

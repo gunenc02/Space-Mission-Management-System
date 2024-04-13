@@ -19,7 +19,7 @@ public class AstronautService {
         return astronautRepository.getExperienceById(id);
     }
 
-    public void joinCompany(long companyId) {
-        astronautRepository.joinCompany(companyId);
+    public void joinCompany(long companyId, long userId) {
+        astronautRepository.joinCompany(companyId, userId);
     }
 }

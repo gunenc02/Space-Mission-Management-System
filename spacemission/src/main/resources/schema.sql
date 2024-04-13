@@ -7,29 +7,53 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS admin (
                          admin_id INT PRIMARY KEY,
                          admin_name VARCHAR(255) NOT NULL,
+                         is_approved BOOLEAN NOT NULL DEFAULT FALSE,
                          FOREIGN KEY (admin_id) REFERENCES user(user_id)
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS agency (
                          agency_id INT PRIMARY KEY,
                          agency_name VARCHAR(255) NOT NULL,
                          agency_logo BLOB,
-                         is_approved BINARY NOT NULL,
+                         is_approved BOOLEAN NOT NULL DEFAULT FALSE,
                          FOREIGN KEY (agency_id) REFERENCES user(user_id)
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS company (
+                         company_id INT PRIMARY KEY,
+                         company_name VARCHAR(255) NOT NULL,
+                         company_logo BLOB,
+                         worker_count INT NOT NULL DEFAULT 0,
+                         country VARCHAR(255) NOT NULL,
+                         money DECIMAL(19,2) NOT NULL,
+                         company_agency_id INT NOT NULL,
+                         is_approved BOOLEAN NOT NULL DEFAULT FALSE,
+                         FOREIGN KEY (company_id) REFERENCES user(user_id),
+                         FOREIGN KEY (company_agency_id) REFERENCES agency(agency_id)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE
+    );
 
 CREATE TABLE IF NOT EXISTS astronaut (
                          astronaut_id INT PRIMARY KEY,
                          astronaut_name VARCHAR(255) NOT NULL,
                          astronaut_image BLOB,
                          date_of_birth DATE NOT NULL,
-                         age INT NOT NULL,
-                         status VARCHAR(255) NOT NULL,
+                         status BOOLEAN NOT NULL DEFAULT FALSE,
                          country VARCHAR(255) NOT NULL,
-                         salary DECIMAL(19,2) NOT NULL,
-                         astronaut_agency_id INT UNIQUE,
+                         salary DECIMAL(19,2) NOT NULL DEFAULT 0,
+                         astronaut_agency_id INT NOT NULL,
+                         astronaut_company_id INT,
+                         is_approved BOOLEAN NOT NULL DEFAULT FALSE,
                          FOREIGN KEY (astronaut_id) REFERENCES user(user_id),
-                         FOREIGN KEY (astronaut_agency_id) REFERENCES agency(agency_id)
+                         FOREIGN KEY (astronaut_agency_id) REFERENCES agency(agency_id),
+                         FOREIGN KEY (astronaut_company_id) REFERENCES company(company_id)
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE
 
 );
 
@@ -44,6 +68,8 @@ CREATE TABLE IF NOT EXISTS health_record (
                          vaccinations TEXT NOT NULL,
                          astronaut_id INT NOT NULL,
                          FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id)
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS platform (
@@ -52,19 +78,6 @@ CREATE TABLE IF NOT EXISTS platform (
                          production_year YEAR NOT NULL,
                          platform_image BLOB,
                          cost_per_launch DECIMAL(19,2) NOT NULL
-);
-
-
-CREATE TABLE IF NOT EXISTS company (
-                         company_id INT PRIMARY KEY,
-                         company_name VARCHAR(255) NOT NULL,
-                         company_logo BLOB,
-                         worker_count INT,
-                         country VARCHAR(255) NOT NULL,
-                         money DECIMAL(19,2) NOT NULL,
-                         company_agency_id INT,
-                         FOREIGN KEY (company_id) REFERENCES user(user_id),
-                         FOREIGN KEY (company_agency_id) REFERENCES agency(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS space_mission (
@@ -79,6 +92,8 @@ CREATE TABLE IF NOT EXISTS space_mission (
                          creator_id INT NOT NULL,
                          FOREIGN KEY(platform_id) REFERENCES platform(platform_id),
                          FOREIGN KEY(creator_id) REFERENCES company(company_id)
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS space_mission_performings (
@@ -88,8 +103,10 @@ CREATE TABLE IF NOT EXISTS space_mission_performings (
                          astronaut_id INT NOT NULL,
                          performer_company_id INT NOT NULL,
                          FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),
-                         FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),
+                         /*FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),*/
                          FOREIGN KEY (performer_company_id) REFERENCES company(company_id)
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE
 );
 
 
@@ -129,7 +146,7 @@ CREATE TABLE IF NOT EXISTS astronaut_health_record (
 );
 
 CREATE TABLE IF NOT EXISTS agency_evaluate_astronaut (
-                         id INT PRIMARY KEY,
+                         id INT AUTO_INCREMENT PRIMARY KEY,
                          astronaut_id INT NOT NULL,
                          agency_id INT NOT NULL,
                          FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),

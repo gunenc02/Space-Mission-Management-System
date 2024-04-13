@@ -21,8 +21,8 @@ public class AstronautController {
         return astronautService.getExperienceById(id);
     }
 
-    @PostMapping("/joinCompany/{id}")
-    public void joinCompany(@PathVariable long companyId){
-        astronautService.joinCompany(companyId);
+    @PostMapping("/joinCompany/{companyId}/{userId}")
+    public void joinCompany(@PathVariable long companyId, @PathVariable long userId){
+        astronautService.joinCompany(companyId, userId);
     }
 }
