@@ -28,4 +28,9 @@ public class CompanyService {
     public void offerJob(long astronautId) {
         companyRepository.offerJob(astronautId);
     }
+
+    //returns whether the space mission is performed after attempt
+    public boolean markSpaceMissionAsPerformed(long missionId){
+        return companyRepository.markSpaceMissionAsPerformed(missionId);
+    }
 }
