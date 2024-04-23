@@ -1,7 +1,10 @@
 package tr.edu.bilkent.spacemission.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tr.edu.bilkent.spacemission.dto.AstronautDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
+import tr.edu.bilkent.spacemission.entity.Astronaut;
 import tr.edu.bilkent.spacemission.repository.AstronautRepository;
 
 import java.util.List;
@@ -13,6 +16,10 @@ public class AstronautService {
 
     public AstronautService(AstronautRepository astronautRepository) {
         this.astronautRepository = astronautRepository;
+    }
+
+    public Astronaut getAstronaut(long id) {
+        return astronautRepository.getAstronaut(id);
     }
 
     public List<CompanyDto> getExperienceById(long id) {

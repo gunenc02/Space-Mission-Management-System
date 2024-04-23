@@ -115,7 +115,7 @@ public class AccountRepository {
                 psCompany.setLong(1, userId);
                 psCompany.setString(2, crdto.getUsername());
                 psCompany.setLong(3, crdto.getAgencyId());
-                psCompany.setBigDecimal(4, crdto.getMoney());
+                psCompany.setDouble(4, crdto.getMoney());
                 psCompany.setString(5, crdto.getCountry());
                 psCompany.executeUpdate();
             }

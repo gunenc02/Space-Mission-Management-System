@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Platform {
-    private int id;
+    private long id;
     private String modelName;
-    private Image image;
+    private byte[] image;
     private int productionYear;
     private double costPerLaunch;
 }

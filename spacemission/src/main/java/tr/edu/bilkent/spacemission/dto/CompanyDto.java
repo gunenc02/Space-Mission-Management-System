@@ -15,7 +15,7 @@ public class CompanyDto {
     String companyName;
     String companyMail;
     String companyCountry;
-    long companyBudget;
+    double companyBudget;
     String companyType;
 
 }

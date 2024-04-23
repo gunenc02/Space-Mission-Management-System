@@ -13,9 +13,8 @@ import java.math.BigInteger;
 public class CompanyRegisterDto {
     String username;
     String email;
-
     String password;
-    BigDecimal money;
+    double money;
     String country;
     long agencyId;
 }

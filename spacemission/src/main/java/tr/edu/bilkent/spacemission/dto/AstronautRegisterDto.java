@@ -12,7 +12,6 @@ import java.sql.Date;
 public class AstronautRegisterDto {
     String email;
     String password;
-
     String username;
     Date dateOfBirth;
     String country;

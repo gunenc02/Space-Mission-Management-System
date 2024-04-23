@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transaction {
-    private int id;
-    private int fromCompanyId;
-    private int toCompanyId;
+    private long id;
+    private long fromCompanyId;
+    private long toCompanyId;
     private double transactionAmount;
 }

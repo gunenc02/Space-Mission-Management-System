@@ -10,8 +10,8 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HealthRecord {
-    private int id;
-    private int astronautId;
+    private long id;
+    private long astronautId;
     private Date date;
     private boolean availabilityForMission;
     private double weight;

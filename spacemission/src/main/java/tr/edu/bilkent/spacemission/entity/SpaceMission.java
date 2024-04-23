@@ -4,16 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
 import java.sql.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class SpaceMission {
-    private int id;
+    private long id;
     private String missionName;
-    private Image image;
+    private byte[] image;
     private String objective;
     private double budget;
     private Date createDate;

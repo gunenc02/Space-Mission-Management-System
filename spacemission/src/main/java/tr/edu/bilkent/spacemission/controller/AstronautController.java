@@ -1,7 +1,9 @@
 package tr.edu.bilkent.spacemission.controller;
 
 import org.springframework.web.bind.annotation.*;
+import tr.edu.bilkent.spacemission.dto.AstronautDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
+import tr.edu.bilkent.spacemission.entity.Astronaut;
 import tr.edu.bilkent.spacemission.service.AstronautService;
 
 import java.util.List;
@@ -14,6 +16,12 @@ public class AstronautController {
 
     public AstronautController(AstronautService astronautService) {
         this.astronautService = astronautService;
+    }
+
+    @GetMapping("/profile/{id}")
+    public AstronautDto getAstronaut(@PathVariable long id){
+        Astronaut astronaut = astronautService.getAstronaut(id);
+        return new AstronautDto(astronaut.getId(), astronaut.getName(), astronaut.getImage(), astronaut.getDateOfBirth(), astronaut.isStatus(), astronaut.getCountry(), astronaut.getSalary());
     }
 
     @GetMapping("/listExperience/{id}")
