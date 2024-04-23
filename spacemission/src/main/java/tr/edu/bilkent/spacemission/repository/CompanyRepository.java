@@ -54,15 +54,22 @@ public class CompanyRepository {
      * returns whether the mission has been marked as performed in the database
      */
     public boolean markSpaceMissionAsPerformed(long missionId){
+        boolean result = false;
         //execute such a query that if a space mission with given attributes exists try and mark it as performed
         //first check if there exists an entry in space mission performings with specified mission id and not yet performed
-        final String notPerformedStatus = "???Determine this";
-        final String performedStatus = "???AlsoDetermine";
-        String query = "SELECT * FROM space_mission_performings " +
-                "WHERE space_mission_id = :missionId AND perform_status = :notPerformedStatus;";
+        final String notPerformedStatus = "pending";
+        final String performedStatus = "performed";
+        String query = "SELECT COUNT(*) FROM space_mission_performings " +
+                "WHERE space_mission_id = ? AND perform_status = ?;";
         //execute the first query and if retrieval yields something then update that entry
-        query = "UPDATE space_mission_performings SET perform_status = :performedStatus " +
-                "WHERE space_mission_id = :missionId;";
-        return false;
+        Integer count = jdbcTemplate.queryForObject(query, Integer.class, missionId, notPerformedStatus);
+        if(count != null && count > 0) {
+            //such a row exists, now we should modify the perform status of that row
+            query = "UPDATE space_mission_performings SET perform_status = ? " +
+                    "WHERE space_mission_id = ?;";
+            int affectedRows = jdbcTemplate.update(query, performedStatus, missionId);
+            result = affectedRows > 0; //we expect affectedRows to be exactly 1 however
+        }
+        return result;
     }
 }
