@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS company (
      country VARCHAR(255) NOT NULL,
      money DOUBLE NOT NULL,
      is_approved BOOLEAN NOT NULL DEFAULT FALSE,
-     FOREIGN KEY (company_id) REFERENCES user(user_id),
+     FOREIGN KEY (company_id) REFERENCES user(user_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
     );
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS astronaut (
      country VARCHAR(255) NOT NULL,
      salary DOUBLE NOT NULL DEFAULT 0,
      is_approved BOOLEAN NOT NULL DEFAULT FALSE,
-     FOREIGN KEY (astronaut_id) REFERENCES user(user_id),
+     FOREIGN KEY (astronaut_id) REFERENCES user(user_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
 
@@ -87,6 +87,8 @@ CREATE TABLE IF NOT EXISTS space_mission (
      performer_id INT,
      FOREIGN KEY(platform_id) REFERENCES platform(platform_id),
      FOREIGN KEY(creator_id) REFERENCES company(company_id)
+         ON DELETE CASCADE
+         ON UPDATE CASCADE,
      FOREIGN KEY(performer_id) REFERENCES company(company_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
@@ -120,7 +122,7 @@ CREATE TABLE IF NOT EXISTS expert (
      expert_name VARCHAR(255) NOT NULL,
      expert_company INT,
      FOREIGN KEY (expert_id) REFERENCES user(user_id),
-     FOREIGN KEY (expert_company) REFERENCES company(company_id),
+     FOREIGN KEY (expert_company) REFERENCES company(company_id)
 );
 
 CREATE TABLE IF NOT EXISTS expert_examine_astronaut (
