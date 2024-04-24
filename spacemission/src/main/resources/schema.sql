@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS agency_evaluate_astronaut (
 );
 
 CREATE TABLE IF NOT EXISTS agency_approve_space_mission (
-     id INT PRIMARY KEY,
+     id INT AUTO_INCREMENT PRIMARY KEY,
      space_mission_id INT NOT NULL,
      agency_id INT NOT NULL,
      FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),
