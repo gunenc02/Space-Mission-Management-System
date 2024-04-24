@@ -1,0 +1,1299 @@
+Index: .idea/jpa-buddy.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jpa-buddy.xml b/.idea/jpa-buddy.xml
+new file mode 100644
+--- /dev/null	(date 1713868458932)
++++ b/.idea/jpa-buddy.xml	(date 1713868458932)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="JpaBuddyIdeaProjectConfig">
++    <option name="renamerInitialized" value="true" />
++  </component>
++</project>
+\ No newline at end of file
+Index: spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package tr.edu.bilkent.spacemission.repository;\r\n\r\nimport org.springframework.jdbc.core.JdbcTemplate;\r\nimport org.springframework.stereotype.Repository;\r\nimport tr.edu.bilkent.spacemission.dto.CompanyDto;\r\nimport tr.edu.bilkent.spacemission.dto.Login;\r\n\r\nimport java.util.List;\r\n\r\n// THIS IS OUR REPOSITORY THIS IS WHERE OUR QUERIES TAKE PLACE\r\n// THIS IS WRONG FOR NOW BUT AFTER THE CLARIFICATIONS I AM GOING TO FIX IT\r\n// I DONT KNOW FOR NOW HOW TO IMPLEMENT THOSE QUERIES WITHOUT THE HELP OF EXTERNAL LIBRARIES (JPA,CRUD) FOR NOW\r\n@Repository\r\npublic class CompanyRepository {\r\n\r\n    private JdbcTemplate jdbcTemplate;\r\n\r\n    public CompanyRepository(JdbcTemplate jdbcTemplate) {\r\n        this.jdbcTemplate = jdbcTemplate;\r\n    }\r\n\r\n    public List<CompanyDto> getAllCompaniesRepo() {\r\n        String query = \"SELECT * FROM company\";\r\n        return jdbcTemplate.query(query,\r\n            (rs, rowNum) -> new CompanyDto(\r\n                rs.getLong(\"company_id\"),\r\n                rs.getString(\"company_name\"),\r\n                rs.getString(\"company_mail\"),\r\n                rs.getString(\"company_country\"),\r\n                rs.getLong(\"company_budget\"),\r\n                rs.getString(\"company_type\")\r\n            )\r\n        );\r\n    }\r\n\r\n    public CompanyDto getByLogInfo(Login logInfo) {\r\n        String query = \"SELECT * FROM company WHERE company_mail = ? AND company_password = ?\";\r\n        return jdbcTemplate.queryForObject(query,\r\n             (rs, rowNum) -> new CompanyDto(\r\n                  rs.getInt(\"id\"),\r\n                  rs.getString(\"company_name\"),\r\n                  rs.getString(\"company_mail\"),\r\n                  rs.getString(\"company_country\"),\r\n                  rs.getInt(\"company_budget\"),\r\n                  rs.getString(\"company_type\")\r\n             ), logInfo.getUsername(), logInfo.getPassword()\r\n        );\r\n    }\r\n\r\n    public void offerJob(long astronautId) {\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java b/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java
+--- a/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java	(revision 1c2ca02fd0107409a33e76d7cb3fbc08115ed31c)
++++ b/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java	(date 1713868458944)
+@@ -1,5 +1,6 @@
+ package tr.edu.bilkent.spacemission.repository;
+ 
++import java.util.List;
+ import org.springframework.jdbc.core.JdbcTemplate;
+ import org.springframework.stereotype.Repository;
+ import tr.edu.bilkent.spacemission.dto.CompanyDto;
+@@ -49,4 +50,21 @@
+ 
+     public void offerJob(long astronautId) {
+     }
++
++    /*
++    *@param missionId id of the space mission to be performed
++    * returns whether the mission has been marked as performed in the database
++     */
++    public boolean markSpaceMissionAsPerformed(long missionId){
++        //execute such a query that if a space mission with given attributes exists try and mark it as performed
++        //first check if there exists an entry in space mission performings with specified mission id and not yet performed
++        final String notPerformedStatus = "???Determine this";
++        final String performedStatus = "???AlsoDetermine";
++        String query = "SELECT * FROM space_mission_performings " +
++                        "WHERE space_mission_id = :missionId AND perform_status = :notPerformedStatus;";
++        //execute the first query and if retrieval yields something then update that entry
++        query = "UPDATE space_mission_performings SET perform_status = :performedStatus " +
++                "WHERE space_mission_id = :missionId;";
++        return false;
++    }
+ }
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1713868458938)
++++ b/.idea/vcs.xml	(date 1713868458938)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/dataSources.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/dataSources.xml b/.idea/dataSources.xml
+new file mode 100644
+--- /dev/null	(date 1713868458928)
++++ b/.idea/dataSources.xml	(date 1713868458928)
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
++    <data-source source="LOCAL" name="spacemission" uuid="12e8c583-ac74-4174-8935-8816f4518636">
++      <driver-ref>mysql.8</driver-ref>
++      <synchronize>true</synchronize>
++      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
++      <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
++      <jdbc-additional-properties>
++        <property name="com.intellij.clouds.kubernetes.db.host.port" />
++        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
++        <property name="com.intellij.clouds.kubernetes.db.container.port" />
++      </jdbc-additional-properties>
++      <working-dir>$ProjectFileDir$</working-dir>
++    </data-source>
++  </component>
++</project>
+\ No newline at end of file
+Index: spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package tr.edu.bilkent.spacemission.service;\r\n\r\nimport org.springframework.stereotype.Service;\r\nimport tr.edu.bilkent.spacemission.dto.CompanyDto;\r\nimport tr.edu.bilkent.spacemission.dto.Login;\r\nimport tr.edu.bilkent.spacemission.repository.CompanyRepository;\r\n\r\nimport java.util.List;\r\n\r\n@Service\r\npublic class CompanyService {\r\n\r\n    private final CompanyRepository companyRepository;\r\n\r\n\r\n    public CompanyService(CompanyRepository companyRepository) {\r\n        this.companyRepository = companyRepository;\r\n    }\r\n\r\n    public List<CompanyDto> getAllCompanies(){\r\n        return companyRepository.getAllCompaniesRepo();\r\n    }\r\n\r\n    public CompanyDto isCompanyExists(Login logInfo){\r\n        return companyRepository.getByLogInfo(logInfo);\r\n    }\r\n\r\n    public void offerJob(long astronautId) {\r\n        companyRepository.offerJob(astronautId);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java b/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java
+--- a/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java	(revision 1c2ca02fd0107409a33e76d7cb3fbc08115ed31c)
++++ b/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java	(date 1713868458945)
+@@ -28,4 +28,8 @@
+     public void offerJob(long astronautId) {
+         companyRepository.offerJob(astronautId);
+     }
++    //returns whether the space mission is performed after attempt
++    public boolean markSpaceMissionAsPerformed(long missionId){
++        return companyRepository.markSpaceMissionAsPerformed(missionId);
++    }
+ }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"e601d3da-bf2e-4447-9834-03f4f63f7333\" name=\"Changes\" comment=\"\">\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Admin.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Agency.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Astronaut.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Company.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Expert.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/HealthRecord.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Platform.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/SpaceMission.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Transaction.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/User.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/compiler.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/compiler.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/spacemission/pom.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/spacemission/pom.xml\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;emirtuglu&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/gunenc02/Space-Mission-Management-System.git&quot;,\r\n    &quot;accountId&quot;: &quot;b4bc43ab-31db-47b7-baee-150c196649ad&quot;\r\n  }\r\n}</component>\r\n  <component name=\"KubernetesApiPersistence\">{}</component>\r\n  <component name=\"KubernetesApiProvider\">{\r\n  &quot;isMigrated&quot;: true\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 1\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2ebeO7OSBrSUQfVkjqXa89kBJ4d\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"Application.SpaceMissionManagment.executor\": \"Run\",\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"Spring Boot.SpaceMissionManagment.executor\": \"Run\",\r\n    \"WebServerToolWindowFactoryState\": \"false\",\r\n    \"dart.analysis.tool.window.visible\": \"false\",\r\n    \"git-widget-placeholder\": \"main\",\r\n    \"ignore.virus.scanning.warn.message\": \"true\",\r\n    \"kotlin-language-version-configured\": \"true\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"project.structure.last.edited\": \"Project\",\r\n    \"project.structure.proportion\": \"0.15\",\r\n    \"project.structure.side.proportion\": \"0.2\",\r\n    \"settings.editor.selected.configurable\": \"editor.preferences.appearance\",\r\n    \"show.migrate.to.gradle.popup\": \"false\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RunManager\" selected=\"Application.SpaceMissionManagment\">\r\n    <configuration name=\"SpaceMissionManagment\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"tr.edu.bilkent.spacemission.SpaceMissionManagment\" />\r\n      <module name=\"spacemission\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"tr.edu.bilkent.spacemission.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"SpaceMissionManagment\" type=\"SpringBootApplicationConfigurationType\" factoryName=\"Spring Boot\" nameIsGenerated=\"true\">\r\n      <module name=\"spacemission\" />\r\n      <option name=\"SPRING_BOOT_MAIN_CLASS\" value=\"tr.edu.bilkent.spacemission.SpaceMissionManagment\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.SpaceMissionManagment\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240\" />\r\n        <option value=\"bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"e601d3da-bf2e-4447-9834-03f4f63f7333\" name=\"Changes\" comment=\"\" />\r\n      <created>1712177672976</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1712177672976</updated>\r\n      <workItem from=\"1712177677088\" duration=\"3278000\" />\r\n      <workItem from=\"1713781092859\" duration=\"1946000\" />\r\n      <workItem from=\"1713785345983\" duration=\"13321000\" />\r\n      <workItem from=\"1713863620996\" duration=\"156000\" />\r\n      <workItem from=\"1713863796296\" duration=\"175000\" />\r\n      <workItem from=\"1713864002016\" duration=\"3628000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 1c2ca02fd0107409a33e76d7cb3fbc08115ed31c)
++++ b/.idea/workspace.xml	(date 1713868476690)
+@@ -5,20 +5,12 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="e601d3da-bf2e-4447-9834-03f4f63f7333" name="Changes" comment="">
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Admin.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Agency.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Astronaut.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Company.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Expert.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/HealthRecord.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Platform.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/SpaceMission.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/Transaction.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/entity/User.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/spacemission/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/pom.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/dto/SpaceMissionDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/dto/SpaceMissionDto.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -35,56 +27,46 @@
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+-  <component name="GitHubPullRequestSearchHistory">{
+-  &quot;lastFilter&quot;: {
+-    &quot;state&quot;: &quot;OPEN&quot;,
+-    &quot;assignee&quot;: &quot;emirtuglu&quot;
+-  }
+-}</component>
+-  <component name="GithubPullRequestsUISettings">{
+-  &quot;selectedUrlAndAccountId&quot;: {
+-    &quot;url&quot;: &quot;https://github.com/gunenc02/Space-Mission-Management-System.git&quot;,
+-    &quot;accountId&quot;: &quot;b4bc43ab-31db-47b7-baee-150c196649ad&quot;
+-  }
+-}</component>
+-  <component name="KubernetesApiPersistence">{}</component>
+-  <component name="KubernetesApiProvider">{
+-  &quot;isMigrated&quot;: true
+-}</component>
+   <component name="ProjectColorInfo">{
+   &quot;associatedIndex&quot;: 1
+ }</component>
+   <component name="ProjectId" id="2ebeO7OSBrSUQfVkjqXa89kBJ4d" />
+-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+   <component name="ProjectViewState">
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "Application.SpaceMissionManagment.executor": "Run",
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "Spring Boot.SpaceMissionManagment.executor": "Run",
+-    "WebServerToolWindowFactoryState": "false",
+-    "dart.analysis.tool.window.visible": "false",
+-    "git-widget-placeholder": "main",
+-    "ignore.virus.scanning.warn.message": "true",
+-    "kotlin-language-version-configured": "true",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "npm",
+-    "project.structure.last.edited": "Project",
+-    "project.structure.proportion": "0.15",
+-    "project.structure.side.proportion": "0.2",
+-    "settings.editor.selected.configurable": "editor.preferences.appearance",
+-    "show.migrate.to.gradle.popup": "false",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
++    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
++    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
++    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
++    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;Spring Boot.SpaceMissionManagment.executor&quot;: &quot;Run&quot;,
++    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
++    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
++    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
++    &quot;last_opened_file_path&quot;: &quot;C:/Users/yigit/Desktop/Space-Mission-Manager&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
++    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
++    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
++    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
++    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  },
++  &quot;keyToStringList&quot;: {
++    &quot;DatabaseDriversLRU&quot;: [
++      &quot;mysql&quot;
++    ]
+   }
+-}]]></component>
+-  <component name="RunManager" selected="Application.SpaceMissionManagment">
++}</component>
++  <component name="RunManager" selected="Spring Boot.SpaceMissionManagment">
+     <configuration name="SpaceMissionManagment" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+       <option name="MAIN_CLASS_NAME" value="tr.edu.bilkent.spacemission.SpaceMissionManagment" />
+       <module name="spacemission" />
+@@ -128,11 +110,8 @@
+       <option name="presentableId" value="Default" />
+       <updated>1712177672976</updated>
+       <workItem from="1712177677088" duration="3278000" />
+-      <workItem from="1713781092859" duration="1946000" />
+-      <workItem from="1713785345983" duration="13321000" />
+-      <workItem from="1713863620996" duration="156000" />
+-      <workItem from="1713863796296" duration="175000" />
+-      <workItem from="1713864002016" duration="3628000" />
++      <workItem from="1713784123567" duration="5546000" />
++      <workItem from="1713815209118" duration="3818000" />
+     </task>
+     <servers />
+   </component>
+Index: .idea/dataSources.local.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/dataSources.local.xml b/.idea/dataSources.local.xml
+new file mode 100644
+--- /dev/null	(date 1713868458927)
++++ b/.idea/dataSources.local.xml	(date 1713868458927)
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="dataSourceStorageLocal" created-in="IU-241.14494.240">
++    <data-source name="spacemission" uuid="12e8c583-ac74-4174-8935-8816f4518636">
++      <database-info product="MySQL" version="8.0.36" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)" dbms="MYSQL" exact-version="8.0.36" exact-driver-version="8.2">
++        <extra-name-characters>#@</extra-name-characters>
++        <identifier-quote-string>`</identifier-quote-string>
++      </database-info>
++      <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower" />
++      <secret-storage>master_key</secret-storage>
++      <user-name>root</user-name>
++      <schema-mapping>
++        <introspection-scope>
++          <node kind="schema" qname="@" />
++        </introspection-scope>
++      </schema-mapping>
++    </data-source>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"MavenProjectsManager\">\r\n    <option name=\"originalFiles\">\r\n      <list>\r\n        <option value=\"$PROJECT_DIR$/spacemission/pom.xml\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_21\" default=\"true\" project-jdk-name=\"corretto-21\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/out\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 1c2ca02fd0107409a33e76d7cb3fbc08115ed31c)
++++ b/.idea/misc.xml	(date 1713868475720)
+@@ -1,4 +1,3 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+   <component name="MavenProjectsManager">
+@@ -8,7 +7,10 @@
+       </list>
+     </option>
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="corretto-21" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/out" />
+   </component>
++  <component name="ProjectType">
++    <option name="id" value="jpab" />
++  </component>
+ </project>
+\ No newline at end of file
+Index: spacemission/src/main/java/tr/edu/bilkent/spacemission/dto/SpaceMissionDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package tr.edu.bilkent.spacemission.dto;\r\n\r\npublic class SpaceMissionDto {\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/java/tr/edu/bilkent/spacemission/dto/SpaceMissionDto.java b/spacemission/src/main/java/tr/edu/bilkent/spacemission/dto/SpaceMissionDto.java
+--- a/spacemission/src/main/java/tr/edu/bilkent/spacemission/dto/SpaceMissionDto.java	(revision 1c2ca02fd0107409a33e76d7cb3fbc08115ed31c)
++++ b/spacemission/src/main/java/tr/edu/bilkent/spacemission/dto/SpaceMissionDto.java	(date 1713868458942)
+@@ -1,4 +1,16 @@
+ package tr.edu.bilkent.spacemission.dto;
++import lombok.Data;
++import lombok.AllArgsConstructor;
++import lombok.NoArgsConstructor;
+ 
++@Data
++@NoArgsConstructor
++@AllArgsConstructor
+ public class SpaceMissionDto {
++    long missionId;
++    String missionName;
++    String missionObjective;
++    String createDate;
++    double budget;
++    long creatorId;
+ }
+Index: .idea/dataSources/12e8c583-ac74-4174-8935-8816f4518636.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/dataSources/12e8c583-ac74-4174-8935-8816f4518636.xml b/.idea/dataSources/12e8c583-ac74-4174-8935-8816f4518636.xml
+new file mode 100644
+--- /dev/null	(date 1713868492132)
++++ b/.idea/dataSources/12e8c583-ac74-4174-8935-8816f4518636.xml	(date 1713868492132)
+@@ -0,0 +1,947 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<dataSource name="spacemission">
++  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.52">
++    <root id="1"/>
++    <collation id="2" parent="1" name="armscii8_general_ci">
++      <Charset>armscii8</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="3" parent="1" name="armscii8_bin">
++      <Charset>armscii8</Charset>
++    </collation>
++    <collation id="4" parent="1" name="ascii_general_ci">
++      <Charset>ascii</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="5" parent="1" name="ascii_bin">
++      <Charset>ascii</Charset>
++    </collation>
++    <collation id="6" parent="1" name="big5_chinese_ci">
++      <Charset>big5</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="7" parent="1" name="big5_bin">
++      <Charset>big5</Charset>
++    </collation>
++    <collation id="8" parent="1" name="binary">
++      <Charset>binary</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="9" parent="1" name="cp1250_general_ci">
++      <Charset>cp1250</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="10" parent="1" name="cp1250_czech_cs">
++      <Charset>cp1250</Charset>
++    </collation>
++    <collation id="11" parent="1" name="cp1250_croatian_ci">
++      <Charset>cp1250</Charset>
++    </collation>
++    <collation id="12" parent="1" name="cp1250_bin">
++      <Charset>cp1250</Charset>
++    </collation>
++    <collation id="13" parent="1" name="cp1250_polish_ci">
++      <Charset>cp1250</Charset>
++    </collation>
++    <collation id="14" parent="1" name="cp1251_bulgarian_ci">
++      <Charset>cp1251</Charset>
++    </collation>
++    <collation id="15" parent="1" name="cp1251_ukrainian_ci">
++      <Charset>cp1251</Charset>
++    </collation>
++    <collation id="16" parent="1" name="cp1251_bin">
++      <Charset>cp1251</Charset>
++    </collation>
++    <collation id="17" parent="1" name="cp1251_general_ci">
++      <Charset>cp1251</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="18" parent="1" name="cp1251_general_cs">
++      <Charset>cp1251</Charset>
++    </collation>
++    <collation id="19" parent="1" name="cp1256_general_ci">
++      <Charset>cp1256</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="20" parent="1" name="cp1256_bin">
++      <Charset>cp1256</Charset>
++    </collation>
++    <collation id="21" parent="1" name="cp1257_lithuanian_ci">
++      <Charset>cp1257</Charset>
++    </collation>
++    <collation id="22" parent="1" name="cp1257_bin">
++      <Charset>cp1257</Charset>
++    </collation>
++    <collation id="23" parent="1" name="cp1257_general_ci">
++      <Charset>cp1257</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="24" parent="1" name="cp850_general_ci">
++      <Charset>cp850</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="25" parent="1" name="cp850_bin">
++      <Charset>cp850</Charset>
++    </collation>
++    <collation id="26" parent="1" name="cp852_general_ci">
++      <Charset>cp852</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="27" parent="1" name="cp852_bin">
++      <Charset>cp852</Charset>
++    </collation>
++    <collation id="28" parent="1" name="cp866_general_ci">
++      <Charset>cp866</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="29" parent="1" name="cp866_bin">
++      <Charset>cp866</Charset>
++    </collation>
++    <collation id="30" parent="1" name="cp932_japanese_ci">
++      <Charset>cp932</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="31" parent="1" name="cp932_bin">
++      <Charset>cp932</Charset>
++    </collation>
++    <collation id="32" parent="1" name="dec8_swedish_ci">
++      <Charset>dec8</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="33" parent="1" name="dec8_bin">
++      <Charset>dec8</Charset>
++    </collation>
++    <collation id="34" parent="1" name="eucjpms_japanese_ci">
++      <Charset>eucjpms</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="35" parent="1" name="eucjpms_bin">
++      <Charset>eucjpms</Charset>
++    </collation>
++    <collation id="36" parent="1" name="euckr_korean_ci">
++      <Charset>euckr</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="37" parent="1" name="euckr_bin">
++      <Charset>euckr</Charset>
++    </collation>
++    <collation id="38" parent="1" name="gb18030_chinese_ci">
++      <Charset>gb18030</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="39" parent="1" name="gb18030_bin">
++      <Charset>gb18030</Charset>
++    </collation>
++    <collation id="40" parent="1" name="gb18030_unicode_520_ci">
++      <Charset>gb18030</Charset>
++    </collation>
++    <collation id="41" parent="1" name="gb2312_chinese_ci">
++      <Charset>gb2312</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="42" parent="1" name="gb2312_bin">
++      <Charset>gb2312</Charset>
++    </collation>
++    <collation id="43" parent="1" name="gbk_chinese_ci">
++      <Charset>gbk</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="44" parent="1" name="gbk_bin">
++      <Charset>gbk</Charset>
++    </collation>
++    <collation id="45" parent="1" name="geostd8_general_ci">
++      <Charset>geostd8</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="46" parent="1" name="geostd8_bin">
++      <Charset>geostd8</Charset>
++    </collation>
++    <collation id="47" parent="1" name="greek_general_ci">
++      <Charset>greek</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="48" parent="1" name="greek_bin">
++      <Charset>greek</Charset>
++    </collation>
++    <collation id="49" parent="1" name="hebrew_general_ci">
++      <Charset>hebrew</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="50" parent="1" name="hebrew_bin">
++      <Charset>hebrew</Charset>
++    </collation>
++    <collation id="51" parent="1" name="hp8_english_ci">
++      <Charset>hp8</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="52" parent="1" name="hp8_bin">
++      <Charset>hp8</Charset>
++    </collation>
++    <collation id="53" parent="1" name="keybcs2_general_ci">
++      <Charset>keybcs2</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="54" parent="1" name="keybcs2_bin">
++      <Charset>keybcs2</Charset>
++    </collation>
++    <collation id="55" parent="1" name="koi8r_general_ci">
++      <Charset>koi8r</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="56" parent="1" name="koi8r_bin">
++      <Charset>koi8r</Charset>
++    </collation>
++    <collation id="57" parent="1" name="koi8u_general_ci">
++      <Charset>koi8u</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="58" parent="1" name="koi8u_bin">
++      <Charset>koi8u</Charset>
++    </collation>
++    <collation id="59" parent="1" name="latin1_german1_ci">
++      <Charset>latin1</Charset>
++    </collation>
++    <collation id="60" parent="1" name="latin1_swedish_ci">
++      <Charset>latin1</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="61" parent="1" name="latin1_danish_ci">
++      <Charset>latin1</Charset>
++    </collation>
++    <collation id="62" parent="1" name="latin1_german2_ci">
++      <Charset>latin1</Charset>
++    </collation>
++    <collation id="63" parent="1" name="latin1_bin">
++      <Charset>latin1</Charset>
++    </collation>
++    <collation id="64" parent="1" name="latin1_general_ci">
++      <Charset>latin1</Charset>
++    </collation>
++    <collation id="65" parent="1" name="latin1_general_cs">
++      <Charset>latin1</Charset>
++    </collation>
++    <collation id="66" parent="1" name="latin1_spanish_ci">
++      <Charset>latin1</Charset>
++    </collation>
++    <collation id="67" parent="1" name="latin2_czech_cs">
++      <Charset>latin2</Charset>
++    </collation>
++    <collation id="68" parent="1" name="latin2_general_ci">
++      <Charset>latin2</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="69" parent="1" name="latin2_hungarian_ci">
++      <Charset>latin2</Charset>
++    </collation>
++    <collation id="70" parent="1" name="latin2_croatian_ci">
++      <Charset>latin2</Charset>
++    </collation>
++    <collation id="71" parent="1" name="latin2_bin">
++      <Charset>latin2</Charset>
++    </collation>
++    <collation id="72" parent="1" name="latin5_turkish_ci">
++      <Charset>latin5</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="73" parent="1" name="latin5_bin">
++      <Charset>latin5</Charset>
++    </collation>
++    <collation id="74" parent="1" name="latin7_estonian_cs">
++      <Charset>latin7</Charset>
++    </collation>
++    <collation id="75" parent="1" name="latin7_general_ci">
++      <Charset>latin7</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="76" parent="1" name="latin7_general_cs">
++      <Charset>latin7</Charset>
++    </collation>
++    <collation id="77" parent="1" name="latin7_bin">
++      <Charset>latin7</Charset>
++    </collation>
++    <collation id="78" parent="1" name="macce_general_ci">
++      <Charset>macce</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="79" parent="1" name="macce_bin">
++      <Charset>macce</Charset>
++    </collation>
++    <collation id="80" parent="1" name="macroman_general_ci">
++      <Charset>macroman</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="81" parent="1" name="macroman_bin">
++      <Charset>macroman</Charset>
++    </collation>
++    <collation id="82" parent="1" name="sjis_japanese_ci">
++      <Charset>sjis</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="83" parent="1" name="sjis_bin">
++      <Charset>sjis</Charset>
++    </collation>
++    <collation id="84" parent="1" name="swe7_swedish_ci">
++      <Charset>swe7</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="85" parent="1" name="swe7_bin">
++      <Charset>swe7</Charset>
++    </collation>
++    <collation id="86" parent="1" name="tis620_thai_ci">
++      <Charset>tis620</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="87" parent="1" name="tis620_bin">
++      <Charset>tis620</Charset>
++    </collation>
++    <collation id="88" parent="1" name="ucs2_general_ci">
++      <Charset>ucs2</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="89" parent="1" name="ucs2_bin">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="90" parent="1" name="ucs2_unicode_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="91" parent="1" name="ucs2_icelandic_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="92" parent="1" name="ucs2_latvian_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="93" parent="1" name="ucs2_romanian_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="94" parent="1" name="ucs2_slovenian_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="95" parent="1" name="ucs2_polish_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="96" parent="1" name="ucs2_estonian_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="97" parent="1" name="ucs2_spanish_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="98" parent="1" name="ucs2_swedish_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="99" parent="1" name="ucs2_turkish_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="100" parent="1" name="ucs2_czech_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="101" parent="1" name="ucs2_danish_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="102" parent="1" name="ucs2_lithuanian_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="103" parent="1" name="ucs2_slovak_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="104" parent="1" name="ucs2_spanish2_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="105" parent="1" name="ucs2_roman_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="106" parent="1" name="ucs2_persian_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="107" parent="1" name="ucs2_esperanto_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="108" parent="1" name="ucs2_hungarian_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="109" parent="1" name="ucs2_sinhala_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="110" parent="1" name="ucs2_german2_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="111" parent="1" name="ucs2_croatian_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="112" parent="1" name="ucs2_unicode_520_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="113" parent="1" name="ucs2_vietnamese_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="114" parent="1" name="ucs2_general_mysql500_ci">
++      <Charset>ucs2</Charset>
++    </collation>
++    <collation id="115" parent="1" name="ujis_japanese_ci">
++      <Charset>ujis</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="116" parent="1" name="ujis_bin">
++      <Charset>ujis</Charset>
++    </collation>
++    <collation id="117" parent="1" name="utf16_general_ci">
++      <Charset>utf16</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="118" parent="1" name="utf16_bin">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="119" parent="1" name="utf16_unicode_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="120" parent="1" name="utf16_icelandic_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="121" parent="1" name="utf16_latvian_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="122" parent="1" name="utf16_romanian_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="123" parent="1" name="utf16_slovenian_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="124" parent="1" name="utf16_polish_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="125" parent="1" name="utf16_estonian_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="126" parent="1" name="utf16_spanish_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="127" parent="1" name="utf16_swedish_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="128" parent="1" name="utf16_turkish_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="129" parent="1" name="utf16_czech_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="130" parent="1" name="utf16_danish_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="131" parent="1" name="utf16_lithuanian_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="132" parent="1" name="utf16_slovak_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="133" parent="1" name="utf16_spanish2_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="134" parent="1" name="utf16_roman_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="135" parent="1" name="utf16_persian_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="136" parent="1" name="utf16_esperanto_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="137" parent="1" name="utf16_hungarian_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="138" parent="1" name="utf16_sinhala_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="139" parent="1" name="utf16_german2_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="140" parent="1" name="utf16_croatian_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="141" parent="1" name="utf16_unicode_520_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="142" parent="1" name="utf16_vietnamese_ci">
++      <Charset>utf16</Charset>
++    </collation>
++    <collation id="143" parent="1" name="utf16le_general_ci">
++      <Charset>utf16le</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="144" parent="1" name="utf16le_bin">
++      <Charset>utf16le</Charset>
++    </collation>
++    <collation id="145" parent="1" name="utf32_general_ci">
++      <Charset>utf32</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="146" parent="1" name="utf32_bin">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="147" parent="1" name="utf32_unicode_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="148" parent="1" name="utf32_icelandic_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="149" parent="1" name="utf32_latvian_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="150" parent="1" name="utf32_romanian_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="151" parent="1" name="utf32_slovenian_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="152" parent="1" name="utf32_polish_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="153" parent="1" name="utf32_estonian_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="154" parent="1" name="utf32_spanish_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="155" parent="1" name="utf32_swedish_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="156" parent="1" name="utf32_turkish_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="157" parent="1" name="utf32_czech_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="158" parent="1" name="utf32_danish_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="159" parent="1" name="utf32_lithuanian_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="160" parent="1" name="utf32_slovak_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="161" parent="1" name="utf32_spanish2_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="162" parent="1" name="utf32_roman_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="163" parent="1" name="utf32_persian_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="164" parent="1" name="utf32_esperanto_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="165" parent="1" name="utf32_hungarian_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="166" parent="1" name="utf32_sinhala_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="167" parent="1" name="utf32_german2_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="168" parent="1" name="utf32_croatian_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="169" parent="1" name="utf32_unicode_520_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="170" parent="1" name="utf32_vietnamese_ci">
++      <Charset>utf32</Charset>
++    </collation>
++    <collation id="171" parent="1" name="utf8mb3_general_ci">
++      <Charset>utf8mb3</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="172" parent="1" name="utf8mb3_tolower_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="173" parent="1" name="utf8mb3_bin">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="174" parent="1" name="utf8mb3_unicode_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="175" parent="1" name="utf8mb3_icelandic_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="176" parent="1" name="utf8mb3_latvian_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="177" parent="1" name="utf8mb3_romanian_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="178" parent="1" name="utf8mb3_slovenian_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="179" parent="1" name="utf8mb3_polish_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="180" parent="1" name="utf8mb3_estonian_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="181" parent="1" name="utf8mb3_spanish_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="182" parent="1" name="utf8mb3_swedish_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="183" parent="1" name="utf8mb3_turkish_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="184" parent="1" name="utf8mb3_czech_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="185" parent="1" name="utf8mb3_danish_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="186" parent="1" name="utf8mb3_lithuanian_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="187" parent="1" name="utf8mb3_slovak_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="188" parent="1" name="utf8mb3_spanish2_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="189" parent="1" name="utf8mb3_roman_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="190" parent="1" name="utf8mb3_persian_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="191" parent="1" name="utf8mb3_esperanto_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="192" parent="1" name="utf8mb3_hungarian_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="193" parent="1" name="utf8mb3_sinhala_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="194" parent="1" name="utf8mb3_german2_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="195" parent="1" name="utf8mb3_croatian_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="196" parent="1" name="utf8mb3_unicode_520_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="197" parent="1" name="utf8mb3_vietnamese_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="198" parent="1" name="utf8mb3_general_mysql500_ci">
++      <Charset>utf8mb3</Charset>
++    </collation>
++    <collation id="199" parent="1" name="utf8mb4_general_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="200" parent="1" name="utf8mb4_bin">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="201" parent="1" name="utf8mb4_unicode_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="202" parent="1" name="utf8mb4_icelandic_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="203" parent="1" name="utf8mb4_latvian_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="204" parent="1" name="utf8mb4_romanian_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="205" parent="1" name="utf8mb4_slovenian_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="206" parent="1" name="utf8mb4_polish_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="207" parent="1" name="utf8mb4_estonian_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="208" parent="1" name="utf8mb4_spanish_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="209" parent="1" name="utf8mb4_swedish_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="210" parent="1" name="utf8mb4_turkish_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="211" parent="1" name="utf8mb4_czech_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="212" parent="1" name="utf8mb4_danish_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="213" parent="1" name="utf8mb4_lithuanian_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="214" parent="1" name="utf8mb4_slovak_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="215" parent="1" name="utf8mb4_spanish2_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="216" parent="1" name="utf8mb4_roman_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="217" parent="1" name="utf8mb4_persian_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="218" parent="1" name="utf8mb4_esperanto_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="219" parent="1" name="utf8mb4_hungarian_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="220" parent="1" name="utf8mb4_sinhala_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="221" parent="1" name="utf8mb4_german2_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="222" parent="1" name="utf8mb4_croatian_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="223" parent="1" name="utf8mb4_unicode_520_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="224" parent="1" name="utf8mb4_vietnamese_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="225" parent="1" name="utf8mb4_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++      <DefaultForCharset>1</DefaultForCharset>
++    </collation>
++    <collation id="226" parent="1" name="utf8mb4_de_pb_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="227" parent="1" name="utf8mb4_is_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="228" parent="1" name="utf8mb4_lv_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="229" parent="1" name="utf8mb4_ro_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="230" parent="1" name="utf8mb4_sl_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="231" parent="1" name="utf8mb4_pl_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="232" parent="1" name="utf8mb4_et_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="233" parent="1" name="utf8mb4_es_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="234" parent="1" name="utf8mb4_sv_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="235" parent="1" name="utf8mb4_tr_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="236" parent="1" name="utf8mb4_cs_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="237" parent="1" name="utf8mb4_da_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="238" parent="1" name="utf8mb4_lt_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="239" parent="1" name="utf8mb4_sk_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="240" parent="1" name="utf8mb4_es_trad_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="241" parent="1" name="utf8mb4_la_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="242" parent="1" name="utf8mb4_eo_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="243" parent="1" name="utf8mb4_hu_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="244" parent="1" name="utf8mb4_hr_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="245" parent="1" name="utf8mb4_vi_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="246" parent="1" name="utf8mb4_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="247" parent="1" name="utf8mb4_de_pb_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="248" parent="1" name="utf8mb4_is_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="249" parent="1" name="utf8mb4_lv_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="250" parent="1" name="utf8mb4_ro_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="251" parent="1" name="utf8mb4_sl_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="252" parent="1" name="utf8mb4_pl_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="253" parent="1" name="utf8mb4_et_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="254" parent="1" name="utf8mb4_es_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="255" parent="1" name="utf8mb4_sv_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="256" parent="1" name="utf8mb4_tr_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="257" parent="1" name="utf8mb4_cs_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="258" parent="1" name="utf8mb4_da_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="259" parent="1" name="utf8mb4_lt_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="260" parent="1" name="utf8mb4_sk_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="261" parent="1" name="utf8mb4_es_trad_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="262" parent="1" name="utf8mb4_la_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="263" parent="1" name="utf8mb4_eo_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="264" parent="1" name="utf8mb4_hu_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="265" parent="1" name="utf8mb4_hr_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="266" parent="1" name="utf8mb4_vi_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="267" parent="1" name="utf8mb4_ja_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="268" parent="1" name="utf8mb4_ja_0900_as_cs_ks">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="269" parent="1" name="utf8mb4_0900_as_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="270" parent="1" name="utf8mb4_ru_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="271" parent="1" name="utf8mb4_ru_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="272" parent="1" name="utf8mb4_zh_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="273" parent="1" name="utf8mb4_0900_bin">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="274" parent="1" name="utf8mb4_nb_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="275" parent="1" name="utf8mb4_nb_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="276" parent="1" name="utf8mb4_nn_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="277" parent="1" name="utf8mb4_nn_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="278" parent="1" name="utf8mb4_sr_latn_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="279" parent="1" name="utf8mb4_sr_latn_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="280" parent="1" name="utf8mb4_bs_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="281" parent="1" name="utf8mb4_bs_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="282" parent="1" name="utf8mb4_bg_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="283" parent="1" name="utf8mb4_bg_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="284" parent="1" name="utf8mb4_gl_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="285" parent="1" name="utf8mb4_gl_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="286" parent="1" name="utf8mb4_mn_cyrl_0900_ai_ci">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <collation id="287" parent="1" name="utf8mb4_mn_cyrl_0900_as_cs">
++      <Charset>utf8mb4</Charset>
++    </collation>
++    <schema id="288" parent="1" name="mysql">
++      <CollationName>utf8mb4_0900_ai_ci</CollationName>
++    </schema>
++    <schema id="289" parent="1" name="information_schema">
++      <CollationName>utf8mb3_general_ci</CollationName>
++    </schema>
++    <schema id="290" parent="1" name="performance_schema">
++      <CollationName>utf8mb4_0900_ai_ci</CollationName>
++    </schema>
++    <schema id="291" parent="1" name="sys">
++      <CollationName>utf8mb4_0900_ai_ci</CollationName>
++    </schema>
++    <schema id="292" parent="1" name="sakila">
++      <CollationName>utf8mb4_0900_ai_ci</CollationName>
++    </schema>
++    <schema id="293" parent="1" name="world">
++      <CollationName>utf8mb4_0900_ai_ci</CollationName>
++    </schema>
++    <schema id="294" parent="1" name="quizdb">
++      <CollationName>utf8mb4_0900_ai_ci</CollationName>
++    </schema>
++    <schema id="295" parent="1" name="spacemission">
++      <CollationName>utf8mb4_0900_ai_ci</CollationName>
++    </schema>
++    <user id="296" parent="1" name="mysql.infoschema">
++      <CanLogin>0</CanLogin>
++      <Host>localhost</Host>
++      <Plugin>caching_sha2_password</Plugin>
++    </user>
++    <user id="297" parent="1" name="mysql.session">
++      <CanLogin>0</CanLogin>
++      <Host>localhost</Host>
++      <Plugin>caching_sha2_password</Plugin>
++    </user>
++    <user id="298" parent="1" name="mysql.sys">
++      <CanLogin>0</CanLogin>
++      <Host>localhost</Host>
++      <Plugin>caching_sha2_password</Plugin>
++    </user>
++    <user id="299" parent="1" name="root">
++      <Host>localhost</Host>
++    </user>
++  </database-model>
++</dataSource>
+\ No newline at end of file
