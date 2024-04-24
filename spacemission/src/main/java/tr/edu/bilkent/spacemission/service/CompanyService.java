@@ -3,6 +3,7 @@ package tr.edu.bilkent.spacemission.service;
 import org.springframework.stereotype.Service;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.Login;
+import tr.edu.bilkent.spacemission.entity.Company;
 import tr.edu.bilkent.spacemission.repository.CompanyRepository;
 
 import java.util.List;
@@ -19,6 +20,10 @@ public class CompanyService {
 
     public List<CompanyDto> getAllCompanies(){
         return companyRepository.getAllCompaniesRepo();
+    }
+
+    public Company getCompanyProfile(long id){
+        return companyRepository.getCompanyProfile(id);
     }
 
     public CompanyDto isCompanyExists(Login logInfo){

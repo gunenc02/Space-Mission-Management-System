@@ -4,7 +4,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.Login;
+import tr.edu.bilkent.spacemission.entity.Company;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 // THIS IS OUR REPOSITORY THIS IS WHERE OUR QUERIES TAKE PLACE
@@ -13,10 +19,12 @@ import java.util.List;
 @Repository
 public class CompanyRepository {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final Connection connection;
 
-    public CompanyRepository(JdbcTemplate jdbcTemplate) {
+    public CompanyRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) throws SQLException {
         this.jdbcTemplate = jdbcTemplate;
+        this.connection = dataSource.getConnection();
     }
 
     public List<CompanyDto> getAllCompaniesRepo() {
@@ -31,6 +39,31 @@ public class CompanyRepository {
                 rs.getString("company_type")
             )
         );
+    }
+
+    public Company getCompanyProfile(long id) {
+        Company company = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM company WHERE company_id = ?");
+            ps.setLong(1, id);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                company = new Company();
+                company.setId(rs.getLong("company_id"));
+                company.setName(rs.getString("company_name"));
+                company.setLogo(rs.getBytes("company_logo"));
+                company.setCountry(rs.getString("company_country"));
+                company.setWorkerCount(rs.getInt("company_worker_count"));
+                company.setBudget(rs.getLong("company_budget"));
+                company.setType(rs.getString("company_type"));
+            }
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return company;
     }
 
     public CompanyDto getByLogInfo(Login logInfo) {

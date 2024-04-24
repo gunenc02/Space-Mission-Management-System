@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyDto {
-    long companyId;
-    String companyName;
-    String companyMail;
-    String companyCountry;
-    double companyBudget;
-    String companyType;
+    long id;
+    String name;
+    String mail;
+    String country;
+    double budget;
+    String type;
 
 }

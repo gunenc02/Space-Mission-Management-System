@@ -14,5 +14,6 @@ public class Company extends User {
     private byte[] logo;
     private String country;
     private int workerCount;
-    private double money;
+    private double budget;
+    private String type;
 }

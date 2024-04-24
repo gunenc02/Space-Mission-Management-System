@@ -18,8 +18,8 @@ public class AstronautService {
         this.astronautRepository = astronautRepository;
     }
 
-    public Astronaut getAstronaut(long id) {
-        return astronautRepository.getAstronaut(id);
+    public Astronaut getAstronautProfile(long id) {
+        return astronautRepository.getAstronautProfile(id);
     }
 
     public List<CompanyDto> getExperienceById(long id) {

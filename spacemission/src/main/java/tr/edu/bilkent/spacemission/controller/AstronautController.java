@@ -20,8 +20,8 @@ public class AstronautController {
 
     @GetMapping("/profile/{id}")
     public AstronautDto getAstronaut(@PathVariable long id){
-        Astronaut astronaut = astronautService.getAstronaut(id);
-        return new AstronautDto(astronaut.getId(), astronaut.getName(), astronaut.getImage(), astronaut.getDateOfBirth(), astronaut.isStatus(), astronaut.getCountry(), astronaut.getSalary());
+        Astronaut astronaut = astronautService.getAstronautProfile(id);
+        return convertEntityToDto(astronaut);
     }
 
     @GetMapping("/listExperience/{id}")
@@ -32,5 +32,29 @@ public class AstronautController {
     @PostMapping("/joinCompany/{companyId}/{userId}")
     public void joinCompany(@PathVariable long companyId, @PathVariable long userId){
         astronautService.joinCompany(companyId, userId);
+    }
+
+    public Astronaut convertDtoToEntity(AstronautDto astronautDto) {
+        Astronaut astronaut = new Astronaut();
+        astronaut.setId(astronautDto.getId());
+        astronaut.setName(astronautDto.getName());
+        astronaut.setImage(astronautDto.getImage());
+        astronaut.setDateOfBirth(astronautDto.getDateOfBirth());
+        astronaut.setStatus(astronautDto.isStatus());
+        astronaut.setCountry(astronautDto.getCountry());
+        astronaut.setSalary(astronautDto.getSalary());
+        return astronaut;
+    }
+
+    public AstronautDto convertEntityToDto(Astronaut astronaut) {
+        AstronautDto astronautDto = new AstronautDto();
+        astronautDto.setId(astronaut.getId());
+        astronautDto.setName(astronaut.getName());
+        astronautDto.setImage(astronaut.getImage());
+        astronautDto.setDateOfBirth(astronaut.getDateOfBirth());
+        astronautDto.setStatus(astronaut.isStatus());
+        astronautDto.setCountry(astronaut.getCountry());
+        astronautDto.setSalary(astronaut.getSalary());
+        return astronautDto;
     }
 }

@@ -3,6 +3,7 @@ package tr.edu.bilkent.spacemission.controller;
 
 import org.springframework.web.bind.annotation.*;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
+import tr.edu.bilkent.spacemission.entity.Company;
 import tr.edu.bilkent.spacemission.service.CompanyService;
 
 import java.util.List;
@@ -39,5 +40,32 @@ public class CompanyController {
     @PostMapping("/offerJob/{astronautId}")
     public void offerJob(@PathVariable long astronautId){
         companyService.offerJob(astronautId);
+    }
+
+    @GetMapping("/profile/{id}")
+    public CompanyDto getCompanyProfile(long id){
+        return convertEntityToDto(companyService.getCompanyProfile(id));
+    }
+
+    public Company convertDtoToEntity(CompanyDto companyDto) {
+        Company company = new Company();
+        company.setId(companyDto.getId());
+        company.setName(companyDto.getName());
+        company.setMail(companyDto.getMail());
+        company.setCountry(companyDto.getCountry());
+        company.setBudget(companyDto.getBudget());
+        company.setType(companyDto.getType());
+        return company;
+    }
+
+    public CompanyDto convertEntityToDto(Company company) {
+        CompanyDto companyDto = new CompanyDto();
+        companyDto.setId(company.getId());
+        companyDto.setName(company.getName());
+        companyDto.setMail(company.getMail());
+        companyDto.setCountry(company.getCountry());
+        companyDto.setBudget(company.getBudget());
+        companyDto.setType(company.getType());
+        return companyDto;
     }
 }

@@ -20,7 +20,7 @@ public class AstronautRepository {
         this.connection = dataSource.getConnection();
     }
 
-    public Astronaut getAstronaut(long id) {
+    public Astronaut getAstronautProfile(long id) {
         Astronaut astronaut = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM astronaut WHERE astronaut_id = ?");
