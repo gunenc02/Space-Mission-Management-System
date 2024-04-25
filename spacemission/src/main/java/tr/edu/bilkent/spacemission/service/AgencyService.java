@@ -10,10 +10,10 @@ public class AgencyService {
     public AgencyService(AgencyRepository agencyRepository) { this.agencyRepository = agencyRepository; }
 
 
-    public boolean approveMission(long agencyId, long missionId){
-        return agencyRepository.approveMission(agencyId, missionId);
+    public boolean approveMission(long agencyId, long missionId, boolean approvedStatus){
+        return agencyRepository.approveMission(agencyId, missionId, approvedStatus);
     }
-    public boolean evaluateAstronaut(){
-        return agencyRepository.evaluateAstronaut();
+    public boolean evaluateAstronaut(long agencyId, long astronautId, boolean approvedStatus){
+        return agencyRepository.evaluateAstronaut(agencyId, astronautId, approvedStatus);
     }
 }

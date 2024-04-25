@@ -146,6 +146,7 @@ CREATE TABLE IF NOT EXISTS agency_evaluate_astronaut (
      id INT AUTO_INCREMENT PRIMARY KEY,
      astronaut_id INT NOT NULL,
      agency_id INT NOT NULL,
+     approval_state TEXT NOT NULL CHECK (approval_state = 'approved' OR approval_state = 'not_approved'),
      FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),
      FOREIGN KEY (agency_id) REFERENCES agency(agency_id)
 );
@@ -154,6 +155,7 @@ CREATE TABLE IF NOT EXISTS agency_approve_space_mission (
      id INT AUTO_INCREMENT PRIMARY KEY,
      space_mission_id INT NOT NULL,
      agency_id INT NOT NULL,
+     approval_state TEXT NOT NULL CHECK (approval_state = 'approved' OR approval_state = 'not_approved'),
      FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),
      FOREIGN KEY (agency_id) REFERENCES agency(agency_id)
 );
