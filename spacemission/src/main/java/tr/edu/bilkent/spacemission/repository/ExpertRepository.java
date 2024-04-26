@@ -20,6 +20,11 @@ public class ExpertRepository {
         this.connection = dataSource.getConnection();
     }
 
+    /**
+     * This method returns the profile of the expert with the given id
+     * @param id Id of the expert
+     * @return Expert object
+     */
     public Expert getExpertById(long id) {
         Expert expert = null;
         try {
@@ -47,6 +52,10 @@ public class ExpertRepository {
         return expert;
     }
 
+    /**
+     * This method registers the expert to the system
+     * @param expert Expert object
+     */
     public void registerExpert(Expert expert) {
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO user (user_mail, user_password) VALUES (?, ?)");

@@ -18,6 +18,11 @@ public class AgencyRepository {
         this.connection = dataSource.getConnection();
     }
 
+    /**
+     * This method returns the profile of the agency with the given id
+     * @param agencyId Id of the agency
+     * @return Agency object
+     */
     public Agency getAgencyProfile(long agencyId){
         String query = "SELECT * FROM agency WHERE agency_id = ?;";
         return jdbcTemplate.queryForObject(query, (rs, rowNum) -> {

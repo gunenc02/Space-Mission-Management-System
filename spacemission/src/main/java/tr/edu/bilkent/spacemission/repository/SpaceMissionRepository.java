@@ -20,6 +20,10 @@ public class SpaceMissionRepository {
         this.connection = dataSource.getConnection();
     }
 
+    /**
+     * This method returns the list of all space missions
+     * @return List of space missions
+     */
     public List<SpaceMission> getSpaceMissions() {
         String query = "SELECT * FROM space_mission;";
         return jdbcTemplate.query(query, (rs, rowNum) -> {
@@ -38,6 +42,11 @@ public class SpaceMissionRepository {
         });
     }
 
+    /**
+     * This method returns the space mission with the given id
+     * @param id Id of the space mission
+     * @return SpaceMission object
+     */
     public SpaceMission getSpaceMission(long id) {
         String query = "SELECT * FROM space_mission WHERE mission_id = ?;";
         return jdbcTemplate.queryForObject(query, new Object[]{id}, (rs, rowNum) -> {
@@ -56,6 +65,10 @@ public class SpaceMissionRepository {
         });
     }
 
+    /**
+     * This method creates a new space mission
+     * @param spaceMission SpaceMission object
+     */
     public void createSpaceMission(SpaceMission spaceMission) {
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO space_mission (mission_name, mission_image, objective, budget, create_date, perform_date, platform_id, creator_id, performer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
@@ -75,6 +88,10 @@ public class SpaceMissionRepository {
         }
     }
 
+    /**
+     * This method updates the space mission with the given id
+     * @param spaceMission SpaceMission object
+     */
     public void updateSpaceMission(SpaceMission spaceMission) {
         try {
             PreparedStatement ps = connection.prepareStatement("UPDATE space_mission SET mission_name = ?, mission_image = ?, objective = ?, budget = ?, create_date = ?, perform_date = ?, platform_id = ?, creator_id = ?, performer_id = ? WHERE mission_id = ?;");
@@ -95,6 +112,10 @@ public class SpaceMissionRepository {
         }
     }
 
+    /**
+     * This method deletes the space mission with the given id
+     * @param id Id of the space mission
+     */
     public void deleteSpaceMission (long id) {
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM space_mission WHERE mission_id = ?;");

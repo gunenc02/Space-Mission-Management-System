@@ -27,7 +27,7 @@ public class CompanyRepository {
         this.connection = dataSource.getConnection();
     }
 
-    public List<CompanyDto> getAllCompaniesRepo() {
+    public List<CompanyDto> getAllCompanies() {
         String query = "SELECT * FROM company";
         return jdbcTemplate.query(query,
             (rs, rowNum) -> new CompanyDto(
@@ -41,6 +41,11 @@ public class CompanyRepository {
         );
     }
 
+    /**
+     * This method returns the profile of the company with the given id
+     * @param id Id of the company
+     * @return Company object
+     */
     public Company getCompanyProfile(long id) {
         Company company = null;
         try {

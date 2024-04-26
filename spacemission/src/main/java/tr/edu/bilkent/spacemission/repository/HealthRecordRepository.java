@@ -20,6 +20,11 @@ public class HealthRecordRepository {
         this.connection = dataSource.getConnection();
     }
 
+    /**
+     * This method returns the health record with the given id
+     * @param id Id of the health record
+     * @return HealthRecord object
+     */
     public HealthRecord getHealthRecordById(long id) {
         HealthRecord healthRecord = null;
         try {
@@ -47,6 +52,10 @@ public class HealthRecordRepository {
         return healthRecord;
     }
 
+    /**
+     * This method creates a new health record
+     * @param healthRecord HealthRecord object
+     */
     public void createHealthRecord(HealthRecord healthRecord) {
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO health_record (health_record_astronaut_id, health_record_date, health_record_availability_for_mission, health_record_weight, health_record_height, health_record_heart_rate, health_record_blood_pressure, health_record_vaccinations, health_record_notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");

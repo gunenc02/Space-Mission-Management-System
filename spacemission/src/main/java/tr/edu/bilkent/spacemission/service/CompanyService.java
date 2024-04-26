@@ -19,7 +19,7 @@ public class CompanyService {
     }
 
     public List<CompanyDto> getAllCompanies(){
-        return companyRepository.getAllCompaniesRepo();
+        return companyRepository.getAllCompanies();
     }
 
     public Company getCompanyProfile(long id){

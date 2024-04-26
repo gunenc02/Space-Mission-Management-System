@@ -22,8 +22,8 @@ public class AstronautService {
         return astronautRepository.getAstronautProfile(id);
     }
 
-    public List<CompanyDto> getExperienceById(long id) {
-        return astronautRepository.getExperienceById(id);
+    public List<Astronaut> getAstronauts() {
+        return astronautRepository.getAstronauts();
     }
 
     public void joinCompany(long companyId, long userId) {

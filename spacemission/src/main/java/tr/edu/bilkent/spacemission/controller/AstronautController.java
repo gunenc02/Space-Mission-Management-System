@@ -24,9 +24,9 @@ public class AstronautController {
         return convertEntityToDto(astronaut);
     }
 
-    @GetMapping("/listExperience/{id}")
-    public List<CompanyDto> getExperienceById(@PathVariable long id){
-        return astronautService.getExperienceById(id);
+    @GetMapping("/list")
+    public List<Astronaut> getAstronauts() {
+        return astronautService.getAstronauts();
     }
 
     @PostMapping("/joinCompany/{companyId}/{userId}")
