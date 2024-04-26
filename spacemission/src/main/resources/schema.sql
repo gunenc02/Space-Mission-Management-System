@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS health_record (
 
 CREATE TABLE IF NOT EXISTS platform (
      platform_id INT AUTO_INCREMENT PRIMARY KEY,
-     model_name VARCHAR(255) NOT NULL,
+     platform_name VARCHAR(255) NOT NULL,
      production_year YEAR NOT NULL,
      platform_image BLOB,
      cost_per_launch DOUBLE NOT NULL

@@ -6,7 +6,11 @@ import tr.edu.bilkent.spacemission.entity.Agency;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class AgencyRepository {
@@ -20,10 +24,11 @@ public class AgencyRepository {
 
     /**
      * This method returns the profile of the agency with the given id
+     *
      * @param agencyId Id of the agency
      * @return Agency object
      */
-    public Agency getAgencyProfile(long agencyId){
+    public Agency getAgencyProfile(long agencyId) {
         String query = "SELECT * FROM agency WHERE agency_id = ?;";
         return jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
             Agency agency = new Agency();
@@ -35,9 +40,33 @@ public class AgencyRepository {
         }, agencyId);
     }
 
+    /**
+     * This method returns all agencies in the database
+     * @return List of agencies
+     */
+    public List<Agency> getAgencies() {
+        ArrayList<Agency> agencies = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM agency;");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Agency agency = new Agency();
+                agency.setId(rs.getLong("agency_id"));
+                agency.setName(rs.getString("agency_name"));
+                agency.setLogo(rs.getBytes("agency_logo"));
+                agency.setApproved(rs.getBoolean("is_approved"));
+                agencies.add(agency);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return agencies;
+    }
+
     //attempts to approve a space mission, approval status is returned as a boolean return value
     //Returns false when given mission is already approved by the given agency
-    public boolean approveMission(long agencyId, long missionId, boolean approvedStatus){
+    public boolean approveMission(long agencyId, long missionId, boolean approvedStatus) {
         boolean success = false;
         String query = "SELECT COUNT(*) FROM agency_approve_space_mission WHERE agency_id = ? AND " +
                 "space_mission_id = ?;";
@@ -45,51 +74,48 @@ public class AgencyRepository {
         Integer count = jdbcTemplate.queryForObject(query, Integer.class, agencyId, missionId);
 
         String approvalString;
-        if(approvedStatus){
+        if (approvedStatus) {
             approvalString = "approved";
-        }
-        else{
+        } else {
             approvalString = "not_approved";
         }
         int rowsAffected;
-        if(count != null && count == 0){
+        if (count != null && count == 0) {
             //insert a new tuple to the agency_approve_space_mission relation
             query = "INSERT INTO agency_approve_space_mission (space_mission_id, agency_id, approval_state) " +
                     "VALUES (?, ?, ?);";
             rowsAffected = this.jdbcTemplate.update(query, missionId, agencyId, approvalString);
-        }
-        else {
+        } else {
             query = "UPDATE agency_approve_space_mission SET approval_state = ? WHERE agency_id = ? AND space_mission_id = ?;";
             rowsAffected = this.jdbcTemplate.update(query, approvalString, agencyId, missionId);
         }
         success = rowsAffected > 0;
         return success;
     }
+
     /*
      * @param approvedStatus determines whether the agency has approved or not approved the astronaut after their evaluation.
      * If there is already an entry matching agencyId and astronautId, then just update it based on the given approvedStatus
      * @return true whether update or insertion is successful
-    */
-    public boolean evaluateAstronaut(long agencyId, long astronautId, boolean approvedStatus){
+     */
+    public boolean evaluateAstronaut(long agencyId, long astronautId, boolean approvedStatus) {
         boolean success = false; //query execution success
         String query = "SELECT COUNT(*) FROM agency_evaluate_astronaut WHERE astronaut_id = ? AND agency_id = ?;";
         Integer count = jdbcTemplate.queryForObject(query, Integer.class, astronautId, agencyId);
 
         String approvalString;
-        if(approvedStatus){
+        if (approvedStatus) {
             approvalString = "approved";
-        }
-        else{
+        } else {
             approvalString = "not_approved";
         }
         int rowsAffected;
-        if(count != null && count == 0){
+        if (count != null && count == 0) {
             //insert a new tuple for this astronaut's evaluationto this agency
             query = "INSERT INTO agency_evaluate_astronaut (astronaut_id, agency_id, approved_state) " +
                     "VALUES (?, ?, ?);";
             rowsAffected = this.jdbcTemplate.update(query, astronautId, agencyId, approvalString);
-        }
-        else{
+        } else {
             //update the existing tuple
             query = "UPDATE agency_evaluate_astronaut SET approved_state = ? WHERE astronaut_id = ? AND agency_id = ?;";
             rowsAffected = this.jdbcTemplate.update(query, approvalString, astronautId, agencyId);

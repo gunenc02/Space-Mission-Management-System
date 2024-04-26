@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Platform {
     private long id;
-    private String modelName;
-    private byte[] image;
+    private String platformName;
     private int productionYear;
+    private byte[] image;
     private double costPerLaunch;
 }

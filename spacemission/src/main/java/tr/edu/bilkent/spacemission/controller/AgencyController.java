@@ -6,6 +6,9 @@ import tr.edu.bilkent.spacemission.dto.AgencyDto;
 import tr.edu.bilkent.spacemission.service.AgencyService;
 import tr.edu.bilkent.spacemission.entity.Agency;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/agency")
@@ -20,6 +23,16 @@ public class AgencyController {
     public AgencyDto getAgencyProfile(@PathVariable long id){
         Agency agency = agencyService.getAgencyProfile(id);
         return convertEntityToDto(agency);
+    }
+
+    @GetMapping("/list")
+    public List<AgencyDto> getAgencies(){
+        List<Agency> agencies = agencyService.getAgencies();
+        List<AgencyDto> agencyDtos = new ArrayList<>();
+        for (Agency agency : agencies){
+            agencyDtos.add(convertEntityToDto(agency));
+        }
+        return agencyDtos;
     }
 
     @PostMapping("approveMission/{agencyId}/{missionId}/{approvedStatus}")
