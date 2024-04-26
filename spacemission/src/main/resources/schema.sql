@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS transaction (
 
 CREATE TABLE IF NOT EXISTS expert (
      expert_id INT PRIMARY KEY,
-     expert_name VARCHAR(255) NOT NULL,
+     expert_name VARCHAR(255) UNIQUE,
      expert_company INT,
      FOREIGN KEY (expert_id) REFERENCES user(user_id),
      FOREIGN KEY (expert_company) REFERENCES company(company_id)
@@ -163,3 +163,12 @@ CREATE TABLE IF NOT EXISTS bid (
      FOREIGN KEY (receiver_id) REFERENCES company(company_id),
      FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id)
 );
+
+CREATE OR REPLACE VIEW company_mission_info AS
+SELECT comp.company_name,
+       comp.worker_count,
+       a.astronaut_name,
+       miss.mission_name,
+       miss.objective
+FROM company AS comp, astronaut AS a JOIN space_mission_performings AS smp ON a.astronaut_id = smp.astronaut_id,
+     space_mission AS miss;

@@ -12,11 +12,12 @@ public class ExpertService {
         this.expertRepository = expertRepository;
     }
 
-    public Expert getExpertById (long id) {
+    public Expert getExpertById(long id) {
         return expertRepository.getExpertById(id);
     }
 
     public void registerExpert(Expert expert) {
         expertRepository.registerExpert(expert);
     }
+    public void fireExpert(long id) { expertRepository.fireExpert(id); }
 }

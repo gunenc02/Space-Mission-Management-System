@@ -46,7 +46,8 @@ public class ExpertRepository {
                 expert.setName(rs2.getString("expert_name"));
             }
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
         return expert;
@@ -75,7 +76,20 @@ public class ExpertRepository {
             ps3.setLong(1, userId);
             ps3.setString(2, expert.getName());
             ps3.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void fireExpert(long id){
+        String query = "DELETE FROM expert WHERE expert_id = ?;";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            //1 BASED INDEXING FOR PLACEHOLDERS
+            ps.setLong(1, id);
+            ps.executeUpdate(); //executeUpdate also for delete queries
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }

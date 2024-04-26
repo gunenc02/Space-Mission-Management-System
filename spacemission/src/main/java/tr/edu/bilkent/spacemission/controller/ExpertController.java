@@ -25,6 +25,10 @@ public class ExpertController {
         Expert expert = convertDtoToEntity(expertDto);
         expertService.registerExpert(expert);
     }
+    @DeleteMapping("/fire/{id}")
+    public void fireExpert(@PathVariable long id){
+        expertService.fireExpert(id);
+    }
 
     private ExpertDto convertEntityToDto(Expert expert) {
         ExpertDto expertDto = new ExpertDto();
