@@ -85,7 +85,7 @@ public class AccountRepository {
                 PreparedStatement psCompany = connection.prepareStatement(
                         "INSERT INTO astronaut (astronaut_id, astronaut_name, astronaut_agency_id, country, date_of_birth) VALUES (?, ?, ?, ?, ?)");
                 psCompany.setLong(1, userId);
-                psCompany.setString(2, ardto.getUsername());
+                psCompany.setString(2, ardto.getName());
                 psCompany.setLong(3, ardto.getAgencyId());
                 psCompany.setString(4, ardto.getCountry());
                 psCompany.setDate(5, ardto.getDateOfBirth());

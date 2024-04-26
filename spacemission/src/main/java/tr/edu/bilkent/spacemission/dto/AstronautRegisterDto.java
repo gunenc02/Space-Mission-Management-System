@@ -12,7 +12,7 @@ import java.sql.Date;
 public class AstronautRegisterDto {
     String email;
     String password;
-    String username;
+    String name;
     Date dateOfBirth;
     String country;
     long agencyId;
