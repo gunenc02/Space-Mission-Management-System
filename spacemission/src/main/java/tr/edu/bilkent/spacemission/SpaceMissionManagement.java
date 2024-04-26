@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpaceMissionManagment {
+public class SpaceMissionManagement {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpaceMissionManagment.class, args);
+		SpringApplication.run(SpaceMissionManagement.class, args);
 	}
 
 }

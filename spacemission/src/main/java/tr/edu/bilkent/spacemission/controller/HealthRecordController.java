@@ -26,7 +26,7 @@ public class HealthRecordController {
         healthRecordService.createHealthRecord(healthRecord);
     }
 
-    public HealthRecord convertDtoToEntity(HealthRecordDto healthRecordDto) {
+    private HealthRecord convertDtoToEntity(HealthRecordDto healthRecordDto) {
         HealthRecord healthRecord = new HealthRecord();
         healthRecord.setId(healthRecordDto.getId());
         healthRecord.setAstronautId(healthRecordDto.getAstronautId());
@@ -41,7 +41,7 @@ public class HealthRecordController {
         return healthRecord;
     }
 
-    public HealthRecordDto convertEntityToDto(HealthRecord healthRecord) {
+    private HealthRecordDto convertEntityToDto(HealthRecord healthRecord) {
         HealthRecordDto healthRecordDto = new HealthRecordDto();
         healthRecordDto.setId(healthRecord.getId());
         healthRecordDto.setAstronautId(healthRecord.getAstronautId());

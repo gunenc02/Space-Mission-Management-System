@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.entity.Agency;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -16,6 +17,19 @@ public class AgencyRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.connection = dataSource.getConnection();
     }
+
+    public Agency getAgencyProfile(long agencyId){
+        String query = "SELECT * FROM agency WHERE agency_id = ?;";
+        return jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
+            Agency agency = new Agency();
+            agency.setId(rs.getLong("agency_id"));
+            agency.setName(rs.getString("agency_name"));
+            agency.setLogo(rs.getBytes("agency_logo"));
+            agency.setApproved(rs.getBoolean("is_approved"));
+            return agency;
+        }, agencyId);
+    }
+
     //attempts to approve a space mission, approval status is returned as a boolean return value
     //Returns false when given mission is already approved by the given agency
     public boolean approveMission(long agencyId, long missionId, boolean approvedStatus){

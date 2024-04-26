@@ -58,7 +58,7 @@ public class AccountRepository {
 
                 // Now insert into the astronaut table
                 PreparedStatement psAgency = connection.prepareStatement(
-                        "INSERT INTO agency (agency_id, agency_name) VALUES (?, ?)");
+                        "");
                 psAgency.setLong(1, userId);
                 psAgency.setString(2, ardto.getUsername());
                 psAgency.executeUpdate();

@@ -19,7 +19,7 @@ public class AstronautController {
     }
 
     @GetMapping("/profile/{id}")
-    public AstronautDto getAstronaut(@PathVariable long id){
+    public AstronautDto getAstronautProfile(@PathVariable long id){
         Astronaut astronaut = astronautService.getAstronautProfile(id);
         return convertEntityToDto(astronaut);
     }
@@ -34,7 +34,7 @@ public class AstronautController {
         astronautService.joinCompany(companyId, userId);
     }
 
-    public Astronaut convertDtoToEntity(AstronautDto astronautDto) {
+    private Astronaut convertDtoToEntity(AstronautDto astronautDto) {
         Astronaut astronaut = new Astronaut();
         astronaut.setId(astronautDto.getId());
         astronaut.setName(astronautDto.getName());
@@ -46,7 +46,7 @@ public class AstronautController {
         return astronaut;
     }
 
-    public AstronautDto convertEntityToDto(Astronaut astronaut) {
+    private AstronautDto convertEntityToDto(Astronaut astronaut) {
         AstronautDto astronautDto = new AstronautDto();
         astronautDto.setId(astronaut.getId());
         astronautDto.setName(astronaut.getName());

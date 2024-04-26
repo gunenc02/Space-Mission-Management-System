@@ -1,6 +1,7 @@
 package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.stereotype.Service;
+import tr.edu.bilkent.spacemission.entity.Agency;
 import tr.edu.bilkent.spacemission.repository.AgencyRepository;
 
 @Service
@@ -9,6 +10,9 @@ public class AgencyService {
 
     public AgencyService(AgencyRepository agencyRepository) { this.agencyRepository = agencyRepository; }
 
+    public Agency getAgencyProfile(long agencyId){
+        return agencyRepository.getAgencyProfile(agencyId);
+    }
 
     public boolean approveMission(long agencyId, long missionId, boolean approvedStatus){
         return agencyRepository.approveMission(agencyId, missionId, approvedStatus);

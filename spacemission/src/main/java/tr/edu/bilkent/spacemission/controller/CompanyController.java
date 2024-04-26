@@ -47,7 +47,7 @@ public class CompanyController {
         return convertEntityToDto(companyService.getCompanyProfile(id));
     }
 
-    public Company convertDtoToEntity(CompanyDto companyDto) {
+    private Company convertDtoToEntity(CompanyDto companyDto) {
         Company company = new Company();
         company.setId(companyDto.getId());
         company.setName(companyDto.getName());
@@ -58,7 +58,7 @@ public class CompanyController {
         return company;
     }
 
-    public CompanyDto convertEntityToDto(Company company) {
+    private CompanyDto convertEntityToDto(Company company) {
         CompanyDto companyDto = new CompanyDto();
         companyDto.setId(company.getId());
         companyDto.setName(company.getName());

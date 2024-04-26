@@ -17,4 +17,7 @@ public class SpaceMission {
     private double budget;
     private Date createDate;
     private Date performDate;
+    private int platformId;
+    private int creatorId;
+    private int performerId;
 }
