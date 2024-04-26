@@ -15,7 +15,7 @@ public class Astronaut extends User{
     private String name;
     private byte[] image;
     private Date dateOfBirth;
-    private boolean status;
+    private boolean onDuty;
     private String country;
     private double salary;
 }

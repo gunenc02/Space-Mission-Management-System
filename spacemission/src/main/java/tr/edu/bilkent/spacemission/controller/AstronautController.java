@@ -2,7 +2,6 @@ package tr.edu.bilkent.spacemission.controller;
 
 import org.springframework.web.bind.annotation.*;
 import tr.edu.bilkent.spacemission.dto.AstronautDto;
-import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.entity.Astronaut;
 import tr.edu.bilkent.spacemission.service.AstronautService;
 
@@ -40,7 +39,7 @@ public class AstronautController {
         astronaut.setName(astronautDto.getName());
         astronaut.setImage(astronautDto.getImage());
         astronaut.setDateOfBirth(astronautDto.getDateOfBirth());
-        astronaut.setStatus(astronautDto.isStatus());
+        astronaut.setOnDuty(astronautDto.isOnDuty());
         astronaut.setCountry(astronautDto.getCountry());
         astronaut.setSalary(astronautDto.getSalary());
         return astronaut;
@@ -52,7 +51,7 @@ public class AstronautController {
         astronautDto.setName(astronaut.getName());
         astronautDto.setImage(astronaut.getImage());
         astronautDto.setDateOfBirth(astronaut.getDateOfBirth());
-        astronautDto.setStatus(astronaut.isStatus());
+        astronautDto.setOnDuty(astronaut.isOnDuty());
         astronautDto.setCountry(astronaut.getCountry());
         astronautDto.setSalary(astronaut.getSalary());
         return astronautDto;

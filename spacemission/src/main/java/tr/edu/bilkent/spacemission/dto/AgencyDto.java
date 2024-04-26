@@ -13,5 +13,5 @@ public class AgencyDto {
     private String password;
     private String name;
     private byte[] logo;
-    private boolean isApproved;
+    private String status;
 }

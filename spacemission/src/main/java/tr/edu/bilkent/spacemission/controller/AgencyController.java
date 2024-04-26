@@ -53,7 +53,7 @@ public class AgencyController {
         agencyDto.setPassword(agency.getPassword());
         agencyDto.setName(agency.getName());
         agencyDto.setLogo(agency.getLogo());
-        agencyDto.setApproved(agency.isApproved());
+        agencyDto.setStatus(agency.getStatus());
         return agencyDto;
     }
 
@@ -64,7 +64,7 @@ public class AgencyController {
         agency.setPassword(agencyDto.getPassword());
         agency.setName(agencyDto.getName());
         agency.setLogo(agencyDto.getLogo());
-        agency.setApproved(agencyDto.isApproved());
+        agency.setStatus(agencyDto.getStatus());
         return agency;
     }
 }

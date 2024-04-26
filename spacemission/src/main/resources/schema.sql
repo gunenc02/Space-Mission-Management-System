@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS astronaut (
      astronaut_name VARCHAR(255) NOT NULL,
      astronaut_image BLOB,
      date_of_birth DATE NOT NULL,
-     status BOOLEAN NOT NULL DEFAULT FALSE,
+     on_duty BOOLEAN NOT NULL DEFAULT FALSE,
      country VARCHAR(255) NOT NULL,
      salary DOUBLE NOT NULL DEFAULT 0,
      is_approved BOOLEAN NOT NULL DEFAULT FALSE,
@@ -133,20 +133,11 @@ CREATE TABLE IF NOT EXISTS expert_examine_astronaut (
      FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id)
 );
 
--- BUNA GEREK YOK, ONE TO MANY OLMALI. HEALTH_RECORD'DA ZATEN ASTRONAUT ID VAR
-CREATE TABLE IF NOT EXISTS astronaut_health_record (
-     id INT AUTO_INCREMENT PRIMARY KEY,
-     astronaut_id INT NOT NULL,
-     health_record_id INT NOT NULL,
-     FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),
-     FOREIGN KEY (health_record_id) REFERENCES health_record(health_record_id)
-);
-
 CREATE TABLE IF NOT EXISTS agency_evaluate_astronaut (
      id INT AUTO_INCREMENT PRIMARY KEY,
      astronaut_id INT NOT NULL,
      agency_id INT NOT NULL,
-     approval_state TEXT NOT NULL CHECK (approval_state = 'approved' OR approval_state = 'not_approved'),
+     status TEXT NOT NULL CHECK (status = 'approved' OR status = 'rejected' OR status = 'pending'),
      FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),
      FOREIGN KEY (agency_id) REFERENCES agency(agency_id)
 );
@@ -155,19 +146,22 @@ CREATE TABLE IF NOT EXISTS agency_approve_space_mission (
      id INT AUTO_INCREMENT PRIMARY KEY,
      space_mission_id INT NOT NULL,
      agency_id INT NOT NULL,
-     approval_state TEXT NOT NULL CHECK (approval_state = 'approved' OR approval_state = 'not_approved'),
+     status TEXT NOT NULL CHECK (status = 'approved' OR status = 'rejected' OR status = 'pending'),
      FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),
      FOREIGN KEY (agency_id) REFERENCES agency(agency_id)
 );
 
 CREATE TABLE IF NOT EXISTS bid (
-     bid_id INT PRIMARY KEY,
+     bid_id INT AUTO_INCREMENT PRIMARY KEY,
      price INT NOT NULL,
      offer_date DATE NOT NULL,
      deadline DATE NOT NULL,
-     requests VARCHAR(2555),
+     description VARCHAR(2555),
+     status TEXT NOT NULL CHECK (status = 'approved' OR status = 'rejected' OR status = 'pending'),
      offerer_id INT NOT NULL,
      receiver_id INT NOT NULL,
+     mission_id INT NOT NULL,
      FOREIGN KEY (offerer_id) REFERENCES company(company_id),
-     FOREIGN KEY (receiver_id) REFERENCES company(company_id)
+     FOREIGN KEY (receiver_id) REFERENCES company(company_id),
+     FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id)
 );

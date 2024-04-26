@@ -102,7 +102,7 @@ public class CompanyRepository {
         //execute the first query and if retrieval yields something then update that entry
         Integer count = jdbcTemplate.queryForObject(query, Integer.class, missionId, notPerformedStatus);
         if(count != null && count > 0) {
-            //such a row exists, now we should modify the perform status of that row
+            //such a row exists, now we should modify the perform onDuty of that row
             query = "UPDATE space_mission_performings SET perform_status = ? " +
                     "WHERE space_mission_id = ?;";
             int affectedRows = jdbcTemplate.update(query, performedStatus, missionId);

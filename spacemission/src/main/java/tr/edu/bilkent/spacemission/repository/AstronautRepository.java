@@ -38,10 +38,10 @@ public class AstronautRepository {
                 astronaut.setId(rs.getLong("astronaut_id"));
                 astronaut.setName(rs.getString("astronaut_name"));
                 astronaut.setImage(rs.getBytes("astronaut_image"));
-                astronaut.setDateOfBirth(rs.getDate("astronaut_date_of_birth"));
-                astronaut.setStatus(rs.getBoolean("astronaut_status"));
-                astronaut.setCountry(rs.getString("astronaut_country"));
-                astronaut.setSalary(rs.getDouble("astronaut_salary"));
+                astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
+                astronaut.setOnDuty(rs.getBoolean("on_duty"));
+                astronaut.setCountry(rs.getString("country"));
+                astronaut.setSalary(rs.getDouble("salary"));
             }
         }
         catch (SQLException e) {
@@ -65,10 +65,10 @@ public class AstronautRepository {
                 astronaut.setId(rs.getLong("astronaut_id"));
                 astronaut.setName(rs.getString("astronaut_name"));
                 astronaut.setImage(rs.getBytes("astronaut_image"));
-                astronaut.setDateOfBirth(rs.getDate("astronaut_date_of_birth"));
-                astronaut.setStatus(rs.getBoolean("astronaut_status"));
-                astronaut.setCountry(rs.getString("astronaut_country"));
-                astronaut.setSalary(rs.getDouble("astronaut_salary"));
+                astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
+                astronaut.setOnDuty(rs.getBoolean("on_duty"));
+                astronaut.setCountry(rs.getString("country"));
+                astronaut.setSalary(rs.getDouble("salary"));
                 astronauts.add(astronaut);
             }
         }

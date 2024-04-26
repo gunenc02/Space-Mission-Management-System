@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class Agency extends User {
     private String name;
     private byte[] logo;
-    private boolean isApproved;
+    private String status;
 }
