@@ -20,10 +20,10 @@ public class AgencyService {
         return agencyRepository.getAgencies();
     }
 
-    public boolean approveMission(long agencyId, long missionId, boolean approvedStatus){
-        return agencyRepository.approveMission(agencyId, missionId, approvedStatus);
+    public boolean approveMission(long agencyId, long missionId){
+        return agencyRepository.approveMission(agencyId, missionId);
     }
-    public boolean evaluateAstronaut(long agencyId, long astronautId, boolean approvedStatus){
-        return agencyRepository.evaluateAstronaut(agencyId, astronautId, approvedStatus);
+    public boolean approveAstronaut(long agencyId, long astronautId){
+        return agencyRepository.approveAstronaut(agencyId, astronautId);
     }
 }

@@ -35,14 +35,14 @@ public class AgencyController {
         return agencyDtos;
     }
 
-    @PostMapping("approveMission/{agencyId}/{missionId}/{approvedStatus}")
-    public void approveMission(@PathVariable long agencyId, @PathVariable long missionId, @PathVariable boolean approvedStatus){
-        boolean success = agencyService.approveMission(agencyId, missionId, approvedStatus);
+    @PostMapping("approveMission/{agencyId}/{missionId}")
+    public void approveMission(@PathVariable long agencyId, @PathVariable long missionId){
+        boolean success = agencyService.approveMission(agencyId, missionId);
         //ToDo
     }
-    @PostMapping("evaluateAstronaut/{agencyId}/{astronautId}/{approvedStatus}")
-    public void evaluateAstronaut(@PathVariable long agencyId, @PathVariable long astronautId, @PathVariable boolean approvedStatus){
-        boolean success = agencyService.evaluateAstronaut(agencyId, astronautId, approvedStatus);
+    @PostMapping("approveAstronaut/{agencyId}/{astronautId}")
+    public void evaluateAstronaut(@PathVariable long agencyId, @PathVariable long astronautId){
+        boolean success = agencyService.approveAstronaut(agencyId, astronautId);
         //ToDo
     }
 
