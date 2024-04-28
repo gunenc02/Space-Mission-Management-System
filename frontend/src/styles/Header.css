@@ -1,0 +1,11 @@
+.header-outer {
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 1px 5px #fff;
+  font-size: 1em;
+  color: white;
+  width: match-parent;
+  height: 14vh;
+}

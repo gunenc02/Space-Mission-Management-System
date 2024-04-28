@@ -1,0 +1,33 @@
+.navbar-outer {
+  background-color: rgba(0, 0, 0, 0.2); /* Black w/opacity/see-through */
+  color: white;
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+  align-items: center;
+  width: 100vw; /* Change to percentage to fit screen */
+  height: 10vh;
+}
+
+.list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around; /* Space around items */
+  width: 80%; /* Adjust as needed */
+}
+
+.list-item {
+  padding-left: 0;
+  padding: 0 1rem; /* Add space between items */
+  list-style-type: none;
+}
+
+.link {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.link:hover {
+  color: #fff;
+  transition: color 0.2s ease-in-out;
+}
