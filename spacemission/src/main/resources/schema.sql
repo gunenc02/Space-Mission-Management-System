@@ -96,17 +96,26 @@ CREATE TABLE IF NOT EXISTS space_mission (
 
 CREATE TABLE IF NOT EXISTS space_mission_performings (
      perform_id INT AUTO_INCREMENT PRIMARY KEY,
-     perform_status TEXT NOT NULL,
+     perform_status TEXT NOT NULL CHECK (perform_status = 'pending' OR perform_status = 'performed'),
      space_mission_id INT NOT NULL,
-     astronaut_id INT NOT NULL,
      performer_company_id INT NOT NULL,
      FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),
-     /*FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),*/
      FOREIGN KEY (performer_company_id) REFERENCES company(company_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS mission_astronaut_recordings (
+    mission_id INT,
+    astronaut_id INT,
+    mission_name VARCHAR(255)
+        CHECK (mission_name = (SELECT sm.mission_name FROM space_mission AS sm WHERE sm.mission_id = mission_id)),
+    astronaut_name VARCHAR(255)
+        CHECK (astronaut_name = (SELECT astronaut_name FROM astronaut WHERE astronaut.astronaut_id = astronaut_id)),
+    FOREIGN KEY(mission_id) REFERENCES space_mission(mission_id),
+    FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id),
+    PRIMARY KEY(mission_id, astronaut_id)
+);
 
 CREATE TABLE IF NOT EXISTS transaction (
      transaction_id INT PRIMARY KEY,
@@ -167,8 +176,21 @@ CREATE TABLE IF NOT EXISTS bid (
 CREATE OR REPLACE VIEW company_mission_info AS
 SELECT comp.company_name,
        comp.worker_count,
-       a.astronaut_name,
        miss.mission_name,
-       miss.objective
-FROM company AS comp, astronaut AS a JOIN space_mission_performings AS smp ON a.astronaut_id = smp.astronaut_id,
-     space_mission AS miss;
+       miss.objective,
+       mar.astronaut_name
+FROM company AS comp JOIN space_mission_performings AS smp ON (comp.company_id = smp.performer_company_id)
+     JOIN space_mission AS miss ON miss.mission_id = smp.space_mission_id LEFT OUTER JOIN mission_astronaut_recordings
+     AS mar ON (miss.mission_id = mar.mission_id);
+
+CREATE TRIGGER release_astronaut
+    AFTER UPDATE OF space_mission_performings ON perform_status
+    REFERENCING NEW ROW AS nrow
+    REFERENCING OLD ROW AS orow
+    FOR EACH ROW
+    WHEN (orow.perform_status = 'pending' AND nrow.perform_status = 'performed')
+    BEGIN
+        UPDATE astronaut
+        SET on_duty = FALSE
+        WHERE astronaut
+    END;
