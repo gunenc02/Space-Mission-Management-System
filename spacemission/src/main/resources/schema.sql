@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS user (
      user_id INT AUTO_INCREMENT PRIMARY KEY,
      user_mail VARCHAR(255) NOT NULL UNIQUE,
      user_password VARCHAR(255) NOT NULL
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS admin (
      admin_id INT PRIMARY KEY,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS admin (
      FOREIGN KEY (admin_id) REFERENCES user(user_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS agency (
      agency_id INT PRIMARY KEY,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS agency (
      FOREIGN KEY (agency_id) REFERENCES user(user_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS company (
      company_id INT PRIMARY KEY,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS company (
      FOREIGN KEY (company_id) REFERENCES user(user_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-    );
+    ) ^;
 
 CREATE TABLE IF NOT EXISTS astronaut (
      astronaut_id INT PRIMARY KEY,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS astronaut (
          ON DELETE CASCADE
          ON UPDATE CASCADE
 
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS health_record (
      health_record_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS health_record (
      FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS platform (
      platform_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS platform (
      production_year YEAR NOT NULL,
      platform_image BLOB,
      cost_per_launch DOUBLE NOT NULL
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS space_mission (
      mission_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS space_mission (
      FOREIGN KEY(creator_id) REFERENCES company(company_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
-);
+) ^;
 
 
 CREATE TABLE IF NOT EXISTS space_mission_performings (
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS space_mission_performings (
      FOREIGN KEY (performer_company_id) REFERENCES company(company_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS mission_astronaut_recordings (
     mission_id INT,
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS mission_astronaut_recordings (
     FOREIGN KEY(mission_id) REFERENCES space_mission(mission_id),
     FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id),
     PRIMARY KEY(mission_id, astronaut_id)
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS transaction (
      transaction_id INT PRIMARY KEY,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS transaction (
      transaction_amount DOUBLE NOT NULL,
      FOREIGN KEY(fromcompany_id) REFERENCES company(company_id),
      FOREIGN KEY(tocompany_id) REFERENCES company(company_id)
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS expert (
      expert_id INT PRIMARY KEY,
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS expert (
      expert_company INT,
      FOREIGN KEY (expert_id) REFERENCES user(user_id),
      FOREIGN KEY (expert_company) REFERENCES company(company_id)
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS expert_examine_astronaut (
      examine_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS expert_examine_astronaut (
      astronaut_id INT NOT NULL,
      FOREIGN KEY (expert_id) REFERENCES expert(expert_id),
      FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id)
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS agency_approve_astronaut (
      id INT AUTO_INCREMENT PRIMARY KEY,
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS agency_approve_astronaut (
      agency_id INT NOT NULL,
      FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),
      FOREIGN KEY (agency_id) REFERENCES agency(agency_id)
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS agency_approve_space_mission (
      id INT AUTO_INCREMENT PRIMARY KEY,
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS agency_approve_space_mission (
      agency_id INT NOT NULL,
      FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),
      FOREIGN KEY (agency_id) REFERENCES agency(agency_id)
-);
+) ^;
 
 CREATE TABLE IF NOT EXISTS bid (
      bid_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -164,9 +164,20 @@ CREATE TABLE IF NOT EXISTS bid (
      FOREIGN KEY (offerer_id) REFERENCES company(company_id),
      FOREIGN KEY (receiver_id) REFERENCES company(company_id),
      FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id)
-);
+) ^;
 
+DROP TRIGGER IF EXISTS release_astronaut ^;
+CREATE TRIGGER release_astronaut
+    AFTER UPDATE ON space_mission_performings
+    FOR EACH ROW
+BEGIN
+    IF OLD.perform_status = 'pending' AND NEW.perform_status = 'performed' THEN
 
+        UPDATE astronaut
+        SET on_duty = FALSE
+        WHERE astronaut.astronaut_id = 5;
+    END IF;
+END ^;
 
 CREATE OR REPLACE VIEW company_mission_info AS
 SELECT comp.company_name,
@@ -176,17 +187,6 @@ SELECT comp.company_name,
        a.astronaut_name
 FROM company AS comp JOIN space_mission_performings AS smp ON (comp.company_id = smp.performer_company_id)
      JOIN space_mission AS miss ON miss.mission_id = smp.space_mission_id LEFT OUTER JOIN mission_astronaut_recordings
-     AS mar ON (miss.mission_id = mar.mission_id) JOIN astronaut a ON (mar.astronaut_id = a.astronaut_id);
+     AS mar ON (miss.mission_id = mar.mission_id) JOIN astronaut a ON (mar.astronaut_id = a.astronaut_id) ^;
 
-DELIMITER $$
-CREATE TRIGGER IF NOT EXISTS release_astronaut
-    AFTER UPDATE ON space_mission_performings
-    FOR EACH ROW
-BEGIN
-        UPDATE astronaut
-        SET on_duty = FALSE
-        WHERE astronaut.astronaut_id IN (SELECT mas.astronaut_id FROM mission_astronaut_recordings AS mas
-                                         WHERE mas.mission_id = OLD.space_mission_id);
-END $$
 
-DELIMITER ;
