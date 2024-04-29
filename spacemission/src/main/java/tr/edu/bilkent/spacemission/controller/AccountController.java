@@ -15,6 +15,7 @@ import tr.edu.bilkent.spacemission.service.AccountService;
 import java.io.IOException;
 import java.util.Optional;
 
+@CrossOrigin // This annotation is used to handle the request from a different origin
 @RestController
 @RequestMapping("/account")
 public class AccountController {

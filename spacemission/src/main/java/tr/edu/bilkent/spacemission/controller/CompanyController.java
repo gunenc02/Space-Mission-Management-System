@@ -13,6 +13,7 @@ import java.util.List;
 THIS IS THE PLACE WHERE WE GET THE REQUESTS
 IT IS RECOMMENDED THAT DIRECTLY CALL THE SERVICE AND KEEP HERE AS SIMPLE AS POSSIBLE
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/company")
 public class CompanyController {

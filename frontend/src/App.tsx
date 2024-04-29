@@ -4,6 +4,7 @@ import SpaceMissions from "./app/SpaceMissions";
 import Astronauts from "./app/Astronauts";
 import Agencies from "./app/Agencies";
 import Companies from "./app/Companies";
+import Platform from "./app/Platform";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Routes>
           <Route path="/agencies" element={<Agencies />} />
         </Routes>
+        <Routes> path="/platform" element={<Platform/>} </Routes>
       </BrowserRouter>
     </div>
   );
