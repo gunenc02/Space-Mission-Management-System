@@ -105,10 +105,6 @@ CREATE TABLE IF NOT EXISTS space_mission_performings (
 CREATE TABLE IF NOT EXISTS mission_astronaut_recordings (
     mission_id INT,
     astronaut_id INT,
-    mission_name VARCHAR(255)
-        CHECK (mission_name = (SELECT sm.mission_name FROM space_mission AS sm WHERE sm.mission_id = mission_id)),
-    astronaut_name VARCHAR(255)
-        CHECK (astronaut_name = (SELECT astronaut_name FROM astronaut WHERE astronaut.astronaut_id = astronaut_id)),
     FOREIGN KEY(mission_id) REFERENCES space_mission(mission_id),
     FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id),
     PRIMARY KEY(mission_id, astronaut_id)
@@ -170,23 +166,27 @@ CREATE TABLE IF NOT EXISTS bid (
      FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id)
 );
 
+
+
 CREATE OR REPLACE VIEW company_mission_info AS
 SELECT comp.company_name,
        comp.worker_count,
        miss.mission_name,
        miss.objective,
-       mar.astronaut_name
+       a.astronaut_name
 FROM company AS comp JOIN space_mission_performings AS smp ON (comp.company_id = smp.performer_company_id)
      JOIN space_mission AS miss ON miss.mission_id = smp.space_mission_id LEFT OUTER JOIN mission_astronaut_recordings
-     AS mar ON (miss.mission_id = mar.mission_id);
+     AS mar ON (miss.mission_id = mar.mission_id) JOIN astronaut a ON (mar.astronaut_id = a.astronaut_id);
 
-CREATE TRIGGER release_astronaut AFTER UPDATE ON space_mission_performings
+DELIMITER $$
+CREATE TRIGGER IF NOT EXISTS release_astronaut
+    AFTER UPDATE ON space_mission_performings
     FOR EACH ROW
 BEGIN
-    IF OLD.perform_status = 'pending' AND NEW.perform_status = 'performed' THEN
         UPDATE astronaut
         SET on_duty = FALSE
         WHERE astronaut.astronaut_id IN (SELECT mas.astronaut_id FROM mission_astronaut_recordings AS mas
                                          WHERE mas.mission_id = OLD.space_mission_id);
-    END IF;
-END;
+END $$
+
+DELIMITER ;
