@@ -90,19 +90,16 @@ CREATE TABLE IF NOT EXISTS space_mission (
          ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS mission_performer_recordings (
-    mission_id INT,
-    performer_id INT,
-    PRIMARY KEY (mission_id, performer_id),
-    FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id),
-    FOREIGN KEY (performer_id) REFERENCES company(company_id)
-);
 
 CREATE TABLE IF NOT EXISTS space_mission_performings (
      perform_id INT AUTO_INCREMENT PRIMARY KEY,
      perform_status TEXT NOT NULL CHECK (perform_status = 'pending' OR perform_status = 'performed'),
      space_mission_id INT NOT NULL,
-     FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id)
+     performer_company_id INT NOT NULL,
+     FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),
+     FOREIGN KEY (performer_company_id) REFERENCES company(company_id)
+         ON DELETE CASCADE
+         ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS mission_astronaut_recordings (
@@ -183,15 +180,13 @@ FROM company AS comp JOIN space_mission_performings AS smp ON (comp.company_id =
      JOIN space_mission AS miss ON miss.mission_id = smp.space_mission_id LEFT OUTER JOIN mission_astronaut_recordings
      AS mar ON (miss.mission_id = mar.mission_id);
 
-CREATE TRIGGER release_astronaut
-    AFTER UPDATE OF space_mission_performings ON perform_status
-    REFERENCING NEW ROW AS nrow
-    REFERENCING OLD ROW AS orow
+CREATE TRIGGER release_astronaut AFTER UPDATE ON space_mission_performings
     FOR EACH ROW
-    WHEN (orow.perform_status = 'pending' AND nrow.perform_status = 'performed')
-    BEGIN
+BEGIN
+    IF OLD.perform_status = 'pending' AND NEW.perform_status = 'performed' THEN
         UPDATE astronaut
         SET on_duty = FALSE
         WHERE astronaut.astronaut_id IN (SELECT mas.astronaut_id FROM mission_astronaut_recordings AS mas
-                                                             WHERE mas.mission_id = orow.mission_id)
-    END;
+                                         WHERE mas.mission_id = OLD.space_mission_id);
+    END IF;
+END;
