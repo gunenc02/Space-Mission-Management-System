@@ -38,6 +38,7 @@ public class SpaceMissionRepository {
             spaceMission.setPlatformId(rs.getInt("platform_id"));
             spaceMission.setCreatorId(rs.getInt("creator_id"));
             spaceMission.setPerformerId(rs.getInt("performer_id"));
+            spaceMission.setPerformStatus(rs.getString("perform_status"));
             return spaceMission;
         });
     }
@@ -61,6 +62,7 @@ public class SpaceMissionRepository {
             spaceMission.setPlatformId(rs.getInt("platform_id"));
             spaceMission.setCreatorId(rs.getInt("creator_id"));
             spaceMission.setPerformerId(rs.getInt("performer_id"));
+            spaceMission.setPerformStatus(rs.getString("perform_status"));
             return spaceMission;
         });
     }
@@ -71,7 +73,8 @@ public class SpaceMissionRepository {
      */
     public void createSpaceMission(SpaceMission spaceMission) {
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO space_mission (mission_name, mission_image, objective, budget, create_date, perform_date, platform_id, creator_id, performer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            PreparedStatement ps = connection.prepareStatement(
+                    "INSERT INTO space_mission (mission_name, mission_image, objective, budget, create_date, perform_date, platform_id, creator_id, performer_id, perform_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             ps.setString(1, spaceMission.getMissionName());
             ps.setBytes(2, spaceMission.getImage());
             ps.setString(3, spaceMission.getObjective());
@@ -81,6 +84,7 @@ public class SpaceMissionRepository {
             ps.setInt(7, spaceMission.getPlatformId());
             ps.setInt(8, spaceMission.getCreatorId());
             ps.setInt(9, spaceMission.getPerformerId());
+            ps.setString(10, spaceMission.getPerformStatus());
             ps.executeUpdate();
         }
         catch (SQLException e) {
@@ -94,7 +98,7 @@ public class SpaceMissionRepository {
      */
     public void updateSpaceMission(SpaceMission spaceMission) {
         try {
-            PreparedStatement ps = connection.prepareStatement("UPDATE space_mission SET mission_name = ?, mission_image = ?, objective = ?, budget = ?, create_date = ?, perform_date = ?, platform_id = ?, creator_id = ?, performer_id = ? WHERE mission_id = ?;");
+            PreparedStatement ps = connection.prepareStatement("UPDATE space_mission SET mission_name = ?, mission_image = ?, objective = ?, budget = ?, create_date = ?, perform_date = ?, platform_id = ?, creator_id = ?, performer_id = ?, perform_status = ?, WHERE mission_id = ?;");
             ps.setString(1, spaceMission.getMissionName());
             ps.setBytes(2, spaceMission.getImage());
             ps.setString(3, spaceMission.getObjective());
@@ -104,7 +108,8 @@ public class SpaceMissionRepository {
             ps.setInt(7, spaceMission.getPlatformId());
             ps.setInt(8, spaceMission.getCreatorId());
             ps.setInt(9, spaceMission.getPerformerId());
-            ps.setLong(10, spaceMission.getId());
+            ps.setString(10, spaceMission.getPerformStatus());
+            ps.setLong(11, spaceMission.getId());
             ps.executeUpdate();
         }
         catch (SQLException e) {

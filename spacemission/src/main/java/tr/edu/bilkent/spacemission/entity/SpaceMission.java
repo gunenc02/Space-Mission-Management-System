@@ -10,6 +10,9 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SpaceMission {
+    public final String STATUS_PENDING = "pending";
+    public final String STATUS_PERFORMED = "performed";
+
     private long id;
     private String missionName;
     private byte[] image;
@@ -20,4 +23,5 @@ public class SpaceMission {
     private int platformId;
     private int creatorId;
     private int performerId;
+    private String performStatus;
 }

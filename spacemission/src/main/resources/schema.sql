@@ -84,23 +84,19 @@ CREATE TABLE IF NOT EXISTS space_mission (
      perform_date DATE,
      platform_id INT,
      creator_id INT NOT NULL,
+     performer_id INT NOT NULL,
+     perform_status VARCHAR(10) NOT NULL CHECK (perform_status = 'pending' OR perform_status = 'performed'),
      FOREIGN KEY(platform_id) REFERENCES platform(platform_id),
      FOREIGN KEY(creator_id) REFERENCES company(company_id)
          ON DELETE CASCADE
-         ON UPDATE CASCADE
-) ^;
-
-
-CREATE TABLE IF NOT EXISTS space_mission_performings (
-     perform_id INT AUTO_INCREMENT PRIMARY KEY,
-     perform_status TEXT NOT NULL CHECK (perform_status = 'pending' OR perform_status = 'performed'),
-     space_mission_id INT NOT NULL,
-     performer_company_id INT NOT NULL,
-     FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),
-     FOREIGN KEY (performer_company_id) REFERENCES company(company_id)
+         ON UPDATE CASCADE,
+     FOREIGN KEY(performer_id) REFERENCES company(company_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
 ) ^;
+
+
+
 
 CREATE TABLE IF NOT EXISTS mission_astronaut_recordings (
     mission_id INT,
@@ -166,27 +162,26 @@ CREATE TABLE IF NOT EXISTS bid (
      FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id)
 ) ^;
 
-DROP TRIGGER IF EXISTS release_astronaut ^;
-CREATE TRIGGER release_astronaut
-    AFTER UPDATE ON space_mission_performings
-    FOR EACH ROW
-BEGIN
-    IF OLD.perform_status = 'pending' AND NEW.perform_status = 'performed' THEN
-
-        UPDATE astronaut
-        SET on_duty = FALSE
-        WHERE astronaut.astronaut_id = 5;
-    END IF;
-END ^;
-
 CREATE OR REPLACE VIEW company_mission_info AS
 SELECT comp.company_name,
        comp.worker_count,
        miss.mission_name,
        miss.objective,
        a.astronaut_name
-FROM company AS comp JOIN space_mission_performings AS smp ON (comp.company_id = smp.performer_company_id)
-     JOIN space_mission AS miss ON miss.mission_id = smp.space_mission_id LEFT OUTER JOIN mission_astronaut_recordings
-     AS mar ON (miss.mission_id = mar.mission_id) JOIN astronaut a ON (mar.astronaut_id = a.astronaut_id) ^;
+FROM company AS comp JOIN space_mission AS miss ON (comp.company_id = miss.creator_id)
+                     LEFT OUTER JOIN mission_astronaut_recordings
+    AS mar ON (miss.mission_id = mar.mission_id) JOIN astronaut a ON (mar.astronaut_id = a.astronaut_id) ^;
 
+DROP TRIGGER IF EXISTS release_astronaut ^;
+CREATE TRIGGER release_astronaut
+    AFTER UPDATE ON space_mission
+    FOR EACH ROW
+BEGIN
+    IF (OLD.perform_status = 'pending' AND NEW.perform_status = 'performed') THEN
+
+        UPDATE astronaut
+        SET on_duty = FALSE
+        WHERE astronaut.astronaut_id = 5;
+    END IF;
+END ^;
 

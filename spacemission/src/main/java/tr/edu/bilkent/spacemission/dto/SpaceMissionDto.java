@@ -20,4 +20,5 @@ public class SpaceMissionDto {
     private int platformId;
     private int creatorId;
     private int performerId;
+    private String performStatus;
 }
