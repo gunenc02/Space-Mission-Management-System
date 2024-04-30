@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@CrossOrigin
 @RestController
 @RequestMapping("/agency")
 @Lazy //Lazy annotation creates the controller only when first requested. This broke a cyclic bean dependency

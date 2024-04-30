@@ -7,6 +7,7 @@ import tr.edu.bilkent.spacemission.service.AstronautService;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/astronaut")
 public class AstronautController {

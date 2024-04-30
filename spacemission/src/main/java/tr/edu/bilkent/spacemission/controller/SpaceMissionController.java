@@ -8,6 +8,7 @@ import tr.edu.bilkent.spacemission.service.SpaceMissionService;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/spaceMission")
 public class SpaceMissionController {

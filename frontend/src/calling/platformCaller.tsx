@@ -1,4 +1,4 @@
-export function getPlatforms(user: { token: string }): Promise<Platform[]> {
+export function getPlatforms(user: { token: string }): Promise<any[]> {
     const sentUrl = "http://localhost:8080/platform/list";
   
     return fetch(sentUrl, {
@@ -21,7 +21,7 @@ export function getPlatforms(user: { token: string }): Promise<Platform[]> {
     });
   }
   
-  export function getPlatformById(id: number, user: { token: string }): Promise<Platform> {
+  export function getPlatformById(id: number, user: { token: string }): Promise<any> {
     const sentUrl = `http://localhost:8080/platform/${id}`;
   
     return fetch(sentUrl, {

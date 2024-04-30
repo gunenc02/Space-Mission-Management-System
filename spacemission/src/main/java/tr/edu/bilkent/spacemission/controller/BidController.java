@@ -6,7 +6,7 @@ import tr.edu.bilkent.spacemission.dto.BidDto;
 import tr.edu.bilkent.spacemission.service.BidService;
 
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/bid")
 public class BidController {
