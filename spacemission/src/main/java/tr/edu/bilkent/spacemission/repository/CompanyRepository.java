@@ -87,9 +87,11 @@ public class CompanyRepository {
 
     public void offerJob(long astronautId) {
     }
-    /*
+    /**
      *@param missionId id of the space mission to be performed
      * returns whether the mission has been marked as performed in the database
+     * After successful update of perform_status to "performed", a SQL trigger will be executed to release
+     * currently deployed astronauts automatically
      */
     public boolean markSpaceMissionAsPerformed(long missionId){
         boolean result = false;
