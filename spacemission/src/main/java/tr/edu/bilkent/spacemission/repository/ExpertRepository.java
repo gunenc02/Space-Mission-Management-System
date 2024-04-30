@@ -59,9 +59,10 @@ public class ExpertRepository {
      */
     public void registerExpert(Expert expert) {
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user (user_mail, user_password) VALUES (?, ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user (user_mail, user_password, user_role) VALUES (?, ?, ?)");
             ps.setString(1, expert.getMail());
             ps.setString(2, expert.getPassword());
+            ps.setString(3,"EXPERT");
             ps.executeUpdate();
 
             PreparedStatement ps2 = connection.prepareStatement("SELECT user_id FROM user WHERE user_mail = ?");

@@ -6,10 +6,8 @@ package tr.edu.bilkent.spacemission.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import tr.edu.bilkent.spacemission.dto.AdminRegisterDto;
-import tr.edu.bilkent.spacemission.dto.AgencyRegisterDto;
-import tr.edu.bilkent.spacemission.dto.AstronautRegisterDto;
-import tr.edu.bilkent.spacemission.dto.CompanyRegisterDto;
+import tr.edu.bilkent.spacemission.dto.*;
+import tr.edu.bilkent.spacemission.entity.User;
 import tr.edu.bilkent.spacemission.service.AccountService;
 
 import java.io.IOException;
@@ -117,5 +115,11 @@ public class AccountController {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+
+    @PostMapping("/login")
+    public UserDto login(@RequestParam String usermail, @RequestParam String password){
+        return accountService.getLoggedUser(usermail, password);
+
     }
 }

@@ -2,10 +2,8 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import tr.edu.bilkent.spacemission.dto.AdminRegisterDto;
-import tr.edu.bilkent.spacemission.dto.AgencyRegisterDto;
-import tr.edu.bilkent.spacemission.dto.AstronautRegisterDto;
-import tr.edu.bilkent.spacemission.dto.CompanyRegisterDto;
+import tr.edu.bilkent.spacemission.dto.*;
+import tr.edu.bilkent.spacemission.entity.*;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -23,10 +21,11 @@ public class AccountRepository {
     }
     public void saveAdmin(AdminRegisterDto ardto) {
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password) VALUES (?,?)",
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?)",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
             ps.setString(2, ardto.getPassword());
+            ps.setString(3,"ADMIN");
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
@@ -46,10 +45,11 @@ public class AccountRepository {
     }
     public void saveAgency(AgencyRegisterDto ardto) {
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password) VALUES (?,?)",
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?)",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
             ps.setString(2, ardto.getPassword());
+            ps.setString(3,"AGENCY");
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
@@ -71,10 +71,11 @@ public class AccountRepository {
 
     public void saveAstronaut(AstronautRegisterDto ardto) {
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password) VALUES (?,?)",
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password) VALUES (?,?,?)",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
             ps.setString(2, ardto.getPassword());
+            ps.setString(3,"ASTRONAUT");
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
@@ -99,10 +100,11 @@ public class AccountRepository {
 
     public void saveCompany(CompanyRegisterDto crdto) {
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password) VALUES (?,?)",
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?)",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, crdto.getEmail());
             ps.setString(2, crdto.getPassword());
+            ps.setString(3,"COMPANY");
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
@@ -277,5 +279,136 @@ public class AccountRepository {
                 System.out.println(ex.getMessage());
             }
         }
+    }
+
+    public UserDto getLoggedUser(String usermail, String password) {
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE usermail=? AND password = ?");
+            ps.setString(1, usermail);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            User tmp = createSpecificUser(rs.getString("user_role"));
+            while(rs.next()){
+                tmp.setId(rs.getLong("user_id"));
+                tmp.setMail(rs.getString("user_mail"));
+                tmp.setUserRole(rs.getString("user_role"));
+            }
+
+            PreparedStatement ps2;
+            ResultSet rs2;
+            if(rs.getString("user_role").equals("ADMIN")){
+                AdminDto adm = new AdminDto();
+                ps2 = connection.prepareStatement("SELECT  *  FROM admin WHERE admin_id = ?");
+                ps2.setLong(1, tmp.getId());
+                rs2 = ps2.executeQuery();
+                while(rs2.next()){
+                    adm.setUserId(tmp.getId());
+                    adm.setUserRole(tmp.getUserRole());
+                    adm.setUserMail(tmp.getMail());
+                    adm.setName(rs2.getString("admin_name"));
+                }
+                return adm;
+            }
+
+            if(rs.getString("user_role").equals("AGENCY")){
+                AgencyDto agency = new AgencyDto();
+                ps2 = connection.prepareStatement("SELECT  *  FROM agency WHERE agency_id = ?");
+                ps2.setLong(1, tmp.getId());
+                rs2 = ps2.executeQuery();
+                while(rs2.next()){
+                    agency.setUserId(tmp.getId());
+                    agency.setUserRole(tmp.getUserRole());
+                    agency.setUserMail(tmp.getMail());
+                    agency.setName(rs2.getString("admin_name"));
+                    agency.setLogo(rs2.getBytes("agency_logo"));
+                    agency.setStatus(rs2.getBoolean("status"));
+                }
+                return agency;
+            }
+
+            if(rs.getString("user_role").equals("ASTRONAUT")){
+                AstronautDto astronaut = new AstronautDto();
+                ps2 = connection.prepareStatement("SELECT  *  FROM astronaut WHERE astronaut_id = ?");
+                ps2.setLong(1, tmp.getId());
+                rs2 = ps2.executeQuery();
+                while(rs2.next()){
+                    astronaut.setUserId(tmp.getId());
+                    astronaut.setUserRole(tmp.getUserRole());
+                    astronaut.setUserMail(tmp.getMail());
+                    astronaut.setName(rs2.getString("astronaut_name"));
+                    astronaut.setImage(rs2.getBytes("astronaut_image"));
+                    astronaut.setDateOfBirth(rs2.getDate("date_of_birth"));
+                    astronaut.setCountry(rs2.getString("country"));
+                    astronaut.setOnDuty(rs2.getBoolean("on_duty"));
+                    astronaut.setSalary(rs2.getDouble("salary"));
+                }
+                return astronaut;
+            }
+
+            if(rs.getString("user_role").equals("COMPANY")){
+                CompanyDto company = new CompanyDto();
+                ps2 = connection.prepareStatement("SELECT  *  FROM company WHERE company_id = ?");
+                ps2.setLong(1, tmp.getId());
+                rs2 = ps2.executeQuery();
+                while(rs2.next()){
+                    company.setUserId(tmp.getId());
+                    company.setUserRole(tmp.getUserRole());
+                    company.setUserMail(tmp.getMail());
+                    company.setName(rs2.getString("company_name"));
+                    company.setLogo(rs2.getBytes("company_logo"));
+                    company.setCountry(rs2.getString("country"));
+                    company.setBudget(rs2.getDouble("budget"));
+                }
+                return company;
+            }
+
+            if(rs.getString("user_role").equals("EXPERT")){
+                ExpertDto expert = new ExpertDto();
+                ps2 = connection.prepareStatement("SELECT  *  FROM expert WHERE expert_id = ?");
+                ps2.setLong(1, tmp.getId());
+                rs2 = ps2.executeQuery();
+                while(rs2.next()){
+                    expert.setUserId(tmp.getId());
+                    expert.setUserRole(tmp.getUserRole());
+                    expert.setUserMail(tmp.getMail());
+                    expert.setName(rs2.getString("astronaut_name"));
+                    expert.setCompanyId(rs.getLong("company_id"));
+                    PreparedStatement ps3 = connection.prepareStatement("SELECT company_id, company_name, company_logo FROM company WHERE company_id = ?");
+                    ps3.setLong(1, rs2.getLong("company_id"));
+                    ResultSet rs3 = ps3.executeQuery();
+                    while(rs3.next()){
+                        expert.setCompanyName(rs3.getString("company_name"));
+                        expert.setCompanyLogo(rs3.getBytes("company_logo"));
+                    }
+                }
+                return expert;
+            }
+
+            return null;
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+
+    private User createSpecificUser(String userRole){
+        if(userRole.equals("ADMIN")){
+            return new Admin();
+        }
+        if(userRole.equals("AGENCY")){
+            return new Agency();
+        }
+        if(userRole.equals("ASTRONAUT")){
+            return new Astronaut();
+        }
+        if(userRole.equals("COMPANY")){
+            return new Company();
+        }
+        if(userRole.equals("EXPERT")){
+            return new Expert();
+        }
+
+        return null;
     }
 }

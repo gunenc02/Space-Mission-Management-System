@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminDto extends UserDto{
-    private long userId;
-    private String name;
-    private String userMail;
-    private String userRole;
+public abstract class UserDto {
+    protected long userId;
+    protected String userMail;
+    protected String userRole;
+
 }

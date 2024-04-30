@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS user (
      user_id INT AUTO_INCREMENT PRIMARY KEY,
      user_mail VARCHAR(255) NOT NULL UNIQUE,
-     user_password VARCHAR(255) NOT NULL
+     user_password VARCHAR(255) NOT NULL,
+     user_role VARCHAR(255) NOT NULL
 ) ^;
 
 CREATE TABLE IF NOT EXISTS admin (
@@ -44,7 +45,6 @@ CREATE TABLE IF NOT EXISTS astronaut (
      on_duty BOOLEAN NOT NULL DEFAULT FALSE,
      country VARCHAR(255) NOT NULL,
      salary DOUBLE NOT NULL DEFAULT 0,
-     is_approved BOOLEAN NOT NULL DEFAULT FALSE,
      FOREIGN KEY (astronaut_id) REFERENCES user(user_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE

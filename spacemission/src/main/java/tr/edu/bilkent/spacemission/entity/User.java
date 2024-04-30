@@ -11,4 +11,5 @@ public abstract class User {
     private long id;
     private String mail;
     private String password;
+    private String userRole;
 }

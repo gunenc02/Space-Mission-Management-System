@@ -1,10 +1,7 @@
 package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.stereotype.Service;
-import tr.edu.bilkent.spacemission.dto.AdminRegisterDto;
-import tr.edu.bilkent.spacemission.dto.AgencyRegisterDto;
-import tr.edu.bilkent.spacemission.dto.AstronautRegisterDto;
-import tr.edu.bilkent.spacemission.dto.CompanyRegisterDto;
+import tr.edu.bilkent.spacemission.dto.*;
 import tr.edu.bilkent.spacemission.repository.AccountRepository;
 
 @Service
@@ -58,5 +55,9 @@ public class AccountService {
 
     public void alterAstronaut(long astronautId, String username, byte[] logo) {
         accountRepository.alterAstronaut(astronautId, username, logo);
+    }
+
+    public UserDto getLoggedUser(String usermail, String password) {
+        return accountRepository.getLoggedUser(usermail, password);
     }
 }
