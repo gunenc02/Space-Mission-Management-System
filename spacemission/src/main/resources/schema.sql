@@ -215,7 +215,7 @@ BEGIN
 END ^;
 
 DROP TRIGGER IF EXISTS check_expert_mail_insert^;
-CREATE TRIGGER expert_mail_insert
+CREATE TRIGGER check_expert_mail_insert
     BEFORE INSERT ON expert
     FOR EACH ROW
 BEGIN

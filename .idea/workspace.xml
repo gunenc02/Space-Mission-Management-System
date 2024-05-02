@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/resources/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/resources/schema.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +87,7 @@
       <workItem from="1714414207291" duration="1810000" />
       <workItem from="1714461245117" duration="6843000" />
       <workItem from="1714480566423" duration="331000" />
-      <workItem from="1714628517948" duration="5852000" />
+      <workItem from="1714628517948" duration="6286000" />
     </task>
     <servers />
   </component>
