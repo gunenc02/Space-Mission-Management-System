@@ -55,7 +55,7 @@ public class CompanyController {
         company.setMail(companyDto.getMail());
         company.setCountry(companyDto.getCountry());
         company.setBudget(companyDto.getBudget());
-        company.setType(companyDto.getType());
+        //company.setType(companyDto.getType());
         return company;
     }
 
@@ -66,7 +66,7 @@ public class CompanyController {
         companyDto.setMail(company.getMail());
         companyDto.setCountry(company.getCountry());
         companyDto.setBudget(company.getBudget());
-        companyDto.setType(company.getType());
+        //companyDto.setType(company.getType());
         return companyDto;
     }
 }

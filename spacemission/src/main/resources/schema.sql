@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS agency (
      agency_name VARCHAR(255) NOT NULL,
      agency_logo BLOB,
      is_approved BOOLEAN NOT NULL DEFAULT FALSE,
+     agency_mail VARCHAR(255) NOT NULL
+         CHECK(agency_mail = (SELECT user_mail FROM user WHERE user_id = agency_id)),
      FOREIGN KEY (agency_id) REFERENCES user(user_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
@@ -27,6 +29,8 @@ CREATE TABLE IF NOT EXISTS agency (
 CREATE TABLE IF NOT EXISTS company (
      company_id INT PRIMARY KEY,
      company_name VARCHAR(255) NOT NULL,
+     company_mail VARCHAR(255) NOT NULL
+         CHECK(company_mail = (SELECT user_mail FROM user WHERE user_id = company_id)),
      company_logo BLOB,
      worker_count INT NOT NULL DEFAULT 0,
      country VARCHAR(255) NOT NULL,
@@ -119,6 +123,8 @@ CREATE TABLE IF NOT EXISTS expert (
      expert_id INT PRIMARY KEY,
      expert_name VARCHAR(255) UNIQUE,
      expert_company INT,
+     expert_mail VARCHAR(255) NOT NULL
+         CHECK(expert_mail = (SELECT user_mail FROM user WHERE user_id = expert_id)),
      FOREIGN KEY (expert_id) REFERENCES user(user_id),
      FOREIGN KEY (expert_company) REFERENCES company(company_id)
 ) ^;
@@ -181,7 +187,9 @@ BEGIN
 
         UPDATE astronaut
         SET on_duty = FALSE
-        WHERE astronaut.astronaut_id = 5;
+        WHERE astronaut.astronaut_id IN (SELECT astronaut_id
+                                         FROM mission_astronaut_recordings
+                                         WHERE mission_id = OLD.mission_id);
     END IF;
 END ^;
 

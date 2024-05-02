@@ -13,10 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyDto extends UserDto{
-    String name;
-    String country;
-    byte[] logo;
-    double budget;
+    private long id;
+    private String name;
+    private String mail;
+    private String country;
+    private byte[] logo;
+    private double budget;
     //String type;
 
 }

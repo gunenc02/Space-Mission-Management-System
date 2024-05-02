@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpertDto extends UserDto {
+    private long id;
     private String name;
+    private String mail;
     private String companyName;
     private byte[] companyLogo;
     private long companyId;

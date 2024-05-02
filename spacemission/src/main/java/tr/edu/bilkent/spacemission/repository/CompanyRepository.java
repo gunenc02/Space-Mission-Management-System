@@ -35,8 +35,8 @@ public class CompanyRepository {
                 rs.getString("company_name"),
                 rs.getString("company_mail"),
                 rs.getString("company_country"),
-                rs.getLong("company_budget"),
-                rs.getString("company_type")
+                rs.getBytes("company_logo"),
+                rs.getLong("company_budget")
             )
         );
     }
@@ -75,12 +75,12 @@ public class CompanyRepository {
         String query = "SELECT * FROM company WHERE company_mail = ? AND company_password = ?";
         return jdbcTemplate.queryForObject(query,
              (rs, rowNum) -> new CompanyDto(
-                  rs.getInt("id"),
-                  rs.getString("company_name"),
-                  rs.getString("company_mail"),
-                  rs.getString("company_country"),
-                  rs.getInt("company_budget"),
-                  rs.getString("company_type")
+                     rs.getLong("company_id"),
+                     rs.getString("company_name"),
+                     rs.getString("company_mail"),
+                     rs.getString("company_country"),
+                     rs.getBytes("company_logo"),
+                     rs.getLong("company_budget")
              ), logInfo.getUsername(), logInfo.getPassword()
         );
     }

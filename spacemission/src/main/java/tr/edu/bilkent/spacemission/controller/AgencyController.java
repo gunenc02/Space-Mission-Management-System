@@ -51,10 +51,10 @@ public class AgencyController {
         AgencyDto agencyDto = new AgencyDto();
         agencyDto.setId(agency.getId());
         agencyDto.setMail(agency.getMail());
-        agencyDto.setPassword(agency.getPassword());
+        //agencyDto.setPassword(agency.getPassword());
         agencyDto.setName(agency.getName());
         agencyDto.setLogo(agency.getLogo());
-        agencyDto.setStatus(agency.getStatus());
+        agencyDto.setStatus(Boolean.valueOf(agency.getStatus()));
         return agencyDto;
     }
 
@@ -62,10 +62,10 @@ public class AgencyController {
         Agency agency = new Agency();
         agency.setId(agencyDto.getId());
         agency.setMail(agencyDto.getMail());
-        agency.setPassword(agencyDto.getPassword());
+        //agency.setPassword(agencyDto.getPassword());
         agency.setName(agencyDto.getName());
         agency.setLogo(agencyDto.getLogo());
-        agency.setStatus(agencyDto.getStatus());
+        agency.setStatus(agencyDto.getStatus().toString());
         return agency;
     }
 }

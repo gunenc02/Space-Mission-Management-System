@@ -42,7 +42,7 @@ public class ExpertController {
         Expert expert = new Expert();
         expert.setId(expertDto.getId());
         expert.setMail(expertDto.getMail());
-        expert.setPassword(expertDto.getPassword());
+        //expert.setPassword(expertDto.getPassword());
         expert.setName(expertDto.getName());
         return expert;
     }
