@@ -19,8 +19,7 @@ CREATE TABLE IF NOT EXISTS agency (
      agency_name VARCHAR(255) NOT NULL,
      agency_logo BLOB,
      is_approved BOOLEAN NOT NULL DEFAULT FALSE,
-     agency_mail VARCHAR(255) NOT NULL
-         CHECK(agency_mail = (SELECT user_mail FROM user WHERE user_id = agency_id)),
+     agency_mail VARCHAR(255) NOT NULL,
      FOREIGN KEY (agency_id) REFERENCES user(user_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE
@@ -29,8 +28,7 @@ CREATE TABLE IF NOT EXISTS agency (
 CREATE TABLE IF NOT EXISTS company (
      company_id INT PRIMARY KEY,
      company_name VARCHAR(255) NOT NULL,
-     company_mail VARCHAR(255) NOT NULL
-         CHECK(company_mail = (SELECT user_mail FROM user WHERE user_id = company_id)),
+     company_mail VARCHAR(255) NOT NULL,
      company_logo BLOB,
      worker_count INT NOT NULL DEFAULT 0,
      country VARCHAR(255) NOT NULL,
@@ -123,8 +121,7 @@ CREATE TABLE IF NOT EXISTS expert (
      expert_id INT PRIMARY KEY,
      expert_name VARCHAR(255) UNIQUE,
      expert_company INT,
-     expert_mail VARCHAR(255) NOT NULL
-         CHECK(expert_mail = (SELECT user_mail FROM user WHERE user_id = expert_id)),
+     expert_mail VARCHAR(255) NOT NULL,
      FOREIGN KEY (expert_id) REFERENCES user(user_id),
      FOREIGN KEY (expert_company) REFERENCES company(company_id)
 ) ^;
@@ -193,3 +190,38 @@ BEGIN
     END IF;
 END ^;
 
+DROP TRIGGER IF EXISTS check_agency_mail_insert^;
+CREATE TRIGGER check_agency_mail_insert
+    BEFORE INSERT ON agency
+    FOR EACH ROW
+BEGIN
+    DECLARE user_mail VARCHAR(255);
+    SELECT user.user_mail INTO user_mail FROM user WHERE user_id = NEW.agency_id;
+    IF (user_mail <> NEW.agency_mail) THEN
+       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Check failed. There exists no such agency mail in the user table';
+    END IF;
+END ^;
+
+DROP TRIGGER IF EXISTS check_company_mail_insert^;
+CREATE TRIGGER check_company_mail_insert
+    BEFORE INSERT ON company
+    FOR EACH ROW
+BEGIN
+    DECLARE company_mail VARCHAR(255);
+    SELECT company.company_mail INTO company_mail FROM company WHERE company_id = NEW.company_id;
+    IF(company_mail <> NEW.company_mail) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT  = 'Check failed. There exists no such company mail in the user table';
+    END IF;
+END ^;
+
+DROP TRIGGER IF EXISTS check_expert_mail_insert^;
+CREATE TRIGGER expert_mail_insert
+    BEFORE INSERT ON expert
+    FOR EACH ROW
+BEGIN
+    DECLARE expert_mail VARCHAR(255);
+    SELECT expert.expert_mail INTO expert_mail FROM expert WHERE expert_id = NEW.expert_id;
+    IF(expert_mail <> NEW.expert_mail) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT  = 'Check failed. There exists no such expert mail in the user table';
+    END IF;
+END ^;
