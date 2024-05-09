@@ -175,6 +175,11 @@ FROM company AS comp JOIN space_mission AS miss ON (comp.company_id = miss.creat
                      LEFT OUTER JOIN mission_astronaut_recordings
     AS mar ON (miss.mission_id = mar.mission_id) JOIN astronaut a ON (mar.astronaut_id = a.astronaut_id) ^;
 
+CREATE OR REPLACE VIEW platform_availability AS
+SELECT platform.platform_id, (SELECT COUNT(*) FROM space_mission WHERE platform_id = platform.platform_id)
+FROM platform ^;
+
+
 DROP TRIGGER IF EXISTS release_astronaut ^;
 CREATE TRIGGER release_astronaut
     AFTER UPDATE ON space_mission
@@ -188,6 +193,15 @@ BEGIN
                                          FROM mission_astronaut_recordings
                                          WHERE mission_id = OLD.mission_id);
     END IF;
+END ^;
+
+DROP TRIGGER IF EXISTS delete_experts ^;
+CREATE TRIGGER delete_experts
+    BEFORE DELETE ON company
+    FOR EACH ROW
+BEGIN
+    DELETE FROM expert
+    WHERE expert_company = OLD.company_id;
 END ^;
 
 DROP TRIGGER IF EXISTS check_agency_mail_insert^;
