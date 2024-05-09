@@ -1,9 +1,9 @@
-import "../styles/Header.css";
+import React from 'react';
 
 export default function Header() {
   return (
-    <div className="header-outer">
-      <h1>Space Mission System</h1>
+    <div className="header-outer bg-black bg-opacity-30 flex justify-center items-center shadow-md text-white text-lg font-semibold h-14 ">
+      Space Mission System
     </div>
   );
 }

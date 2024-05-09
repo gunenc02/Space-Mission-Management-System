@@ -5,6 +5,7 @@ import Astronauts from "./app/Astronauts";
 import Agencies from "./app/Agencies";
 import Companies from "./app/Companies";
 import Platform from "./app/Platform";
+import Login from "./app/Login";
 
 function App() {
   return (
@@ -25,7 +26,11 @@ function App() {
         <Routes>
           <Route path="/agencies" element={<Agencies />} />
         </Routes>
-        <Routes> path="/platform" element={<Platform/>} </Routes>
+        <Routes> <Route path="/platform" element={<Platform/>} />
+        </Routes>
+        <Routes> <Route path="/login" element={<Login/>} />
+        </Routes>
+
       </BrowserRouter>
     </div>
   );
