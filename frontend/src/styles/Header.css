@@ -1,11 +1,74 @@
 .header-outer {
   background-color: rgba(0, 0, 0, 0.3);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-start;
   box-shadow: 0px 1px 5px #fff;
   font-size: 1em;
   color: white;
-  width: match-parent;
+  width: 100%;
   height: 14vh;
+}
+
+.header-header {
+  display: flex;
+  justify-content: center;
+  margin-left: 28vw;
+}
+
+.header-profile-outer {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 20px;
+  width: fit-content;
+}
+
+.header-profile {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #fff;
+}
+
+.header-profile-text {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.header-profile-text:hover {
+  color: #fff;
+  transition: color 0.2s ease-in-out;
+}
+
+.header-profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.header-profile-dropdown {
+  position: fixed;
+  top: 6px;
+  margin-top: 65px;
+  background-color: #fff;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  padding: 10px;
+  z-index: 1000;
+}
+
+.header-profile-dropdown-link {
+  display: block;
+  padding: 5px 10px;
+  color: #93c5fd;
+  text-decoration: none;
+  transition: background-color 0.7s ease-in-out;
+  font-size: 20px;
+}
+
+.header-profile-dropdown-link:hover {
+  background-color: #fff;
 }
