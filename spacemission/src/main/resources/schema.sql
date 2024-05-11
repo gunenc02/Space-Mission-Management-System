@@ -63,9 +63,11 @@ CREATE TABLE IF NOT EXISTS health_record (
      blood_pressure VARCHAR(255) NOT NULL,
      vaccinations TEXT NOT NULL,
      astronaut_id INT NOT NULL,
+     expert_id INT NOT NULL,
      FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id)
          ON DELETE CASCADE
-         ON UPDATE CASCADE
+         ON UPDATE CASCADE,
+     FOREIGN KEY(expert_id) REFERENCES expert(expert_id)
 ) ^;
 
 CREATE TABLE IF NOT EXISTS platform (
@@ -122,14 +124,6 @@ CREATE TABLE IF NOT EXISTS expert (
      expert_mail VARCHAR(255) NOT NULL,
      FOREIGN KEY (expert_id) REFERENCES user(user_id),
      FOREIGN KEY (expert_company) REFERENCES company(company_id)
-) ^;
-
-CREATE TABLE IF NOT EXISTS expert_examine_astronaut (
-     examine_id INT AUTO_INCREMENT PRIMARY KEY,
-     expert_id INT NOT NULL,
-     astronaut_id INT NOT NULL,
-     FOREIGN KEY (expert_id) REFERENCES expert(expert_id),
-     FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id)
 ) ^;
 
 CREATE TABLE IF NOT EXISTS agency_approve_astronaut (
