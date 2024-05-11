@@ -12,20 +12,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<SpaceMissions />} />
-        </Routes>
-        <Routes>
           <Route path="/space-missions" element={<SpaceMissions />} />
-        </Routes>
-        <Routes>
           <Route path="/astronauts" element={<Astronauts />} />
-        </Routes>
-        <Routes>
           <Route path="/companies" element={<Companies />} />
-        </Routes>
-        <Routes>
           <Route path="/agencies" element={<Agencies />} />
+          <Route path="/platforms" element={<Platform />} />
         </Routes>
-        <Routes> path="/platform" element={<Platform/>} </Routes>
       </BrowserRouter>
     </div>
   );
