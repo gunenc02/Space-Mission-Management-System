@@ -15,7 +15,7 @@
   width: 80%; /* Adjust as needed */
 }
 
-.list-item {
+.navbar-list-item {
   padding-left: 0;
   padding: 0 1rem; /* Add space between items */
   list-style-type: none;
