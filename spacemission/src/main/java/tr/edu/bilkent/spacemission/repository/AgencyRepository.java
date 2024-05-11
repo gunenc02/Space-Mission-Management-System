@@ -35,7 +35,7 @@ public class AgencyRepository {
             agency.setId(rs.getLong("agency_id"));
             agency.setName(rs.getString("agency_name"));
             agency.setLogo(rs.getBytes("agency_logo"));
-            agency.setStatus(rs.getString("status"));
+            agency.setApproved(rs.getBoolean("is_approved"));
             return agency;
         }, agencyId);
     }
@@ -54,7 +54,7 @@ public class AgencyRepository {
                 agency.setId(rs.getLong("agency_id"));
                 agency.setName(rs.getString("agency_name"));
                 agency.setLogo(rs.getBytes("agency_logo"));
-                agency.setStatus(rs.getString("status"));
+                agency.setApproved(rs.getBoolean("is_approved"));
                 agencies.add(agency);
             }
         }

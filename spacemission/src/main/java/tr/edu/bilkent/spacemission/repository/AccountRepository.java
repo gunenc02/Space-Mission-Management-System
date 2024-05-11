@@ -321,7 +321,7 @@ public class AccountRepository {
                     agency.setUserMail(tmp.getMail());
                     agency.setName(rs2.getString("admin_name"));
                     agency.setLogo(rs2.getBytes("agency_logo"));
-                    agency.setStatus(rs2.getBoolean("status"));
+                    agency.setApproved(rs2.getBoolean("is_approved"));
                 }
                 return agency;
             }

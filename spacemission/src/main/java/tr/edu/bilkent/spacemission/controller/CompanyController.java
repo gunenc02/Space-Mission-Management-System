@@ -20,20 +20,12 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    // IT IS RECOMMENDED TO AVOID USE AUTOWIRED BUT WE MAY CONSIDER THAT AGAIN
-    // THAT'S WHY WE NEED CONSTRUCTOR
     public CompanyController(CompanyService companyService){
 
         this.companyService = companyService;
     }
 
-    // LIKE ALL WEB APPLICATIONS THIS IS THE URL THAT APPLICATION GET THE REQUESTS
-    // THERE ARE 4 TYPES: GET POST PUT(FOR UPDATE PURPOSES) DELETE
-    // (of course different types exists but only those are needed)
-    // YOU CAN CREATE SAME URL FOR DIFFERENT REQUEST TYPES
-    // @requestParam IS USED TO TAKE A PARAMETER AND RECOMMENDED TO USE WITH 'GET' TYPE REQUESTS
-    // @requestBody IS USED TO TAKE BODY DIRECTLY AND RECOMMENDED TO USE WITH 'PUT' TYPE REQUESTS
-    @GetMapping
+    @GetMapping("/list")
     public List<CompanyDto> getAllCompanies(){
         return companyService.getAllCompanies();
     }

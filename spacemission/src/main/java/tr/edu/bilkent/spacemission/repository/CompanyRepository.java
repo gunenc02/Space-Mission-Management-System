@@ -34,9 +34,9 @@ public class CompanyRepository {
                 rs.getLong("company_id"),
                 rs.getString("company_name"),
                 rs.getString("company_mail"),
-                rs.getString("company_country"),
+                rs.getString("country"),
                 rs.getBytes("company_logo"),
-                rs.getLong("company_budget")
+                rs.getLong("money")
             )
         );
     }

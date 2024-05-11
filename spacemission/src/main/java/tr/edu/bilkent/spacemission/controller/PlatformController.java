@@ -7,6 +7,7 @@ import tr.edu.bilkent.spacemission.service.PlatformService;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/platform")
 public class PlatformController {

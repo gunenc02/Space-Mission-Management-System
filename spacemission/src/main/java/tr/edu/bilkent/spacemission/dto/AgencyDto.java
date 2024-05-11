@@ -14,5 +14,5 @@ public class AgencyDto extends UserDto{
     private String name;
     private String mail;
     private byte[] logo;
-    private Boolean status;
+    private boolean isApproved;
 }
