@@ -4,3 +4,34 @@
   height: fit-content;
   background-image: linear-gradient(to right, #b6fbff, #83a4d4);
 }
+
+.astronauts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.astronauts-item {
+  width: 45%;
+  height: 30vh;
+  background-color: rgb(255, 255, 255);
+  margin: 10px;
+  display: flex;
+  flex-direction: row;
+  border: 2px solid #83a4d4;
+  border-radius: 25px;
+}
+
+.astronauts-image-box {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.astronauts-information-box {
+  height: fit-content;
+}
