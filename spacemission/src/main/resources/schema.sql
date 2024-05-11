@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS space_mission (
      perform_date DATE,
      platform_id INT,
      creator_id INT NOT NULL,
-     performer_id INT NOT NULL,
+     performer_id INT,
      perform_status VARCHAR(10) NOT NULL CHECK (perform_status = 'pending' OR perform_status = 'performed'),
      FOREIGN KEY(platform_id) REFERENCES platform(platform_id),
      FOREIGN KEY(creator_id) REFERENCES company(company_id)
@@ -96,8 +96,6 @@ CREATE TABLE IF NOT EXISTS space_mission (
          ON DELETE CASCADE
          ON UPDATE CASCADE
 ) ^;
-
-
 
 
 CREATE TABLE IF NOT EXISTS mission_astronaut_recordings (

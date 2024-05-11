@@ -134,8 +134,16 @@ public class BidRepository {
      * @param id Id of the bid
      */
     public void approveBid(long id) {
+        // Update the status of the bid
         String query = "UPDATE bid SET status = 'approved' WHERE bid_id = ?;";
         jdbcTemplate.update(query, id);
+
+        // Get the bid
+        Bid bid = getBid(id);
+
+        // Insert the transaction
+        String transactionQuery = "INSERT INTO transaction (fromcompany_id, tocompany_id, transaction_amount) VALUES (?, ?, ?);";
+        jdbcTemplate.update(transactionQuery, bid.getReceiverId(), bid.getOffererId(), bid.getPrice());
     }
 
     /**
