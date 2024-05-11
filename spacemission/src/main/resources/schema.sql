@@ -53,6 +53,15 @@ CREATE TABLE IF NOT EXISTS astronaut (
 
 ) ^;
 
+CREATE TABLE IF NOT EXISTS expert (
+     expert_id INT PRIMARY KEY,
+     expert_name VARCHAR(255) UNIQUE,
+     expert_company INT,
+     expert_mail VARCHAR(255) NOT NULL,
+     FOREIGN KEY (expert_id) REFERENCES user(user_id),
+     FOREIGN KEY (expert_company) REFERENCES company(company_id)
+) ^;
+
 CREATE TABLE IF NOT EXISTS health_record (
      health_record_id INT AUTO_INCREMENT PRIMARY KEY,
      date DATE NOT NULL,
@@ -115,15 +124,6 @@ CREATE TABLE IF NOT EXISTS transaction (
      transaction_amount DOUBLE NOT NULL,
      FOREIGN KEY(fromcompany_id) REFERENCES company(company_id),
      FOREIGN KEY(tocompany_id) REFERENCES company(company_id)
-) ^;
-
-CREATE TABLE IF NOT EXISTS expert (
-     expert_id INT PRIMARY KEY,
-     expert_name VARCHAR(255) UNIQUE,
-     expert_company INT,
-     expert_mail VARCHAR(255) NOT NULL,
-     FOREIGN KEY (expert_id) REFERENCES user(user_id),
-     FOREIGN KEY (expert_company) REFERENCES company(company_id)
 ) ^;
 
 CREATE TABLE IF NOT EXISTS agency_approve_astronaut (
