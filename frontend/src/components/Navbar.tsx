@@ -25,6 +25,11 @@ export default function Navbar() {
             Agencies
           </Link>
         </li>
+        <li className="list-item">
+          <Link className="link" to="/platforms">
+            Platforms
+          </Link>
+        </li>
       </ul>
     </nav>
   );
