@@ -87,4 +87,24 @@ public class AstronautRepository {
         query = "UPDATE astronaut SET astronaut_company_id = ? WHERE astronaut_id = ?";
         jdbcTemplate.update(query, companyId, userId);
     }
+
+    /**
+     * This method associates the given astronaut with the given mission
+     * @param missionId Id of the mission
+     * @param astronautId Id of the astronaut
+     */
+    public void joinMission(long missionId, long astronautId) {
+        query = "INSERT INTO mission_astronaut_recordings (mission_id, astronaut_id) VALUES (?, ?)";
+        jdbcTemplate.update(query, missionId, astronautId);
+    }
+
+    /**
+     * This method removes the association between the given astronaut and the given mission
+     * @param missionId Id of the mission
+     * @param astronautId Id of the astronaut
+     */
+    public void leaveMission(long missionId, long astronautId) {
+        query = "DELETE FROM mission_astronaut_recordings WHERE mission_id = ? AND astronaut_id = ?";
+        jdbcTemplate.update(query, missionId, astronautId);
+    }
 }

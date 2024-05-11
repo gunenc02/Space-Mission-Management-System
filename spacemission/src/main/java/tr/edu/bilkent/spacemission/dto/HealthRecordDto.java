@@ -12,6 +12,7 @@ import java.sql.Date;
 public class HealthRecordDto {
     private long id;
     private long astronautId;
+    private long expertId;
     private Date date;
     private boolean availabilityForMission;
     private double weight;

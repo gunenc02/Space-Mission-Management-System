@@ -34,16 +34,17 @@ public class HealthRecordRepository {
 
             if (rs.next()) {
                 healthRecord = new HealthRecord();
-                healthRecord.setId(rs.getLong("health_record_id"));
-                healthRecord.setAstronautId(rs.getLong("health_record_astronaut_id"));
-                healthRecord.setDate(rs.getDate("health_record_date"));
-                healthRecord.setAvailabilityForMission(rs.getBoolean("health_record_availability_for_mission"));
-                healthRecord.setWeight(rs.getDouble("health_record_weight"));
-                healthRecord.setHeight(rs.getDouble("health_record_height"));
-                healthRecord.setHeartRate(rs.getDouble("health_record_heart_rate"));
-                healthRecord.setBloodPressure(rs.getDouble("health_record_blood_pressure"));
-                healthRecord.setVaccinations(rs.getString("health_record_vaccinations").split(","));
-                healthRecord.setNotes(rs.getString("health_record_notes"));
+                healthRecord.setId(rs.getLong("id"));
+                healthRecord.setAstronautId(rs.getLong("astronaut_id"));
+                healthRecord.setExpertId(rs.getLong("expert_id"));
+                healthRecord.setDate(rs.getDate("date"));
+                healthRecord.setAvailabilityForMission(rs.getBoolean("availability_for_mission"));
+                healthRecord.setWeight(rs.getDouble("weight"));
+                healthRecord.setHeight(rs.getDouble("height"));
+                healthRecord.setHeartRate(rs.getDouble("heart_rate"));
+                healthRecord.setBloodPressure(rs.getDouble("blood_pressure"));
+                healthRecord.setVaccinations(rs.getString("vaccinations").split(","));
+                healthRecord.setNotes(rs.getString("notes"));
             }
         }
         catch (SQLException e) {
@@ -58,16 +59,17 @@ public class HealthRecordRepository {
      */
     public void createHealthRecord(HealthRecord healthRecord) {
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO health_record (health_record_astronaut_id, health_record_date, health_record_availability_for_mission, health_record_weight, health_record_height, health_record_heart_rate, health_record_blood_pressure, health_record_vaccinations, health_record_notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO health_record (astronaut_id, expert_id, date, availability_for_mission, weight, height, heart_rate, blood_pressure, vaccinations, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setLong(1, healthRecord.getAstronautId());
-            ps.setDate(2, healthRecord.getDate());
-            ps.setBoolean(3, healthRecord.isAvailabilityForMission());
-            ps.setDouble(4, healthRecord.getWeight());
-            ps.setDouble(5, healthRecord.getHeight());
-            ps.setDouble(6, healthRecord.getHeartRate());
-            ps.setDouble(7, healthRecord.getBloodPressure());
-            ps.setString(8, String.join(",", healthRecord.getVaccinations()));
-            ps.setString(9, healthRecord.getNotes());
+            ps.setLong(2, healthRecord.getExpertId());
+            ps.setDate(3, healthRecord.getDate());
+            ps.setBoolean(4, healthRecord.isAvailabilityForMission());
+            ps.setDouble(5, healthRecord.getWeight());
+            ps.setDouble(6, healthRecord.getHeight());
+            ps.setDouble(7, healthRecord.getHeartRate());
+            ps.setDouble(8, healthRecord.getBloodPressure());
+            ps.setString(9, String.join(",", healthRecord.getVaccinations()));
+            ps.setString(10, healthRecord.getNotes());
             ps.executeUpdate();
         }
         catch (SQLException e) {

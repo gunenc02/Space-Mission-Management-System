@@ -19,6 +19,4 @@ public class CompanyDto extends UserDto{
     private String country;
     private byte[] logo;
     private double budget;
-    //String type;
-
 }

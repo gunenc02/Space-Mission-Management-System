@@ -34,6 +34,16 @@ public class AstronautController {
         astronautService.joinCompany(companyId, userId);
     }
 
+    @PostMapping("/joinMission/{missionId}/{astronautId}")
+    public void joinMission(@PathVariable long missionId, @PathVariable long astronautId){
+        astronautService.joinMission(missionId, astronautId);
+    }
+
+    @DeleteMapping("/leaveMission/{missionId}/{astronautId}")
+    public void leaveMission(@PathVariable long missionId, @PathVariable long astronautId){
+        astronautService.leaveMission(missionId, astronautId);
+    }
+
     private Astronaut convertDtoToEntity(AstronautDto astronautDto) {
         Astronaut astronaut = new Astronaut();
         astronaut.setId(astronautDto.getId());

@@ -29,4 +29,12 @@ public class AstronautService {
     public void joinCompany(long companyId, long userId) {
         astronautRepository.joinCompany(companyId, userId);
     }
+
+    public void joinMission(long missionId, long astronautId) {
+        astronautRepository.joinMission(missionId, astronautId);
+    }
+
+    public void leaveMission(long missionId, long astronautId) {
+        astronautRepository.leaveMission(missionId, astronautId);
+    }
 }
