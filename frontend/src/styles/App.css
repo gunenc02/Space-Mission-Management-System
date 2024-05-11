@@ -5,7 +5,7 @@
   background-image: linear-gradient(to right, #b6fbff, #83a4d4);
 }
 
-.astronauts-container {
+.list-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -13,7 +13,7 @@
   padding: 10px;
 }
 
-.astronauts-item {
+.list-item {
   width: 45%;
   height: 30vh;
   background-color: rgb(255, 255, 255);
@@ -24,7 +24,7 @@
   border-radius: 25px;
 }
 
-.astronauts-image-box {
+.list-image-box {
   width: 200px;
   height: 200px;
   display: flex;
@@ -32,6 +32,9 @@
   align-items: center;
 }
 
-.astronauts-information-box {
-  height: fit-content;
+.list-information-box {
+  max-height: 28vh;
+  overflow-y: auto;
+  width: 100%;
+  line-height: 1.2;
 }
