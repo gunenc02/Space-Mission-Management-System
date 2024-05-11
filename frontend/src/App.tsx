@@ -5,6 +5,7 @@ import Astronauts from "./app/Astronauts";
 import Agencies from "./app/Agencies";
 import Companies from "./app/Companies";
 import Platform from "./app/Platform";
+import CreateHealthRecord from "./app/CreateHealthRecord";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/companies" element={<Companies />} />
           <Route path="/agencies" element={<Agencies />} />
           <Route path="/platforms" element={<Platform />} />
+          <Route path="/modal" element={<CreateHealthRecord/>}></Route>
         </Routes>
       </BrowserRouter>
     </div>

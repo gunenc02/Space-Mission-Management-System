@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS health_record (
      vaccinations TEXT NOT NULL,
      astronaut_id INT NOT NULL,
      expert_id INT NOT NULL,
+     notes TEXT,
      FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id)
          ON DELETE CASCADE
          ON UPDATE CASCADE,
