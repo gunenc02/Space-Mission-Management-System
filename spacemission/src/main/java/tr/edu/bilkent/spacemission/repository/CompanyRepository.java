@@ -33,7 +33,6 @@ public class CompanyRepository {
             (rs, rowNum) -> new CompanyDto(
                 rs.getLong("company_id"),
                 rs.getString("company_name"),
-                rs.getString("company_mail"),
                 rs.getString("country"),
                 rs.getBytes("company_logo"),
                 rs.getLong("money")
@@ -77,7 +76,6 @@ public class CompanyRepository {
              (rs, rowNum) -> new CompanyDto(
                      rs.getLong("company_id"),
                      rs.getString("company_name"),
-                     rs.getString("company_mail"),
                      rs.getString("company_country"),
                      rs.getBytes("company_logo"),
                      rs.getLong("company_budget")

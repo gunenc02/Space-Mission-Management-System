@@ -44,7 +44,6 @@ public class CompanyController {
         Company company = new Company();
         company.setId(companyDto.getId());
         company.setName(companyDto.getName());
-        company.setMail(companyDto.getMail());
         company.setCountry(companyDto.getCountry());
         company.setBudget(companyDto.getBudget());
         //company.setType(companyDto.getType());
@@ -55,7 +54,6 @@ public class CompanyController {
         CompanyDto companyDto = new CompanyDto();
         companyDto.setId(company.getId());
         companyDto.setName(company.getName());
-        companyDto.setMail(company.getMail());
         companyDto.setCountry(company.getCountry());
         companyDto.setBudget(company.getBudget());
         //companyDto.setType(company.getType());

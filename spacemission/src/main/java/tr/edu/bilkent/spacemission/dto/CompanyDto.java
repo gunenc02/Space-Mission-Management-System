@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class CompanyDto extends UserDto{
     private long id;
     private String name;
-    private String mail;
     private String country;
     private byte[] logo;
     private double budget;

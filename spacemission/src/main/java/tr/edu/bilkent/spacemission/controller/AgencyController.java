@@ -50,7 +50,6 @@ public class AgencyController {
     private AgencyDto convertEntityToDto(Agency agency){
         AgencyDto agencyDto = new AgencyDto();
         agencyDto.setId(agency.getId());
-        agencyDto.setMail(agency.getMail());
         //agencyDto.setPassword(agency.getPassword());
         agencyDto.setName(agency.getName());
         agencyDto.setLogo(agency.getLogo());
@@ -61,7 +60,6 @@ public class AgencyController {
     private Agency convertDtoToEntity (AgencyDto agencyDto) {
         Agency agency = new Agency();
         agency.setId(agencyDto.getId());
-        agency.setMail(agencyDto.getMail());
         //agency.setPassword(agencyDto.getPassword());
         agency.setName(agencyDto.getName());
         agency.setLogo(agencyDto.getLogo());

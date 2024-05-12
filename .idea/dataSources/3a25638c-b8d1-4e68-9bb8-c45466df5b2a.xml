@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="spacemission@localhost">
-  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.51">
+  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.52">
     <root id="1">
       <DefaultCasing>mixed/mixed</DefaultCasing>
       <DefaultEngine>InnoDB</DefaultEngine>
@@ -1782,7 +1782,6 @@ astronaut_id</ColNames>
       <Definer>root@localhost</Definer>
       <Events>U</Events>
       <SourceTextLength>166</SourceTextLength>
-      <Turn>after-row</Turn>
     </trigger>
     <column id="451" parent="311" name="transaction_id">
       <DasType>int|0s</DasType>
