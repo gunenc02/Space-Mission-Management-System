@@ -46,3 +46,17 @@ export interface Platform {
   image: string;
   costPerLaunch: number;
 }
+
+export interface HealthRecord {
+  id: number;
+  astronautId: number;
+  expertId: number;
+  date: Date;
+  availabilityForMission: boolean;
+  weight: number;
+  height: number;
+  heartRate: number;
+  bloodPressure: number;
+  vaccinations: string;
+  notes: string;
+}

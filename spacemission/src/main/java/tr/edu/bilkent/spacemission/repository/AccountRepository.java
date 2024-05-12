@@ -300,7 +300,7 @@ public class AccountRepository {
                 ps2 = connection.prepareStatement("SELECT  *  FROM admin WHERE admin_id = ?");
                 ps2.setLong(1, tmp.getId());
                 rs2 = ps2.executeQuery();
-                while(rs2.next()){
+                while (rs2.next()) {
                     adm.setUserId(tmp.getId());
                     adm.setUserRole(tmp.getUserRole());
                     adm.setUserMail(tmp.getMail());
@@ -314,7 +314,7 @@ public class AccountRepository {
                 ps2 = connection.prepareStatement("SELECT  *  FROM agency WHERE agency_id = ?");
                 ps2.setLong(1, tmp.getId());
                 rs2 = ps2.executeQuery();
-                while(rs2.next()){
+                while (rs2.next()) {
                     agency.setUserId(tmp.getId());
                     agency.setUserRole(tmp.getUserRole());
                     agency.setUserMail(tmp.getMail());
@@ -325,12 +325,13 @@ public class AccountRepository {
                 return agency;
             }
 
+
             if(tmp.getUserRole().equals("ASTRONAUT")){
                 AstronautDto astronaut = new AstronautDto();
                 ps2 = connection.prepareStatement("SELECT  *  FROM astronaut WHERE astronaut_id = ?");
                 ps2.setLong(1, tmp.getId());
                 rs2 = ps2.executeQuery();
-                while(rs2.next()){
+                while (rs2.next()) {
                     astronaut.setUserId(tmp.getId());
                     astronaut.setUserRole(tmp.getUserRole());
                     astronaut.setUserMail(tmp.getMail());
@@ -349,7 +350,7 @@ public class AccountRepository {
                 ps2 = connection.prepareStatement("SELECT  *  FROM company WHERE company_id = ?");
                 ps2.setLong(1, tmp.getId());
                 rs2 = ps2.executeQuery();
-                while(rs2.next()){
+                while (rs2.next()) {
                     company.setUserId(tmp.getId());
                     company.setUserRole(tmp.getUserRole());
                     company.setUserMail(tmp.getMail());
@@ -366,7 +367,7 @@ public class AccountRepository {
                 ps2 = connection.prepareStatement("SELECT  *  FROM expert WHERE expert_id = ?");
                 ps2.setLong(1, tmp.getId());
                 rs2 = ps2.executeQuery();
-                while(rs2.next()){
+                while (rs2.next()) {
                     expert.setUserId(tmp.getId());
                     expert.setUserRole(tmp.getUserRole());
                     expert.setUserMail(tmp.getMail());
@@ -375,7 +376,7 @@ public class AccountRepository {
                     PreparedStatement ps3 = connection.prepareStatement("SELECT company_id, company_name, company_logo FROM company WHERE company_id = ?");
                     ps3.setLong(1, rs2.getLong("company_id"));
                     ResultSet rs3 = ps3.executeQuery();
-                    while(rs3.next()){
+                    while (rs3.next()) {
                         expert.setCompanyName(rs3.getString("company_name"));
                         expert.setCompanyLogo(rs3.getBytes("company_logo"));
                     }
@@ -384,8 +385,7 @@ public class AccountRepository {
             }
 
             return null;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         return null;

@@ -1,0 +1,95 @@
+.modal-overlay {
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-outer {
+  background-color: white;
+  border: 2px solid rgb(21, 104, 134);
+  border-radius: 20px;
+  width: 35%;
+  height: fit-content;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.modal-input-container {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.modal-title {
+  color: black;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.modal-input {
+  width: 65%;
+  align-self: center;
+  height: 22px;
+}
+
+.modal-text-area {
+  width: 65%;
+  align-self: center;
+  height: 70px;
+}
+
+.modal-label {
+  width: 65%;
+  color: black;
+  align-self: center;
+  text-align: left;
+}
+
+.modal-radio-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-warning-text {
+  color: black;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.modal-button {
+  margin-top: 25px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.filter-mix-max-container {
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+  height: fit-content;
+  width: 100%;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  justify-content: center;
+}
+
+.filter-min-max-item {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+}
