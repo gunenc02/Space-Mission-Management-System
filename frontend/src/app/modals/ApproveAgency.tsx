@@ -3,6 +3,10 @@ import { ApproveAgencyProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 
 export default function ApproveAgency(props: ApproveAgencyProps) {
+  const approveHandler = function(){
+    props.onClose();
+  }
+
   return (
     <div className="modal-overlay">
       <div className="modal-outer">
@@ -19,7 +23,7 @@ export default function ApproveAgency(props: ApproveAgencyProps) {
           Cancel
         </button>
         <button
-          onClick={props.onClose}
+          onClick={approveHandler}
           style={{ backgroundColor: "green", color: "white" }}
           className="modal-button"
         >
