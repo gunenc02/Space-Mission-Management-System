@@ -36,7 +36,7 @@ public class CompanyController {
     }
 
     @GetMapping("/profile/{id}")
-    public CompanyDto getCompanyProfile(long id){
+    public CompanyDto getCompanyProfile(@PathVariable long id){
         return convertEntityToDto(companyService.getCompanyProfile(id));
     }
 

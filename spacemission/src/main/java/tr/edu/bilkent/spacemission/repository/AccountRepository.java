@@ -21,7 +21,7 @@ public class AccountRepository {
     }
     public void saveAdmin(AdminRegisterDto ardto) {
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?)",
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
             ps.setString(2, ardto.getPassword());
@@ -45,7 +45,7 @@ public class AccountRepository {
     }
     public void saveAgency(AgencyRegisterDto ardto) {
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?)",
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
             ps.setString(2, ardto.getPassword());
@@ -71,7 +71,7 @@ public class AccountRepository {
 
     public void saveAstronaut(AstronautRegisterDto ardto) {
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password) VALUES (?,?,?)",
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
             ps.setString(2, ardto.getPassword());
@@ -84,7 +84,7 @@ public class AccountRepository {
 
                 // Now insert into the astronaut table
                 PreparedStatement psCompany = connection.prepareStatement(
-                        "INSERT INTO astronaut (astronaut_id, astronaut_name, astronaut_agency_id, country, date_of_birth) VALUES (?, ?, ?, ?, ?)");
+                        "INSERT INTO astronaut (astronaut_id, astronaut_name, astronaut_agency_id, country, date_of_birth) VALUES (?, ?, ?, ?, ?);");
                 psCompany.setLong(1, userId);
                 psCompany.setString(2, ardto.getName());
                 psCompany.setLong(3, ardto.getAgencyId());
@@ -100,7 +100,7 @@ public class AccountRepository {
 
     public void saveCompany(CompanyRegisterDto crdto) {
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?)",
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, crdto.getEmail());
             ps.setString(2, crdto.getPassword());
@@ -113,7 +113,7 @@ public class AccountRepository {
 
                 // Now insert into the astronaut table
                 PreparedStatement psCompany = connection.prepareStatement(
-                        "INSERT INTO company (company_id, company_name, company_agency_id, money, country) VALUES (?, ?, ?, ?, ?)");
+                        "INSERT INTO company (company_id, company_name, company_agency_id, money, country) VALUES (?, ?, ?, ?, ?);");
                 psCompany.setLong(1, userId);
                 psCompany.setString(2, crdto.getUsername());
                 psCompany.setLong(3, crdto.getAgencyId());
@@ -129,7 +129,7 @@ public class AccountRepository {
 
     public void approveAgency(long agencyId) {
         try{
-            PreparedStatement ps = connection.prepareStatement("UPDATE agency SET is_approved = TRUE WHERE agency_id = ?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE agency SET is_approved = TRUE WHERE agency_id = ?;");
             ps.setLong(1, agencyId);
             ps.executeUpdate();
         }
@@ -142,7 +142,7 @@ public class AccountRepository {
 
     public void approveAstronaut(long astronautId) {
         try{
-            PreparedStatement ps = connection.prepareStatement("UPDATE astronaut SET is_approved = TRUE WHERE astronaut_id = ?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE astronaut SET is_approved = TRUE WHERE astronaut_id = ?;");
             ps.setLong(1, astronautId);
             ps.executeUpdate();
         }
@@ -152,7 +152,7 @@ public class AccountRepository {
     }
     public void approveCompany(long companyId) {
         try{
-            PreparedStatement ps = connection.prepareStatement("UPDATE company SET is_approved = TRUE WHERE company_id = ?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE company SET is_approved = TRUE WHERE company_id = ?;");
             ps.setLong(1, companyId);
             ps.executeUpdate();
         }
@@ -168,7 +168,7 @@ public class AccountRepository {
         }
         if(mail != null){
             try{
-                PreparedStatement ps = connection.prepareStatement("UPDATE user SET user_mail = ? WHERE user_id = ?");
+                PreparedStatement ps = connection.prepareStatement("UPDATE user SET user_mail = ? WHERE user_id = ?;");
                 ps.setString(1, mail);
                 ps.setLong(2, userId);
                 ps.executeUpdate();
@@ -179,7 +179,7 @@ public class AccountRepository {
         }
         if(password != null){
             try{
-                PreparedStatement ps = connection.prepareStatement("UPDATE user SET user_password = ? WHERE user_id = ?");
+                PreparedStatement ps = connection.prepareStatement("UPDATE user SET user_password = ? WHERE user_id = ?;");
                 ps.setString(1, password);
                 ps.setLong(2, userId);
                 ps.executeUpdate();
@@ -197,7 +197,7 @@ public class AccountRepository {
 
         if(username != null){
             try{
-                PreparedStatement ps = connection.prepareStatement("UPDATE agency SET agency_name= ? WHERE agency_id = ?");
+                PreparedStatement ps = connection.prepareStatement("UPDATE agency SET agency_name= ? WHERE agency_id = ?;");
                 ps.setString(1, username);
                 ps.setLong(2, agencyId);
                 ps.executeUpdate();
@@ -209,7 +209,7 @@ public class AccountRepository {
 
         if(image != null){
             try{
-                PreparedStatement ps = connection.prepareStatement("UPDATE agency SET agency_logo= ? WHERE agency_id = ?");
+                PreparedStatement ps = connection.prepareStatement("UPDATE agency SET agency_logo= ? WHERE agency_id = ?;");
                 ps.setBytes(1, image);
                 ps.setLong(2, agencyId);
                 ps.executeUpdate();
@@ -228,7 +228,7 @@ public class AccountRepository {
 
         if(username != null){
             try{
-                PreparedStatement ps = connection.prepareStatement("UPDATE company SET company_name= ? WHERE company_id = ?");
+                PreparedStatement ps = connection.prepareStatement("UPDATE company SET company_name= ? WHERE company_id = ?;");
                 ps.setString(1, username);
                 ps.setLong(2, companyId);
                 ps.executeUpdate();
@@ -240,7 +240,7 @@ public class AccountRepository {
 
         if(image != null){
             try{
-                PreparedStatement ps = connection.prepareStatement("UPDATE company SET company_logo= ? WHERE company_id = ?");
+                PreparedStatement ps = connection.prepareStatement("UPDATE company SET company_logo= ? WHERE company_id = ?;");
                 ps.setBytes(1, image);
                 ps.setLong(2, companyId);
                 ps.executeUpdate();
@@ -258,7 +258,7 @@ public class AccountRepository {
 
         if(username != null){
             try{
-                PreparedStatement ps = connection.prepareStatement("UPDATE astronaut SET astronaut_name= ? WHERE astronaut_id = ?");
+                PreparedStatement ps = connection.prepareStatement("UPDATE astronaut SET astronaut_name= ? WHERE astronaut_id = ?;");
                 ps.setString(1, username);
                 ps.setLong(2, astronautId);
                 ps.executeUpdate();
@@ -270,7 +270,7 @@ public class AccountRepository {
 
         if(image != null){
             try{
-                PreparedStatement ps = connection.prepareStatement("UPDATE astronaut SET astronaut_image= ? WHERE astronaut_id = ?");
+                PreparedStatement ps = connection.prepareStatement("UPDATE astronaut SET astronaut_image= ? WHERE astronaut_id = ?;");
                 ps.setBytes(1, image);
                 ps.setLong(2, astronautId);
                 ps.executeUpdate();
@@ -282,21 +282,20 @@ public class AccountRepository {
     }
 
     public UserDto getLoggedUser(String usermail, String password) {
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE usermail=? AND password = ?");
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE user_mail=? AND user_password = ?;");
             ps.setString(1, usermail);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
-            User tmp = createSpecificUser(rs.getString("user_role"));
-            while (rs.next()) {
+            User tmp = new Admin();
+            while(rs.next()){
                 tmp.setId(rs.getLong("user_id"));
                 tmp.setMail(rs.getString("user_mail"));
                 tmp.setUserRole(rs.getString("user_role"));
             }
-
             PreparedStatement ps2;
             ResultSet rs2;
-            if (rs.getString("user_role").equals("ADMIN")) {
+            if(tmp.getUserRole().equals("ADMIN")){
                 AdminDto adm = new AdminDto();
                 ps2 = connection.prepareStatement("SELECT  *  FROM admin WHERE admin_id = ?");
                 ps2.setLong(1, tmp.getId());
@@ -310,7 +309,7 @@ public class AccountRepository {
                 return adm;
             }
 
-            if (rs.getString("user_role").equals("AGENCY")) {
+            if(tmp.getUserRole().equals("AGENCY")){
                 AgencyDto agency = new AgencyDto();
                 ps2 = connection.prepareStatement("SELECT  *  FROM agency WHERE agency_id = ?");
                 ps2.setLong(1, tmp.getId());
@@ -326,7 +325,8 @@ public class AccountRepository {
                 return agency;
             }
 
-            if (rs.getString("user_role").equals("ASTRONAUT")) {
+
+            if(tmp.getUserRole().equals("ASTRONAUT")){
                 AstronautDto astronaut = new AstronautDto();
                 ps2 = connection.prepareStatement("SELECT  *  FROM astronaut WHERE astronaut_id = ?");
                 ps2.setLong(1, tmp.getId());
@@ -345,7 +345,7 @@ public class AccountRepository {
                 return astronaut;
             }
 
-            if (rs.getString("user_role").equals("COMPANY")) {
+            if(tmp.getUserRole().equals("COMPANY")){
                 CompanyDto company = new CompanyDto();
                 ps2 = connection.prepareStatement("SELECT  *  FROM company WHERE company_id = ?");
                 ps2.setLong(1, tmp.getId());
@@ -357,12 +357,12 @@ public class AccountRepository {
                     company.setName(rs2.getString("company_name"));
                     company.setLogo(rs2.getBytes("company_logo"));
                     company.setCountry(rs2.getString("country"));
-                    company.setBudget(rs2.getDouble("budget"));
+                    company.setBudget(rs2.getDouble("money"));
                 }
                 return company;
             }
 
-            if (rs.getString("user_role").equals("EXPERT")) {
+            if(tmp.getUserRole().equals("EXPERT")){
                 ExpertDto expert = new ExpertDto();
                 ps2 = connection.prepareStatement("SELECT  *  FROM expert WHERE expert_id = ?");
                 ps2.setLong(1, tmp.getId());
