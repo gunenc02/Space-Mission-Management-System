@@ -1,0 +1,128 @@
+/* Base styles for body and html to ensure full height and no extra margins */
+/*
+#062c43
+#054569
+#5591a9
+#9ccddc
+#ced7e0
+*/
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #054569, #5591a9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title-container {
+    text-align: center;
+    max-width: 1000px;
+    margin-bottom: 20px; /* Spacing between title and login form */
+}
+
+.login-container {
+    box-shadow: 0 5px 15px rgba(6, 44, 67, 0.5);
+    padding: 40px;
+    border-radius: 15px;
+    background: linear-gradient(to bottom, #054569, #5591a9);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label, .input-group input, button {
+    width: 100%;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #062c43;
+    text-shadow: #1a1a1a;
+    display: flex;
+
+}
+
+.input-group input, button {
+    height: 40px;
+    padding: 0 30px;
+    border-radius: 6px;
+    border: 1px solid #9ccddc;
+    background: #ced7e0;
+    color: #062c43;
+    box-sizing: border-box;
+}
+
+button {
+
+    background-color: #062c43;
+    color: #ced7e0;
+    font-weight: bold;
+    cursor: pointer;
+    justify-content: center;
+}
+
+button:hover {
+    background-color: #054569;
+
+}
+
+.header {
+    color: #062c43;
+    text-shadow: #1a1a1a;
+    font-weight: bold;
+}
+
+.main-header {
+    color: #062c43;
+    text-shadow: #1a1a1a;
+    font-weight: bold;
+    font-size: 3rem;
+
+}
+
+.login-submit {
+    background-color: #062c43;
+    color: #ced7e0;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+.popup {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background: rgba(255, 0, 0, 0.75);
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    animation: fadeOut 5s forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
