@@ -7,6 +7,7 @@ import Companies from "./app/pages/Companies";
 import Platform from "./app/pages/Platform";
 import CreateHealthRecord from "./app/modals/CreateHealthRecord";
 import AstronautProfile from "./app/profiles/AstronautProfile";
+import CompanyProfile from "./app/profiles/CompanyProfile.tsx";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/agencies" element={<Agencies />} />
           <Route path="/platforms" element={<Platform />} />
           <Route path="/astronaut/:id" element={<AstronautProfile />}></Route>
+          <Route path="/companyProfile/:companyId" element={<CompanyProfile />}></Route>
         </Routes>
       </BrowserRouter>
     </div>
