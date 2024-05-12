@@ -10,6 +10,12 @@ import Companies from "./app/pages/Companies";
 import Platform from "./app/pages/Platform";
 import AstronautProfile from "./app/profiles/AstronautProfile";
 import CompanyProfile from "./app/profiles/CompanyProfile.tsx";
+import ReceivedBids from "./app/pages/ReceivedBids";
+import Login from "./app/Login.tsx";
+import OfferedBids from "./app/pages/OfferedBids.tsx";
+
+
+
 
 function App() {
   return (
@@ -26,6 +32,9 @@ function App() {
           <Route path="/companyProfile/:companyId" element={<CompanyProfile />}></Route>
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/register" element={<RegisterPage/>} />
+          <Route path="/bid/receivedList/:id" element={<ReceivedBids />} /> 
+          <Route path="/test" element={<Login />} />
+          <Route path="/bid/offeredList/:id" element={<OfferedBids />} />
         </Routes>
       </BrowserRouter>
     </div>
