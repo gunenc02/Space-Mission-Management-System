@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Navbar from "../components/Navbar";
-import { SpaceMission } from "../data-types/props";
-import { getSpaceMissions } from "../calling/spaceMissionCaller";
+import Header from "../../components/Header";
+import Navbar from "../../components/Navbar";
+import { SpaceMission } from "../../data-types/entities";
+import { getSpaceMissions } from "../../calling/spaceMissionCaller";
 
 export default function SpaceMissions() {
   const [spaceMissions, setSpaceMissions] = useState<SpaceMission[]>([]);

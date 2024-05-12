@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Navbar from "../components/Navbar";
-import { Platform } from "../data-types/props";
-import { getPlatforms } from "../calling/platformCaller";
+import Header from "../../components/Header";
+import Navbar from "../../components/Navbar";
+import { Platform } from "../../data-types/entities";
+import { getPlatforms } from "../../calling/platformCaller";
 
 export default function Platforms() {
   const [platforms, setPlatforms] = useState<Platform[]>([]);

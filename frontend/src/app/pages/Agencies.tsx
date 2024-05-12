@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Navbar from "../components/Navbar";
-import { Agency } from "../data-types/props";
-import { getAgencies } from "../calling/agencyCaller";
+import Header from "../../components/Header";
+import Navbar from "../../components/Navbar";
+import { Agency } from "../../data-types/entities";
+import { getAgencies } from "../../calling/agencyCaller";
 
 export default function Agencies() {
   const [agencies, setAgencies] = useState<Agency[]>([]);

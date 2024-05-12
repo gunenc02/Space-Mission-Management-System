@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Navbar from "../components/Navbar";
-import "../styles/App.css";
-import { Company } from "../data-types/props";
-import { getCompanies } from "../calling/companyCaller";
+import Header from "../../components/Header";
+import Navbar from "../../components/Navbar";
+import "../../styles/App.css";
+import { Company } from "../../data-types/entities";
+import { getCompanies } from "../../calling/companyCaller";
 
 export default function Companies() {
   const [companies, setCompanies] = useState<Company[]>([]);

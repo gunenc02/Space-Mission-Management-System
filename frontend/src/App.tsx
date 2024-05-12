@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import SpaceMissions from "./app/SpaceMissions";
-import Astronauts from "./app/Astronauts";
-import Agencies from "./app/Agencies";
-import Companies from "./app/Companies";
-import Platform from "./app/Platform";
-import CreateHealthRecord from "./app/CreateHealthRecord";
+import SpaceMissions from "./app/pages/SpaceMissions";
+import Astronauts from "./app/pages/Astronauts";
+import Agencies from "./app/pages/Agencies";
+import Companies from "./app/pages/Companies";
+import Platform from "./app/pages/Platform";
+import CreateHealthRecord from "./app/modals/CreateHealthRecord";
+import AstronautProfile from "./app/profiles/AstronautProfile";
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
           <Route path="/companies" element={<Companies />} />
           <Route path="/agencies" element={<Agencies />} />
           <Route path="/platforms" element={<Platform />} />
-          <Route path="/modal" element={<CreateHealthRecord/>}></Route>
+          <Route path="/astronaut/:id" element={<AstronautProfile />}></Route>
         </Routes>
       </BrowserRouter>
     </div>
