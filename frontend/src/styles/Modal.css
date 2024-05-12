@@ -1,0 +1,64 @@
+.modal-overlay {
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-outer {
+  background-color: white;
+  border: 2px solid rgb(21, 104, 134);
+  border-radius: 20px;
+  width: 40%;
+  height: 80%;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.modal-input-container {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  width: 100%;
+}
+
+.modal-title {
+  color: black;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.modal-input {
+  width: 60%;
+  align-self: center;
+  height: 20px;
+}
+
+.modal-text-area {
+  width: 60%;
+  align-self: center;
+  height: 50px;
+}
+
+.modal-label {
+  width: 60%;
+  color: black;
+  align-self: center;
+  text-align: left;
+}
+
+.modal-radio-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}

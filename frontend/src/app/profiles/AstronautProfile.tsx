@@ -8,18 +8,23 @@ export default function AstronautProfile() {
   const [createHealthRecordOpen, setCreateHealthRecordOpen] =
     useState<boolean>(false);
 
+  const handleCreateHealthRecordClick = () => {
+    setCreateHealthRecordOpen(!createHealthRecordOpen);
+  };
+
   return (
     <div>
       <h1 className="black">Astronaut Profile</h1>
 
-      <button
-        onClick={() => setCreateHealthRecordOpen(!createHealthRecordOpen)}
-      >
+      <button onClick={handleCreateHealthRecordClick}>
         Create Health Record
       </button>
       <div>
         {createHealthRecordOpen && (
-          <CreateHealthRecord astronautId={Number(id)} />
+          <CreateHealthRecord
+            astronautId={Number(id)}
+            onClose={handleCreateHealthRecordClick}
+          />
         )}
       </div>
     </div>
