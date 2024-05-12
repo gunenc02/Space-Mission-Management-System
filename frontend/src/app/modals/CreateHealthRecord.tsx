@@ -141,7 +141,7 @@ export default function CreateHealthRecord(props: CreateHealthRecordProps) {
         <div className="modal-input-container">
           <label className="modal-label" htmlFor="heartRate">
             Heart Rate:
-          </label>{" "}
+          </label>
           <input
             className="modal-input"
             type="text"
@@ -218,12 +218,14 @@ export default function CreateHealthRecord(props: CreateHealthRecordProps) {
           Fields (except notes) cannot be empty
         </h5>
         <button
+          className="modal-button"
           onClick={props.onClose}
           style={{ backgroundColor: "red", color: "white" }}
         >
           Cancel
         </button>
         <button
+          className="modal-button"
           onClick={registerHandler}
           style={{ backgroundColor: "green", color: "white" }}
         >
