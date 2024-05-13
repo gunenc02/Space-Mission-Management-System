@@ -1,4 +1,4 @@
-import { useState } from "react";
+//import { useState } from "react";
 import { SubmitBidProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 

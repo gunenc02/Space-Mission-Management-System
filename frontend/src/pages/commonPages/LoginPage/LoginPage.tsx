@@ -33,7 +33,7 @@ export default function LoginPage() {
             } else {
                 throw new Error(response.message);
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Login failed:", error.message);
             setError(error.message);  // Display the error to the user
         }

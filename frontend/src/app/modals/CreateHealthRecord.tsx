@@ -1,12 +1,12 @@
 import { useState } from "react";
-import React from "react";
+//import React from "react";
 import { CreateHealthRecordProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 
-function fetchSuccess() {}
+/*function fetchSuccess() {}
 function handleChange() {
   //empty function
-}
+}*/
 
 export default function CreateHealthRecord(props: CreateHealthRecordProps) {
   const [errVisible, setErrVisible] = useState<boolean>(false);
@@ -20,7 +20,7 @@ export default function CreateHealthRecord(props: CreateHealthRecordProps) {
     eligible: "",
   });
 
-  const updateForm = function (e) {
+  const updateForm = function (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     console.log("CHR debug: updateForm invoked");
     //this will simply update formData when a change occurs in one of our input elements
     const { id, value } = e.target;
@@ -30,10 +30,10 @@ export default function CreateHealthRecord(props: CreateHealthRecordProps) {
       [id]: value,
     }));
   };
-  const radioChange = function (e) {
+  const radioChange = function (e: React.ChangeEvent<HTMLInputElement>) {
     setFormData((prevState) => ({
       ...prevState,
-      eligible: e.value,
+      eligible: e.target.value,
     }));
   };
   const registerHandler = function () {

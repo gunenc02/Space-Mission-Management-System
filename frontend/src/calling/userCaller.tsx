@@ -19,7 +19,7 @@ export async function loginUser(email: string, password: string) {
 
         const data = await response.json();  // Get user data or token from response
         return { success: true, data: data };
-    } catch (error) {
+    } catch (error: any) {
         console.error('Login error:', error);
         return { success: false, message: error.message };
     }

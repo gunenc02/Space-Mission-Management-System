@@ -15,7 +15,7 @@ public class AdminController {
 
     public AdminController(AdminService adminService) {this.adminService = adminService;}
 
-    @PostMapping
+    @PostMapping("/confirm{id}")
     public void confirmAgency(@PathVariable long id){
         this.adminService.confirmAgency(id);
     }

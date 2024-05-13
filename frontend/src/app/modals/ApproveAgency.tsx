@@ -1,10 +1,25 @@
-import { useState } from "react";
+//import { useState } from "react";
 import { ApproveAgencyProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 
 export default function ApproveAgency(props: ApproveAgencyProps) {
   const approveHandler = function(){
-    props.onClose();
+    const postUrl = `http://localhost:8080/admin`;
+
+    const requestBody = {
+      id: props.agencyId
+    };
+    // send a post request for approval of this agency
+    fetch(postUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", 
+      },
+      body: JSON.stringify(requestBody),  
+    
+    })
+
+    props.onClose(); //place at the corrct position
   }
 
   return (

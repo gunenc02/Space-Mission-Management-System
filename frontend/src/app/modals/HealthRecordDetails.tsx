@@ -1,4 +1,4 @@
-import { useState } from "react";
+//import { useState } from "react";
 import { HealthRecordDetailsProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 import { HealthRecord } from "../../data-types/entities";

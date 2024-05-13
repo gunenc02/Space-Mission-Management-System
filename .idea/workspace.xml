@@ -5,11 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AdminController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AdminRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/modals/ApproveAgency.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/modals/ApproveAgency.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/modals/CreateHealthRecord.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/modals/CreateHealthRecord.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/modals/CreateSpaceMission.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/modals/CreateSpaceMission.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/modals/FireAstronaut.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/modals/FireAstronaut.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/modals/HealthRecordDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/modals/HealthRecordDetails.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/modals/RegisterExpert.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/modals/RegisterExpert.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/modals/SubmitBid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/modals/SubmitBid.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AdminController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +111,8 @@
       <workItem from="1714628517948" duration="6286000" />
       <workItem from="1714637209620" duration="259000" />
       <workItem from="1715233550859" duration="2550000" />
-      <workItem from="1715534440740" duration="9124000" />
+      <workItem from="1715534440740" duration="9785000" />
+      <workItem from="1715585662697" duration="4882000" />
     </task>
     <task id="LOCAL-00001" summary="Add some missing endpoints">
       <option name="closed" value="true" />

@@ -1,6 +1,6 @@
-import { useState } from "react";
+//import { useState } from "react";
 import {
-  FireAstronautProps,
+  //FireAstronautProps,
   RegisterExpertProps,
 } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
