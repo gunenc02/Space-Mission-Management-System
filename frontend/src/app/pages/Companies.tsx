@@ -22,12 +22,12 @@ export default function Companies() {
         {companies.map((company: Company) => (
           <div className="list-item" key={company.id}>
             <div className="list-image-box">
-              <img src={company.logo} />
+              <img src={company.logo}/>
             </div>
             <div className="list-information-box">
               <p>Name: {company.name}</p>
               <p>Country: {company.country}</p>
-              <p>Budget: {company.budget}</p>
+              <p>Budget: {company.money}</p>
             </div>
           </div>
         ))}

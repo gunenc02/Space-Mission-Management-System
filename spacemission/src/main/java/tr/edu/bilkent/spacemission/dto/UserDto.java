@@ -11,5 +11,8 @@ public abstract class UserDto {
     protected long userId;
     protected String userMail;
     protected String userRole;
+    public UserDto(long userId){
+        this.userId = userId;
+    }
 
 }

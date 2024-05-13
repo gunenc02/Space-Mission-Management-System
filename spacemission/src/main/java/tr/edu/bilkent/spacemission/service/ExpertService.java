@@ -1,6 +1,7 @@
 package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.stereotype.Service;
+import tr.edu.bilkent.spacemission.dto.ExpertRegisterDto;
 import tr.edu.bilkent.spacemission.entity.Expert;
 import tr.edu.bilkent.spacemission.repository.ExpertRepository;
 
@@ -16,7 +17,7 @@ public class ExpertService {
         return expertRepository.getExpertById(id);
     }
 
-    public void registerExpert(Expert expert) {
+    public void registerExpert(ExpertRegisterDto expert) {
         expertRepository.registerExpert(expert);
     }
     public void fireExpert(long id) { expertRepository.fireExpert(id); }

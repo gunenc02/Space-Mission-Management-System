@@ -46,7 +46,7 @@ public class AstronautController {
 
     private Astronaut convertDtoToEntity(AstronautDto astronautDto) {
         Astronaut astronaut = new Astronaut();
-        astronaut.setId(astronautDto.getId());
+        astronaut.setId(astronautDto.getUserId());
         astronaut.setName(astronautDto.getName());
         astronaut.setImage(astronautDto.getImage());
         astronaut.setDateOfBirth(astronautDto.getDateOfBirth());
@@ -58,7 +58,7 @@ public class AstronautController {
 
     private AstronautDto convertEntityToDto(Astronaut astronaut) {
         AstronautDto astronautDto = new AstronautDto();
-        astronautDto.setId(astronaut.getId());
+        astronautDto.setUserId(astronaut.getId());
         astronautDto.setName(astronaut.getName());
         astronautDto.setImage(astronaut.getImage());
         astronautDto.setDateOfBirth(astronaut.getDateOfBirth());

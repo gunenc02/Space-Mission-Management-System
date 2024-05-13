@@ -48,10 +48,10 @@ export default function CompanyProfile() {
     return (
         <div>
             <h1>{companyInfo.name}</h1>
-            <p>Email: {companyInfo.mail}</p>
+            <p>Email: {companyInfo.userMail}</p>
             <p>Country: {companyInfo.country}</p>
             <img src={companyInfo.logo} alt={`${companyInfo.name} logo`} style={{ width: '100px' }} />
-            <p>Budget: ${companyInfo.budget.toLocaleString()}</p>
+            <p>Budget: ${companyInfo.money.toLocaleString()}</p>
         </div>
     );
 }

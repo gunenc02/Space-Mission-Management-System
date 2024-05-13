@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.controller;
 
 import org.springframework.web.bind.annotation.*;
 import tr.edu.bilkent.spacemission.dto.ExpertDto;
+import tr.edu.bilkent.spacemission.dto.ExpertRegisterDto;
 import tr.edu.bilkent.spacemission.entity.Expert;
 import tr.edu.bilkent.spacemission.service.ExpertService;
 
@@ -21,9 +22,8 @@ public class ExpertController {
     }
 
     @PostMapping("/register")
-    public void registerExpert(@RequestBody ExpertDto expertDto) {
-        Expert expert = convertDtoToEntity(expertDto);
-        expertService.registerExpert(expert);
+    public void registerExpert(@RequestBody ExpertRegisterDto expertDto) {
+        expertService.registerExpert(expertDto);
     }
     @DeleteMapping("/fire/{id}")
     public void fireExpert(@PathVariable long id){
@@ -32,7 +32,7 @@ public class ExpertController {
 
     private ExpertDto convertEntityToDto(Expert expert) {
         ExpertDto expertDto = new ExpertDto();
-        expertDto.setId(expert.getId());
+        expertDto.setUserId(expert.getId());
         expertDto.setMail(expert.getMail());
         expertDto.setName(expert.getName());
         return expertDto;
@@ -40,7 +40,7 @@ public class ExpertController {
 
     private Expert convertDtoToEntity(ExpertDto expertDto) {
         Expert expert = new Expert();
-        expert.setId(expertDto.getId());
+        expert.setId(expertDto.getUserId());
         expert.setMail(expertDto.getMail());
         //expert.setPassword(expertDto.getPassword());
         expert.setName(expertDto.getName());

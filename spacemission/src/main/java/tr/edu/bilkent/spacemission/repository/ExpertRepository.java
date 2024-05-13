@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.dto.ExpertRegisterDto;
 import tr.edu.bilkent.spacemission.entity.Expert;
 
 import javax.sql.DataSource;
@@ -36,7 +37,7 @@ public class ExpertRepository {
                 expert = new Expert();
                 expert.setId(rs.getLong("user_id"));
                 expert.setMail(rs.getString("user_mail"));
-                expert.setPassword(rs.getString("user_password"));
+                //expert.setPassword(rs.getString("user_password"));
             }
 
             PreparedStatement ps2 = connection.prepareStatement("SELECT * FROM expert WHERE expert_id = ?");
@@ -57,7 +58,7 @@ public class ExpertRepository {
      * This method registers the expert to the system
      * @param expert Expert object
      */
-    public void registerExpert(Expert expert) {
+    public void registerExpert(ExpertRegisterDto expert) {
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO user (user_mail, user_password, user_role) VALUES (?, ?, ?)");
             ps.setString(1, expert.getMail());

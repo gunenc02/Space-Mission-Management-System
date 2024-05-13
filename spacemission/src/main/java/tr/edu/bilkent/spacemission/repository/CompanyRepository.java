@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 // THIS IS OUR REPOSITORY THIS IS WHERE OUR QUERIES TAKE PLACE
@@ -28,16 +29,27 @@ public class CompanyRepository {
     }
 
     public List<CompanyDto> getAllCompanies() {
-        String query = "SELECT * FROM company";
-        return jdbcTemplate.query(query,
-            (rs, rowNum) -> new CompanyDto(
-                rs.getLong("company_id"),
-                rs.getString("company_name"),
-                rs.getString("country"),
-                rs.getBytes("company_logo"),
-                rs.getLong("money")
-            )
-        );
+        ArrayList<CompanyDto> list = new ArrayList<>();
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT c.*, u.* FROM company c JOIN " +
+                    " user u ON c.company_id = u.user_id;");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                CompanyDto dto = new CompanyDto();
+                dto.setUserId(rs.getLong("company_id"));
+                dto.setName(rs.getString("company_name"));
+                dto.setCountry(rs.getString("country"));
+                dto.setUserMail(rs.getString("user_mail"));
+                dto.setUserRole(rs.getString("user_role"));
+                dto.setLogo(rs.getBytes("company_logo"));
+                dto.setMoney(rs.getDouble("money"));
+                list.add(dto);
+            }
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return list;
     }
 
     /**
@@ -48,19 +60,20 @@ public class CompanyRepository {
     public Company getCompanyProfile(long id) {
         Company company = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM company WHERE company_id = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT c.*, u.* FROM company c JOIN " +
+                                                                    " user u ON c.company_id = u.user_id WHERE company_id = ?");
             ps.setLong(1, id);
 
             ResultSet rs = ps.executeQuery();
+            company = new Company();
             if (rs.next()) {
-                company = new Company();
                 company.setId(rs.getLong("company_id"));
+                company.setMail(rs.getString("u.user_mail"));
                 company.setName(rs.getString("company_name"));
                 company.setLogo(rs.getBytes("company_logo"));
-                company.setCountry(rs.getString("company_country"));
-                company.setWorkerCount(rs.getInt("company_worker_count"));
-                company.setBudget(rs.getLong("company_budget"));
-                company.setType(rs.getString("company_type"));
+                company.setCountry(rs.getString("country"));
+                company.setWorkerCount(rs.getInt("worker_count"));
+                company.setBudget(rs.getLong("money"));
             }
 
         }
@@ -76,9 +89,9 @@ public class CompanyRepository {
              (rs, rowNum) -> new CompanyDto(
                      rs.getLong("company_id"),
                      rs.getString("company_name"),
-                     rs.getString("company_country"),
+                     rs.getString("country"),
                      rs.getBytes("company_logo"),
-                     rs.getLong("company_budget")
+                     rs.getDouble("money")
              ), logInfo.getUsername(), logInfo.getPassword()
         );
     }

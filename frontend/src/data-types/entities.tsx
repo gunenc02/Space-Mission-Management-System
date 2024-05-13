@@ -19,10 +19,10 @@ export interface Agency {
 export interface Company {
   id: number;
   name: string;
-  mail: string;
+  userMail: string;
   country: string;
   logo: string;
-  budget: number;
+  money: number;
 }
 
 export interface SpaceMission {

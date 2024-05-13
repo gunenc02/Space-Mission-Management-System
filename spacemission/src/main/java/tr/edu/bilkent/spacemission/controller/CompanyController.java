@@ -42,20 +42,21 @@ public class CompanyController {
 
     private Company convertDtoToEntity(CompanyDto companyDto) {
         Company company = new Company();
-        company.setId(companyDto.getId());
+        company.setId(companyDto.getUserId());
         company.setName(companyDto.getName());
         company.setCountry(companyDto.getCountry());
-        company.setBudget(companyDto.getBudget());
+        company.setBudget(companyDto.getMoney());
         //company.setType(companyDto.getType());
         return company;
     }
 
     private CompanyDto convertEntityToDto(Company company) {
         CompanyDto companyDto = new CompanyDto();
-        companyDto.setId(company.getId());
+        companyDto.setUserId(company.getId());
+        companyDto.setUserMail(company.getMail());
         companyDto.setName(company.getName());
         companyDto.setCountry(company.getCountry());
-        companyDto.setBudget(company.getBudget());
+        companyDto.setMoney(company.getBudget());
         //companyDto.setType(company.getType());
         return companyDto;
     }

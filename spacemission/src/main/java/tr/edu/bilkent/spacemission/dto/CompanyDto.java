@@ -13,9 +13,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyDto extends UserDto{
-    private long id;
+
     private String name;
     private String country;
     private byte[] logo;
-    private double budget;
+    private double money;
+
+    public CompanyDto(long companyId, String companyName, String country, byte[] companyLogos, double money) {
+        super(companyId);
+        this.money = money;
+        this.logo = logo;
+        this.country = country;
+        this.name = name;
+    }
 }

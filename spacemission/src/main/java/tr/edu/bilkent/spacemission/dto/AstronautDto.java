@@ -16,7 +16,7 @@ import java.sql.Date;
 @NoArgsConstructor
 
 public class AstronautDto extends UserDto{
-    private long id; //user id
+
     private String name;
     private byte[] image;
     private Date dateOfBirth; // I DIDN'T INCLUDE AGE ATTRIBUTE, can we take it as a derived attribute ? YOU CAN USE DATE CLASS DIRECTLY

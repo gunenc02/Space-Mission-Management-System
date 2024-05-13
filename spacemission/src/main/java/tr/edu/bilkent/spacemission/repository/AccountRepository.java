@@ -357,7 +357,7 @@ public class AccountRepository {
                     company.setName(rs2.getString("company_name"));
                     company.setLogo(rs2.getBytes("company_logo"));
                     company.setCountry(rs2.getString("country"));
-                    company.setBudget(rs2.getDouble("money"));
+                    company.setMoney(rs2.getDouble("money"));
                 }
                 return company;
             }
