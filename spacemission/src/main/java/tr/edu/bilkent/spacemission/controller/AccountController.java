@@ -4,6 +4,9 @@
 
 package tr.edu.bilkent.spacemission.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tr.edu.bilkent.spacemission.dto.*;
@@ -118,8 +121,19 @@ public class AccountController {
     }
 
     @PostMapping("/login")
-    public UserDto login(@RequestParam String usermail, @RequestParam String password){
-        return accountService.getLoggedUser(usermail, password);
+    public UserDto login(@RequestParam String usermail, @RequestParam String password, HttpServletResponse http){
+        UserDto dto = accountService.getLoggedUser(usermail, password);
+
+        Cookie idCookie = new Cookie("user_id", (Long.toString(dto.getUserId())));
+        idCookie.setPath("/");
+        idCookie.setMaxAge(600*600);
+        http.addCookie(idCookie);
+
+        Cookie roleCookie = new Cookie("user_role", dto.getUserRole());
+        roleCookie.setPath("/");
+        roleCookie.setMaxAge(600*600);
+        http.addCookie(roleCookie);
+        return dto;
 
     }
 }

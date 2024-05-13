@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.stereotype.Service;
 import tr.edu.bilkent.spacemission.SpaceMissionManagement;
+import tr.edu.bilkent.spacemission.dto.SpaceMissionsInCompanyPortfolioDto;
 import tr.edu.bilkent.spacemission.repository.SpaceMissionRepository;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 
@@ -29,6 +30,10 @@ public class SpaceMissionService {
 
     public void updateSpaceMission (SpaceMission spaceMission) {
         spaceMissionRepository.updateSpaceMission(spaceMission);
+    }
+
+    public List<SpaceMissionsInCompanyPortfolioDto> getPortfolio(long companyId){
+        return spaceMissionRepository.getPortfolio(companyId);
     }
 
     public void deleteSpaceMission (long id) {

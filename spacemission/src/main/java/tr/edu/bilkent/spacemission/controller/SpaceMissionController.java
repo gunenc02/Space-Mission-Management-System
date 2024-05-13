@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.controller;
 
 import org.springframework.web.bind.annotation.*;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
+import tr.edu.bilkent.spacemission.dto.SpaceMissionsInCompanyPortfolioDto;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 import tr.edu.bilkent.spacemission.service.SpaceMissionService;
 
@@ -49,6 +50,11 @@ public class SpaceMissionController {
     @DeleteMapping("/delete/{id}")
     public void deleteSpaceMission(@PathVariable long id) {
         spaceMissionService.deleteSpaceMission(id);
+    }
+
+    @GetMapping("/getAllMissionsByCompany/{companyId}")
+    public List<SpaceMissionsInCompanyPortfolioDto> getPortfolio(@PathVariable long companyId){
+        return spaceMissionService.getPortfolio(companyId);
     }
 
     private SpaceMission convertDtoToEntity(SpaceMissionDto spaceMissionDto) {

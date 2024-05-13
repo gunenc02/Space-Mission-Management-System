@@ -77,3 +77,31 @@ export function getCompanyProfile(
       throw err;
     });
 }
+
+export function getPerformedSpaceMissionsOfCompany(
+    id:number,
+    user:{token:string}
+): Promise<any>{
+  const sentUrl = `http://localhost:8080/spacemission/getAllMissionsByCompany/${id}`
+
+  return fetch(sentUrl, {
+    method:'GET',
+    headers:{
+      "contentType": "application/json",
+      authorization: `Bearer ${user.token}`,
+    },
+  })
+    .then((response)=>{
+      if(response.status === 200){
+        return response.json()
+      } else {
+        throw new Error(
+            `Failed to fetch company profile: ${response.statusText}`
+        );
+      }
+    })
+      .catch((err) =>{
+        console.log("Error")
+        throw(err)
+      });
+}

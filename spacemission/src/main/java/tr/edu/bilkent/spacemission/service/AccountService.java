@@ -1,5 +1,6 @@
 package tr.edu.bilkent.spacemission.service;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.stereotype.Service;
 import tr.edu.bilkent.spacemission.dto.*;
 import tr.edu.bilkent.spacemission.repository.AccountRepository;
@@ -59,5 +60,9 @@ public class AccountService {
 
     public UserDto getLoggedUser(String usermail, String password) {
         return accountRepository.getLoggedUser(usermail, password);
+    }
+
+    public void logout(Cookie idCookie, Cookie roleCookie){
+
     }
 }

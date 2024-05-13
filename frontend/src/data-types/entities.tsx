@@ -60,3 +60,13 @@ export interface HealthRecord {
   vaccinations: string;
   notes: string;
 }
+
+export interface SpaceMissionForListing{
+  id:number,
+  missionName:string,
+  creatorCompanyName:string,
+  status:string,
+  startDate:Date,
+  endDate:Date,
+  image:string
+}
