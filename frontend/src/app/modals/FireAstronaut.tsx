@@ -3,6 +3,11 @@ import { FireAstronautProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 
 export default function FireAstronaut(props: FireAstronautProps) {
+  const handleFire = function(){
+    const deleteUrl = "http://localhost:8080/";
+  }
+
+  //FIX BACKEND FIRST TO IMPLEMENT FETCH OF THIS
   return (
     <div className="modal-overlay">
       <div className="modal-outer">

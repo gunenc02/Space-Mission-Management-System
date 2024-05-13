@@ -18,8 +18,19 @@ export default function ApproveAgency(props: ApproveAgencyProps) {
       body: JSON.stringify(requestBody),  
     
     })
-
-    props.onClose(); //place at the corrct position
+    .then((response) => {
+      if(!response.ok){
+        throw new Error("Network response was not ok");
+      }
+      else{
+        //ToDo
+        //If there is anything to be done programmatically in front end after
+        //agency has been approved, this is the place
+        props.onClose();
+      }
+    }).catch((error) =>{
+      console.error("ApproveAgency post request failed, trace: ", error);
+    });
   }
 
   return (

@@ -15,6 +15,7 @@ export interface FireAstronautProps {
 
 export interface RegisterExpertProps {
   expertId: number;
+  companyId: number;
   onClose: () => void;
 }
 
