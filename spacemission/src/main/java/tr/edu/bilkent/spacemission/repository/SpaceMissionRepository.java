@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionsInCompanyPortfolioDto;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 
@@ -27,23 +28,34 @@ public class SpaceMissionRepository {
      * This method returns the list of all space missions
      * @return List of space missions
      */
-    public List<SpaceMission> getSpaceMissions() {
+    public List<SpaceMissionDto> getSpaceMissions() {
         String query = "SELECT * FROM space_mission;";
-        return jdbcTemplate.query(query, (rs, rowNum) -> {
-            SpaceMission spaceMission = new SpaceMission();
-            spaceMission.setId(rs.getLong("mission_id"));
-            spaceMission.setMissionName(rs.getString("mission_name"));
-            spaceMission.setImage(rs.getBytes("mission_image"));
-            spaceMission.setObjective(rs.getString("objective"));
-            spaceMission.setBudget(rs.getDouble("budget"));
-            spaceMission.setCreateDate(rs.getDate("create_date"));
-            spaceMission.setPerformDate(rs.getDate("perform_date"));
-            spaceMission.setPlatformId(rs.getInt("platform_id"));
-            spaceMission.setCreatorId(rs.getInt("creator_id"));
-            spaceMission.setPerformerId(rs.getInt("performer_id"));
-            spaceMission.setPerformStatus(rs.getString("perform_status"));
-            return spaceMission;
-        });
+        ArrayList<SpaceMissionDto> list = new ArrayList<>();
+
+        try{
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                SpaceMissionDto dto = new SpaceMissionDto();
+
+                dto.setBudget(rs.getDouble("budget"));
+                dto.setMissionName(rs.getString("mission_name"));
+                dto.setId(rs.getLong("mission_id"));
+                dto.setImage(rs.getBytes("mission_image"));
+                dto.setObjective(rs.getString("objective"));
+                dto.setCreateDate(rs.getDate("create_date"));
+                dto.setPerformDate(rs.getDate("perform_date"));
+                dto.setCreatorId(rs.getInt("creator_id"));
+                dto.setPerformerId(rs.getInt("performer_id"));
+                dto.setPlatformId(rs.getInt("platform_id"));
+                dto.setPerformStatus(rs.getString("perform_status"));
+                list.add(dto);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return list;
     }
 
     /**
@@ -51,9 +63,11 @@ public class SpaceMissionRepository {
      * @param id Id of the space mission
      * @return SpaceMission object
      */
-    public SpaceMission getSpaceMission(long id) {
+    public SpaceMissionDto getSpaceMission(long id) {
         String query = "SELECT * FROM space_mission WHERE mission_id = ?;";
-        return jdbcTemplate.queryForObject(query, new Object[]{id}, (rs, rowNum) -> {
+        SpaceMissionDto spaceMission = null;
+
+        /*return jdbcTemplate.queryForObject(query, new Object[]{id}, (rs, rowNum) -> {
             SpaceMission spaceMission = new SpaceMission();
             spaceMission.setId(rs.getLong("mission_id"));
             spaceMission.setMissionName(rs.getString("mission_name"));
@@ -67,7 +81,31 @@ public class SpaceMissionRepository {
             spaceMission.setPerformerId(rs.getInt("performer_id"));
             spaceMission.setPerformStatus(rs.getString("perform_status"));
             return spaceMission;
-        });
+        });*/
+        try{
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, String.valueOf(id));
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                spaceMission = new SpaceMissionDto();
+
+                spaceMission.setId(rs.getLong("mission_id"));
+                spaceMission.setMissionName(rs.getString("mission_name"));
+                spaceMission.setImage(rs.getBytes("mission_image"));
+                spaceMission.setObjective(rs.getString("objective"));
+                spaceMission.setBudget(rs.getDouble("budget"));
+                spaceMission.setCreateDate(rs.getDate("create_date"));
+                spaceMission.setPerformDate(rs.getDate("perform_date"));
+                spaceMission.setPlatformId(rs.getInt("platform_id"));
+                spaceMission.setCreatorId(rs.getInt("creator_id"));
+                spaceMission.setPerformerId(rs.getInt("performer_id"));
+                spaceMission.setPerformStatus(rs.getString("perform_status"));
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return spaceMission;
     }
 
     public List<SpaceMissionsInCompanyPortfolioDto> getPortfolio(long companyId){

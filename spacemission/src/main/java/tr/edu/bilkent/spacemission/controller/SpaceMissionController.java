@@ -21,18 +21,18 @@ public class SpaceMissionController {
 
     @GetMapping("/list")
     public List<SpaceMissionDto> getSpaceMissions() {
-        List<SpaceMission> spaceMissions = spaceMissionService.getSpaceMissions();
-        List<SpaceMissionDto> spaceMissionDtos = new ArrayList<SpaceMissionDto>();
+        List<SpaceMissionDto> spaceMissionsDtoList = spaceMissionService.getSpaceMissions();
+        /*List<SpaceMissionDto> spaceMissionDtos = new ArrayList<SpaceMissionDto>();
         for (SpaceMission spaceMission : spaceMissions) {
             spaceMissionDtos.add(convertEntityToDto(spaceMission));
-        }
-        return spaceMissionDtos;
+        }*/
+        return spaceMissionsDtoList;
     }
 
     @GetMapping("{id}")
     public SpaceMissionDto getSpaceMission(@PathVariable long id) {
-        SpaceMission spaceMission = spaceMissionService.getSpaceMission(id);
-        return convertEntityToDto(spaceMission);
+        SpaceMissionDto spaceMission = spaceMissionService.getSpaceMission(id);
+        return spaceMission;
     }
 
     @PostMapping("/create")
