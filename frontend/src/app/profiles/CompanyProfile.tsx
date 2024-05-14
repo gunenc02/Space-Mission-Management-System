@@ -1,44 +1,50 @@
-import {useState, useEffect} from "react";
-import {getCompanyProfile, getPerformedSpaceMissionsOfCompany} from "../../calling/companyCaller";
-import {Company, SpaceMission, SpaceMissionForListing} from "../../data-types/entities";
-import {useParams} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getCompanyProfile, getPerformedSpaceMissionsOfCompany } from "../../calling/companyCaller";
+import { Company, SpaceMissionForListing } from "../../data-types/entities";
+import { useParams } from "react-router-dom";
 
 export default function CompanyProfile() {
-    const { companyId } = useParams<{ companyId?: string }>(); // Correctly extract companyId from the URL
+    const { companyId } = useParams<{ companyId?: string }>();
     const [companyInfo, setCompanyInfo] = useState<Company | null>(null);
-    const [SpaceMissionForListing, setSpaceMissionForListing] = useState<SpaceMissionForListing[] | null>(null);
+    const [spaceMissions, setSpaceMissions] = useState<SpaceMissionForListing[] | null>(null);
     const [error, setError] = useState('');
 
     useEffect(() => {
         if (!companyId) {
             setError("Company ID is missing");
-            return; // Exit if no companyId is provided
+            return;
         }
 
-        const numericCompanyId = parseInt(companyId, 10); // Convert companyId to a number
+        const numericCompanyId = parseInt(companyId, 10);
         if (isNaN(numericCompanyId)) {
             setError("Invalid Company ID");
-            return; // Handle non-numeric companyId
+            return;
         }
 
         const token = ""; // Assuming token management
-        const user = { token }; // Create user object for API call
+        const user = { token };
+
         getCompanyProfile(numericCompanyId, user)
             .then(data => {
                 setCompanyInfo(data);
                 return getPerformedSpaceMissionsOfCompany(numericCompanyId, user);
             })
             .then(missions => {
-                setSpaceMissionForListing(missions);
+                const missionsWithDates = missions.map(mission => ({
+                    ...mission,
+                    startDate: new Date(mission.startDate),
+                    endDate: new Date(mission.endDate)
+                }));
+                setSpaceMissions(missionsWithDates);
                 setError('');
             })
             .catch(err => {
                 setError(err.message);
                 setCompanyInfo(null);
-                setSpaceMissionForListing(null);
+                setSpaceMissions(null);
                 console.error("API error:", err);
             });
-    }, [companyId]); // Dependency on companyId from URL
+    }, [companyId]);
 
     if (error) {
         return <div>Error: {error}</div>;
@@ -55,11 +61,11 @@ export default function CompanyProfile() {
             <p>Country: {companyInfo.country}</p>
             <img src={companyInfo.logo} alt={`${companyInfo.name} logo`} style={{ width: '100px' }} />
             <p>Budget: ${companyInfo.money.toLocaleString()}</p>
-            {SpaceMissionForListing ? (
+            {spaceMissions ? (
                 <div>
                     <h2>Space Missions</h2>
                     <ul>
-                        {SpaceMissionForListing.map(mission => (
+                        {spaceMissions.map(mission => (
                             <li key={mission.id}>
                                 <h3>{mission.missionName}</h3>
                                 <p>Created by: {mission.creatorCompanyName}</p>
