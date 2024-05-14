@@ -116,6 +116,7 @@ public class SpaceMissionRepository {
                             "(SELECT company_name FROM  company WHERE company_id = space_mission.creator_id) AS creator_name " +
                             "FROM space_mission WHERE performer_id = ?"
             );
+            ps.setLong(1,companyId);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 SpaceMissionsInCompanyPortfolioDto mission = new SpaceMissionsInCompanyPortfolioDto();

@@ -82,7 +82,7 @@ export function getPerformedSpaceMissionsOfCompany(
     id:number,
     user:{token:string}
 ): Promise<any>{
-  const sentUrl = `http://localhost:8080/spacemission/getAllMissionsByCompany/${id}`
+  const sentUrl = `http://localhost:8080/spaceMission/getAllMissionsByCompany/${id}`
 
   return fetch(sentUrl, {
     method:'GET',
