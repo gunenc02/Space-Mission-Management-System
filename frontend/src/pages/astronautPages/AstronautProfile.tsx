@@ -1,9 +1,3 @@
-import { useParams } from "react-router-dom";
-import CreateHealthRecord from "../modals/CreateHealthRecord";
-import { useState } from "react";
-import HealthRecordDetails from "../modals/HealthRecordDetails";
-import FireAstronaut from "../modals/FireAstronaut";
-
 import { Link } from 'react-router-dom';
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
@@ -18,38 +12,14 @@ export default function AstronautProfile() {
         { id: 2, date: '25.03.2024', doctor: 'Dr. OZ' }
     ];
 
-    const { id } = useParams();
-    const [createHealthRecordOpen, setCreateHealthRecordOpen] =
-        useState<boolean>(false);
-    const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);
-    const [healthRecordDetailsOpen, setHealthRecordDetailsOpen] =
-        useState<boolean>(false);
-
-    const handleCreateHealthRecordClick = () => {
-        setCreateHealthRecordOpen(!createHealthRecordOpen);
-    };
-
-    const handleFireAstronautClick = () => {
-        setFireAstronautOpen(!fireAstronautOpen);
-    };
-
-    const handleHealthRecordDetailsClick = () => {
-        setHealthRecordDetailsOpen(!healthRecordDetailsOpen);
-    };
-
     return (
         <div className="outer">
-            <Header/>
-            <Navbar/>
-            <div className="button-bar">
-                <button className="top-button" onClick={handleCreateHealthRecordClick}>Create Health Record</button>
-                <button className="top-button" onClick={handleFireAstronautClick}>Fire Astronaut</button>
-                <button className="top-button" onClick={handleHealthRecordDetailsClick}>Health Record Details</button>
-            </div>
+            <Header />
+            <Navbar />
             <div className="profile-container">
                 <div className="profile-header">
                     <div className="profile-image">
-                        <img src="astronaut-image.png" alt="Astronaut" style={{width: '150px', height: '150px'}}/>
+                        <img src="astronaut-image.png" alt="Astronaut" style={{ width: '150px', height: '150px' }} />
                     </div>
                     <div className="profile-info">
                         <h1>Bahadır Günenç</h1>
@@ -111,31 +81,12 @@ export default function AstronautProfile() {
                         margin: 5px 0;
                         background: white;
                         border: 1px solid #ddd;
-                        display: block;
-                        text-decoration: none;
-                        color: black;
-                    }
-                    .button-bar {
-                        display: flex;
-                        justify-content: center;
-                        width: 100%;
-                        margin-top: 10px;
-                    }
-                    .top-button {
-                        padding: 8px 16px;
-                        margin: 0 10px;
-                        background-color: #007bff;
-                        color: white;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                    }
-                    .top-button:hover {
-                        background-color: #0056b3;
+                        display: block; /* Make the link fill the container */
+                        text-decoration: none; /* Remove the default link decoration */
+                        color: black; /* Set a neutral color for the text */
                     }
                 `}</style>
             </div>
         </div>
     );
 }
-

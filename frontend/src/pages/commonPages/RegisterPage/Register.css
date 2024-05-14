@@ -46,11 +46,13 @@
 
 .left-form {
     grid-column: 1; /* Place elements in the first column */
+    margin-right: 100px;
+
 }
 
 .right-form {
     grid-column: 2; /* Place elements in the second column */
-    margin-left: 20px; /* Add spacing between columns */
+    margin-left: 100px; /* Add spacing between columns */
 }
 
 .input-group {
@@ -111,4 +113,17 @@
 .form-fields {
     display: flex; /* Added flexbox for horizontal arrangement */
     flex-wrap: wrap; /* Wrap content to multiple lines if necessary */
+
+    justify-content: center;
+}
+
+.registration-form input[type="file"] {
+    background-color: #f8f9fa; /* Light background for input */
+    border-color: #ced7e0; /* Consistent border color */
+    color: #333; /* Text color for the file path */
+}
+
+/* Adjustments for file input hover state */
+.registration-form input[type="file"]:hover {
+    border-color: #054569; /* Darken border on hover */
 }
