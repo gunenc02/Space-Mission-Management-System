@@ -123,4 +123,22 @@ public class CompanyRepository {
         }
         return result;
     }
+
+    public String getCompanyName(long companyId) {
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT c.company_name FROM company c WHERE company_id = ?");
+            ps.setLong(1,companyId);
+            ResultSet rs = ps.executeQuery();
+            String tmp = "";
+            if(rs.next()){
+                tmp = rs.getString("company_name");
+            }
+            System.out.println("do");
+            return tmp;
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return "";
+    }
 }

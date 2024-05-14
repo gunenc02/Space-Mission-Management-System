@@ -30,7 +30,7 @@ export default function CompanyProfile() {
                 return getPerformedSpaceMissionsOfCompany(numericCompanyId, user);
             })
             .then(missions => {
-                const missionsWithDates = missions.map(mission => ({
+                const missionsWithDates = missions.map((mission:SpaceMissionForListing) => ({
                     ...mission,
                     startDate: new Date(mission.startDate),
                     endDate: new Date(mission.endDate)

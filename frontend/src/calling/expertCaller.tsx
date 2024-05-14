@@ -1,6 +1,6 @@
-export function getExpertById(id: number, user: { token: string }): Promise<any> {
+export function getExpertById(
+    id: number, user: { token: string }): Promise<any> {
     const sentUrl = `http://localhost:8080/expert/${id}`;
-  
     return fetch(sentUrl, {
       method: 'GET',
       headers: {
@@ -10,6 +10,7 @@ export function getExpertById(id: number, user: { token: string }): Promise<any>
     })
     .then(response => {
       if (response.status === 200) {
+        console.log(id + 1)
         return response.json();
       } else {
         throw new Error(`Failed to fetch expert: ${response.statusText}`);
@@ -17,6 +18,7 @@ export function getExpertById(id: number, user: { token: string }): Promise<any>
     })
     .catch(err => {
       console.error("Error:", err);
+      console.log("err")
       throw err;
     });
   }
@@ -66,5 +68,31 @@ export function getExpertById(id: number, user: { token: string }): Promise<any>
       console.error("Error:", err);
       throw err;
     });
+  }
+
+  export function getHealthRecordsByExpertId(
+      id: number,
+      user: { token: string }
+  ): Promise<void> {
+    const sentUrl = `http://localhost:8080/expert/getHealthRecordsByExpertId/${id}`;
+
+    return fetch(sentUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+    })
+        .then(response => {
+          if (response.status === 200) {
+            console.log("Expert gets records successfully");
+          } else {
+            throw new Error(`Failed to get records of expert: ${response.statusText}`);
+          }
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          throw err;
+        });
   }
   

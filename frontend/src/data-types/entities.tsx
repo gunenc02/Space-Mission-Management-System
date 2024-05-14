@@ -70,3 +70,19 @@ export interface SpaceMissionForListing{
   endDate:Date,
   image:string
 }
+
+export interface Expert{
+  id:number,
+  userMail:string,
+  userRole:string,
+  name:string,
+  companyName:string,
+  companyLogo:string
+}
+
+export interface HealthRecordForListing {
+  id: number,
+  date: Date,
+  astronautName: string,
+  notes: string
+}

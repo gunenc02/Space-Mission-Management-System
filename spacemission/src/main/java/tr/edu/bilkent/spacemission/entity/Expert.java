@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Expert extends User{
     private String name;
+    private long companyId;
 }

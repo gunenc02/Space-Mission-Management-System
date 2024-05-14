@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class ExpertDto extends UserDto {
 
     private String name;
-    private String mail;
     private String companyName;
     private byte[] companyLogo;
     private long companyId;

@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS expert (
 CREATE TABLE IF NOT EXISTS health_record (
      health_record_id INT AUTO_INCREMENT PRIMARY KEY,
      date DATE NOT NULL,
-     availibility_for_mission BINARY NOT NULL,
+     availibility_for_mission BOOLEAN NOT NULL,
      weight DOUBLE NOT NULL,
      height DOUBLE NOT NULL,
      heart_rate INT NOT NULL,

@@ -38,4 +38,8 @@ public class CompanyService {
     public boolean markSpaceMissionAsPerformed(long missionId){
         return companyRepository.markSpaceMissionAsPerformed(missionId);
     }
+
+    public String getCompanyName(long companyId) {
+        return companyRepository.getCompanyName(companyId);
+    }
 }
