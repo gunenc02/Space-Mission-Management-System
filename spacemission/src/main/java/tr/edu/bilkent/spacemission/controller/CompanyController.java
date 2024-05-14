@@ -40,6 +40,11 @@ public class CompanyController {
         return convertEntityToDto(companyService.getCompanyProfile(id));
     }
 
+    @DeleteMapping("/fireAstronaut/{id}/{astronautId}")
+    public void fireAstronaut(@PathVariable long id, @PathVariable long astronautId){
+        companyService.fireAstronaut(id, astronautId);
+    }
+
     private Company convertDtoToEntity(CompanyDto companyDto) {
         Company company = new Company();
         company.setId(companyDto.getUserId());
