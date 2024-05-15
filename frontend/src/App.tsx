@@ -35,6 +35,7 @@ function App() {
           <Route path="/bid/receivedList/:id" element={<ReceivedBids />} />
           <Route path="/test" element={<Login />} />
           <Route path="/bid/offeredList/:id" element={<OfferedBids />} />
+          <Route path="/expert/:id" element={<ExpertProfile />} />
         </Routes>
       </BrowserRouter>
     </div>

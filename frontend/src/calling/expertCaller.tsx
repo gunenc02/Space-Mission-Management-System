@@ -96,10 +96,13 @@ export function fireExpert(id: number, user: { token: string }): Promise<void> {
       })
           .then(response => {
               if (response.status === 200) {
-                  console.log("Expert gets records successfully");
+                  return response.json()
               } else {
                   throw new Error(`Failed to get records of expert: ${response.statusText}`);
               }
+          })
+          .then((data) => {
+              return data;
           })
           .catch(err => {
               console.error("Error:", err);

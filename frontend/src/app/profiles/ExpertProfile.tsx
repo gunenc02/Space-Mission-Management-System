@@ -4,18 +4,18 @@ import { getExpertById, getHealthRecordsByExpertId } from "../../calling/expertC
 import { Expert, HealthRecordForListing } from "../../data-types/entities";
 
 export default function expertProfile() {
-    const { expertId } = useParams<{ expertId?: string }>();
+    const { id } = useParams<{ id?: string }>();
     const [expertInfo, setExpertInfo] = useState<Expert | null>(null);
     const [healthRecords, setHealthRecords] = useState<HealthRecordForListing[] | null>(null);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (!expertId) {
+        if (!id) {
             setError("Expert ID is missing");
             return;
         }
 
-        const numericExpertId = parseInt(expertId, 10);
+        const numericExpertId = parseInt(id, 10);
         if (isNaN(numericExpertId)) {
             setError("Invalid Expert ID");
             return;
@@ -47,7 +47,7 @@ export default function expertProfile() {
                 setHealthRecords(null);
                 console.error("API error:", err);
             });
-    }, [expertId]);
+    }, [id]);
 
     if (error) {
         return <div>Error: {error}</div>;

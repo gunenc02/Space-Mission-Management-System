@@ -100,6 +100,9 @@ export function getPerformedSpaceMissionsOfCompany(
         );
       }
     })
+      .then((data) => {
+        return data;
+      })
       .catch((err) =>{
         console.log("Error")
         throw(err)
