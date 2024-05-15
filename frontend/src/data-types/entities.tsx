@@ -64,7 +64,7 @@ export interface HealthRecord {
 export interface SpaceMissionForListing {
   id: number;
   missionName: string;
-  creatorCompanyName: string;
+  companyName: string;
   status: string;
   startDate: Date;
   endDate: Date;
