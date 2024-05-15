@@ -2,21 +2,40 @@
 import { HealthRecordDetailsProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 import { HealthRecord } from "../../data-types/entities";
+import { useEffect, useState } from "react";
 
 export default function CreateHealthRecord(props: HealthRecordDetailsProps) {
-  const healthRecord: HealthRecord = {
-    id: 1,
-    astronautId: 123,
-    expertId: 456,
+  const [healthRecord, setHealthRecord] = useState<HealthRecord>({
+    id: 0,
+    astronautId: 0,
+    expertId: 0,
     date: new Date(),
-    availabilityForMission: true,
-    weight: 70,
-    height: 180,
-    heartRate: 75,
-    bloodPressure: 120,
-    vaccinations: "COVID-19, Influenza",
-    notes: "No significant issues.",
-  };
+    availabilityForMission: false,
+    weight: 0,
+    height: 0,
+    heartRate: 0,
+    bloodPressure: 0,
+    vaccinations: "",
+    notes: "",
+  });
+
+  const url = "http://localhost:8080/healthRecord/" + props.healthRecordId;
+
+  useEffect(() => {
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setHealthRecord(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
 
   return (
     <div className="modal-overlay">
