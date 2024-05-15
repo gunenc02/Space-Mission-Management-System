@@ -18,17 +18,17 @@ export default function Agencies() {
     <div className="outer">
       <Header />
       <Navbar />
-      <div className="list-container">
+      <div className="smm-list-container">
         {agencies.map((agency: Agency) => (
           <Link
             to={"/agency/" + agency.id}
-            className="list-item"
+            className="smm-list-item"
             key={agency.id}
           >
-            <div className="list-image-box">
+            <div className="smm-list-image-box">
               <img src={agency.logo} />
             </div>
-            <div className="list-information-box">
+            <div className="smm-list-information-box">
               <p>Name: {agency.name}</p>
               <p>{agency.isApproved ? "Approved" : "Not approved"}</p>
             </div>

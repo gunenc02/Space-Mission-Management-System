@@ -19,17 +19,17 @@ export default function Companies() {
     <div className="outer">
       <Header />
       <Navbar />
-      <div className="list-container">
+      <div className="smm-list-container">
         {companies.map((company: Company) => (
           <Link
             to={"/company/" + company.userId}
-            className="list-item"
+            className="smm-list-item"
             key={company.userId}
           >
-            <div className="list-image-box">
+            <div className="smm-list-image-box">
               <img src={company.logo} />
             </div>
-            <div className="list-information-box">
+            <div className="smm-list-information-box">
               <p>Name: {company.name}</p>
               <p>Country: {company.country}</p>
               <p>Budget: {company.money}</p>

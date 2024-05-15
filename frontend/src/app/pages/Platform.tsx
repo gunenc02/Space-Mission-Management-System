@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import { Platform } from "../../data-types/entities";
 import { getPlatforms } from "../../calling/platformCaller";
+import { Link } from "react-router-dom";
 
 export default function Platforms() {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
@@ -18,18 +19,22 @@ export default function Platforms() {
     <div className="outer">
       <Header />
       <Navbar />
-      <div className="list-container">
+      <div className="smm-list-container">
         {platforms.map((platform: Platform) => (
-          <div className="list-item" key={platform.id}>
-            <div className="list-image-box">
+          <Link
+            to={"/platform/" + platform.id}
+            className="smm-list-item"
+            key={platform.id}
+          >
+            <div className="smm-list-image-box">
               <img src={platform.image} />
             </div>
-            <div className="list-information-box">
+            <div className="smm-list-information-box">
               <p>Name: {platform.platformName}</p>
               <p>Production Year: {platform.productionYear}</p>
               <p>Cost per Launch: {platform.costPerLaunch}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
