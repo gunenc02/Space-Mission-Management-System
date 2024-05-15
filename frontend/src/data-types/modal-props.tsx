@@ -40,4 +40,11 @@ export interface SubmitBidErrorProps {
 
 export interface FilterProps {
   onClose: () => void;
+  onFilter: (filters: FilterValues) => void;
+}
+export interface FilterValues {
+  minYear?: number;
+  maxYear?: number;
+  minCost?: number;
+  maxCost?: number;
 }
