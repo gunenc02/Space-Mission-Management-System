@@ -1,0 +1,546 @@
+Index: spacemission/src/main/resources/schema.sql
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>CREATE TABLE IF NOT EXISTS user (\r\n     user_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     user_mail VARCHAR(255) NOT NULL UNIQUE,\r\n     user_password VARCHAR(255) NOT NULL,\r\n     user_role VARCHAR(255) NOT NULL\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS admin (\r\n     admin_id INT PRIMARY KEY,\r\n     admin_name VARCHAR(255) NOT NULL,\r\n     is_approved BOOLEAN NOT NULL DEFAULT FALSE,\r\n     FOREIGN KEY (admin_id) REFERENCES user(user_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS agency (\r\n     agency_id INT PRIMARY KEY,\r\n     agency_name VARCHAR(255) NOT NULL,\r\n     agency_logo BLOB,\r\n     is_approved BOOLEAN NOT NULL DEFAULT FALSE,\r\n     agency_mail VARCHAR(255) NOT NULL,\r\n     FOREIGN KEY (agency_id) REFERENCES user(user_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS company (\r\n     company_id INT PRIMARY KEY,\r\n     company_name VARCHAR(255) NOT NULL,\r\n     company_mail VARCHAR(255) NOT NULL,\r\n     company_logo BLOB,\r\n     worker_count INT NOT NULL DEFAULT 0,\r\n     country VARCHAR(255) NOT NULL,\r\n     money DOUBLE NOT NULL,\r\n     is_approved BOOLEAN NOT NULL DEFAULT FALSE,\r\n     FOREIGN KEY (company_id) REFERENCES user(user_id)\r\n        ON DELETE CASCADE\r\n        ON UPDATE CASCADE\r\n    ) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS astronaut (\r\n     astronaut_id INT PRIMARY KEY,\r\n     astronaut_name VARCHAR(255) NOT NULL,\r\n     astronaut_image BLOB,\r\n     date_of_birth DATE NOT NULL,\r\n     on_duty BOOLEAN NOT NULL DEFAULT FALSE,\r\n     country VARCHAR(255) NOT NULL,\r\n     salary DOUBLE NOT NULL DEFAULT 0,\r\n     FOREIGN KEY (astronaut_id) REFERENCES user(user_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE\r\n\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS health_record (\r\n     health_record_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     date DATE NOT NULL,\r\n     availibility_for_mission BINARY NOT NULL,\r\n     weight DOUBLE NOT NULL,\r\n     height DOUBLE NOT NULL,\r\n     heart_rate INT NOT NULL,\r\n     blood_pressure VARCHAR(255) NOT NULL,\r\n     vaccinations TEXT NOT NULL,\r\n     astronaut_id INT NOT NULL,\r\n     expert_id INT NOT NULL,\r\n     FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE,\r\n     FOREIGN KEY(expert_id) REFERENCES expert(expert_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS platform (\r\n     platform_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     platform_name VARCHAR(255) NOT NULL,\r\n     production_year YEAR NOT NULL,\r\n     platform_image BLOB,\r\n     cost_per_launch DOUBLE NOT NULL\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS space_mission (\r\n     mission_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     mission_name VARCHAR(255) NOT NULL,\r\n     mission_image BLOB,\r\n     objective TEXT NOT NULL,\r\n     budget DOUBLE NOT NULL,\r\n     create_date DATE NOT NULL,\r\n     perform_date DATE,\r\n     platform_id INT,\r\n     creator_id INT NOT NULL,\r\n     performer_id INT,\r\n     perform_status VARCHAR(10) NOT NULL CHECK (perform_status = 'pending' OR perform_status = 'performed'),\r\n     FOREIGN KEY(platform_id) REFERENCES platform(platform_id),\r\n     FOREIGN KEY(creator_id) REFERENCES company(company_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE,\r\n     FOREIGN KEY(performer_id) REFERENCES company(company_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE\r\n) ^;\r\n\r\n\r\nCREATE TABLE IF NOT EXISTS mission_astronaut_recordings (\r\n    mission_id INT,\r\n    astronaut_id INT,\r\n    FOREIGN KEY(mission_id) REFERENCES space_mission(mission_id),\r\n    FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id),\r\n    PRIMARY KEY(mission_id, astronaut_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS transaction (\r\n     transaction_id INT PRIMARY KEY,\r\n     fromcompany_id INT NOT NULL,\r\n     tocompany_id INT NOT NULL,\r\n     transaction_amount DOUBLE NOT NULL,\r\n     FOREIGN KEY(fromcompany_id) REFERENCES company(company_id),\r\n     FOREIGN KEY(tocompany_id) REFERENCES company(company_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS expert (\r\n     expert_id INT PRIMARY KEY,\r\n     expert_name VARCHAR(255) UNIQUE,\r\n     expert_company INT,\r\n     expert_mail VARCHAR(255) NOT NULL,\r\n     FOREIGN KEY (expert_id) REFERENCES user(user_id),\r\n     FOREIGN KEY (expert_company) REFERENCES company(company_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS agency_approve_astronaut (\r\n     id INT AUTO_INCREMENT PRIMARY KEY,\r\n     astronaut_id INT NOT NULL,\r\n     agency_id INT NOT NULL,\r\n     FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),\r\n     FOREIGN KEY (agency_id) REFERENCES agency(agency_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS agency_approve_space_mission (\r\n     id INT AUTO_INCREMENT PRIMARY KEY,\r\n     space_mission_id INT NOT NULL,\r\n     agency_id INT NOT NULL,\r\n     FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),\r\n     FOREIGN KEY (agency_id) REFERENCES agency(agency_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS bid (\r\n     bid_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     price INT NOT NULL,\r\n     offer_date DATE NOT NULL,\r\n     deadline DATE NOT NULL,\r\n     description VARCHAR(2555),\r\n     status TEXT NOT NULL CHECK (status = 'approved' OR status = 'rejected' OR status = 'pending'),\r\n     offerer_id INT NOT NULL,\r\n     receiver_id INT NOT NULL,\r\n     mission_id INT NOT NULL,\r\n     FOREIGN KEY (offerer_id) REFERENCES company(company_id),\r\n     FOREIGN KEY (receiver_id) REFERENCES company(company_id),\r\n     FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id)\r\n) ^;\r\n\r\nCREATE OR REPLACE VIEW company_mission_info AS\r\nSELECT comp.company_name,\r\n       comp.worker_count,\r\n       miss.mission_name,\r\n       miss.objective,\r\n       a.astronaut_name\r\nFROM company AS comp JOIN space_mission AS miss ON (comp.company_id = miss.creator_id)\r\n                     LEFT OUTER JOIN mission_astronaut_recordings\r\n    AS mar ON (miss.mission_id = mar.mission_id) JOIN astronaut a ON (mar.astronaut_id = a.astronaut_id) ^;\r\n\r\nCREATE OR REPLACE VIEW platform_availability AS\r\nSELECT platform.platform_id, (SELECT COUNT(*) FROM space_mission WHERE platform_id = platform.platform_id)\r\nFROM platform ^;\r\n\r\n\r\nDROP TRIGGER IF EXISTS release_astronaut ^;\r\nCREATE TRIGGER release_astronaut\r\n    AFTER UPDATE ON space_mission\r\n    FOR EACH ROW\r\nBEGIN\r\n    IF (OLD.perform_status = 'pending' AND NEW.perform_status = 'performed') THEN\r\n\r\n        UPDATE astronaut\r\n        SET on_duty = FALSE\r\n        WHERE astronaut.astronaut_id IN (SELECT astronaut_id\r\n                                         FROM mission_astronaut_recordings\r\n                                         WHERE mission_id = OLD.mission_id);\r\n    END IF;\r\nEND ^;\r\n\r\nDROP TRIGGER IF EXISTS delete_experts ^;\r\nCREATE TRIGGER delete_experts\r\n    BEFORE DELETE ON company\r\n    FOR EACH ROW\r\nBEGIN\r\n    DELETE FROM expert\r\n    WHERE expert_company = OLD.company_id;\r\nEND ^;\r\n\r\nDROP TRIGGER IF EXISTS check_agency_mail_insert^;\r\nCREATE TRIGGER check_agency_mail_insert\r\n    BEFORE INSERT ON agency\r\n    FOR EACH ROW\r\nBEGIN\r\n    DECLARE user_mail VARCHAR(255);\r\n    SELECT user.user_mail INTO user_mail FROM user WHERE user_id = NEW.agency_id;\r\n    IF (user_mail <> NEW.agency_mail) THEN\r\n       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Check failed. There exists no such agency mail in the user table';\r\n    END IF;\r\nEND ^;\r\n\r\nDROP TRIGGER IF EXISTS check_company_mail_insert^;\r\nCREATE TRIGGER check_company_mail_insert\r\n    BEFORE INSERT ON company\r\n    FOR EACH ROW\r\nBEGIN\r\n    DECLARE company_mail VARCHAR(255);\r\n    SELECT company.company_mail INTO company_mail FROM company WHERE company_id = NEW.company_id;\r\n    IF(company_mail <> NEW.company_mail) THEN\r\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT  = 'Check failed. There exists no such company mail in the user table';\r\n    END IF;\r\nEND ^;\r\n\r\nDROP TRIGGER IF EXISTS check_expert_mail_insert^;\r\nCREATE TRIGGER check_expert_mail_insert\r\n    BEFORE INSERT ON expert\r\n    FOR EACH ROW\r\nBEGIN\r\n    DECLARE expert_mail VARCHAR(255);\r\n    SELECT expert.expert_mail INTO expert_mail FROM expert WHERE expert_id = NEW.expert_id;\r\n    IF(expert_mail <> NEW.expert_mail) THEN\r\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT  = 'Check failed. There exists no such expert mail in the user table';\r\n    END IF;\r\nEND ^;
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/resources/schema.sql b/spacemission/src/main/resources/schema.sql
+--- a/spacemission/src/main/resources/schema.sql	(revision ee7ccb578690c9ba8f301f4780ca742dc8d8d2ee)
++++ b/spacemission/src/main/resources/schema.sql	(date 1715437369088)
+@@ -53,6 +53,15 @@
+ 
+ ) ^;
+ 
++CREATE TABLE IF NOT EXISTS expert (
++     expert_id INT PRIMARY KEY,
++     expert_name VARCHAR(255) UNIQUE,
++     expert_company INT,
++     expert_mail VARCHAR(255) NOT NULL,
++     FOREIGN KEY (expert_id) REFERENCES user(user_id),
++     FOREIGN KEY (expert_company) REFERENCES company(company_id)
++) ^;
++
+ CREATE TABLE IF NOT EXISTS health_record (
+      health_record_id INT AUTO_INCREMENT PRIMARY KEY,
+      date DATE NOT NULL,
+@@ -117,15 +126,6 @@
+      FOREIGN KEY(tocompany_id) REFERENCES company(company_id)
+ ) ^;
+ 
+-CREATE TABLE IF NOT EXISTS expert (
+-     expert_id INT PRIMARY KEY,
+-     expert_name VARCHAR(255) UNIQUE,
+-     expert_company INT,
+-     expert_mail VARCHAR(255) NOT NULL,
+-     FOREIGN KEY (expert_id) REFERENCES user(user_id),
+-     FOREIGN KEY (expert_company) REFERENCES company(company_id)
+-) ^;
+-
+ CREATE TABLE IF NOT EXISTS agency_approve_astronaut (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      astronaut_id INT NOT NULL,
+Index: frontend/src/data-types/props.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/data-types/props.tsx b/frontend/src/data-types/props.tsx
+new file mode 100644
+--- /dev/null	(date 1715437369081)
++++ b/frontend/src/data-types/props.tsx	(date 1715437369081)
+@@ -0,0 +1,48 @@
++export interface Astronaut {
++  id: number;
++  name: string;
++  image: string;
++  dateOfBirth: Date;
++  onDuty: boolean;
++  country: string;
++  salary: number;
++}
++
++export interface Agency {
++  id: number;
++  name: string;
++  mail: string;
++  logo: string;
++  status: boolean;
++}
++
++export interface Company {
++  id: number;
++  name: string;
++  mail: string;
++  country: string;
++  logo: string;
++  budget: number;
++}
++
++export interface SpaceMission {
++  id: number;
++  missionName: string;
++  image: string;
++  objective: string;
++  budget: number;
++  createDate: Date;
++  performDate: Date;
++  platformId: number;
++  creatorId: number;
++  performerId: number;
++  performStatus: string;
++}
++
++export interface Platform {
++  id: number;
++  platformName: string;
++  productionYear: number;
++  image: string;
++  costPerLaunch: number;
++}
+Index: frontend/src/app/AstronautRegister.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/AstronautRegister.tsx b/frontend/src/app/AstronautRegister.tsx
+new file mode 100644
+--- /dev/null	(date 1715437369068)
++++ b/frontend/src/app/AstronautRegister.tsx	(date 1715437369068)
+@@ -0,0 +1,24 @@
++// UNUSED FILE, LET IT STAY JUST IN CASE WE DECIDE TO GO BACK TO SEPARATE REGISTRATION
++export default function AstronautRegister(){
++    return (
++        <div>
++            <div>
++                <h1>Astronaut Registration</h1> <br></br>
++                <h3>Welcome, to the place where you will take a step for new horizons!</h3>
++            </div>
++            <div>
++                <label htmlFor="email">E-mail Adress</label>
++                <input type="mail" id="email"></input> <br></br>
++                <label htmlFor="fullname">Full Name</label>
++                <input type="text" id="fullname"></input> <br></br>
++                <label htmlFor="pw">Password</label>
++                <input type="password" id="pw"></input> <br></br>
++                <label htmlFor="dob">Date of birth</label> 
++                <input type="text" id="dob"></input> <br></br>
++                <label htmlFor="country">Country</label> 
++                <input type="text" id="country"></input>
++                <button type="button" style={{backgroundColor: 'cyan', color: 'white'}}>Submit</button>
++            </div>
++        </div>
++    );
++}
+\ No newline at end of file
+Index: frontend/src/calling/spaceMissionCaller.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/calling/spaceMissionCaller.tsx b/frontend/src/calling/spaceMissionCaller.tsx
+new file mode 100644
+--- /dev/null	(date 1715437369076)
++++ b/frontend/src/calling/spaceMissionCaller.tsx	(date 1715437369076)
+@@ -0,0 +1,25 @@
++export function getSpaceMissions(user: { token: string }): Promise<any[]> {
++  const sentUrl = "http://localhost:8080/spaceMission/list";
++
++  return fetch(sentUrl, {
++    method: "GET",
++    headers: {
++      "Content-Type": "application/json",
++      Authorization: `Bearer ${user.token}`,
++    },
++  })
++    .then((response) => {
++      if (response.ok) {
++        return response.json();
++      } else {
++        throw new Error(`Failed to fetch astronauts: ${response.statusText}`);
++      }
++    })
++    .then((data) => {
++      return data;
++    })
++    .catch((err) => {
++      console.error("Error:", err);
++      throw err;
++    });
++}
+Index: frontend/src/styles/Navbar.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.navbar-outer {\r\n  background-color: rgba(0, 0, 0, 0.2); /* Black w/opacity/see-through */\r\n  color: white;\r\n  display: flex;\r\n  justify-content: center; /* Center items horizontally */\r\n  align-items: center;\r\n  width: 100vw; /* Change to percentage to fit screen */\r\n  height: 10vh;\r\n}\r\n\r\n.list {\r\n  display: flex;\r\n  flex-direction: row;\r\n  justify-content: space-around; /* Space around items */\r\n  width: 80%; /* Adjust as needed */\r\n}\r\n\r\n.list-item {\r\n  padding-left: 0;\r\n  padding: 0 1rem; /* Add space between items */\r\n  list-style-type: none;\r\n}\r\n\r\n.link {\r\n  color: white;\r\n  font-size: 1.5rem;\r\n  font-weight: 700;\r\n}\r\n\r\n.link:hover {\r\n  color: #fff;\r\n  transition: color 0.2s ease-in-out;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/styles/Navbar.css b/frontend/src/styles/Navbar.css
+--- a/frontend/src/styles/Navbar.css	(revision ee7ccb578690c9ba8f301f4780ca742dc8d8d2ee)
++++ b/frontend/src/styles/Navbar.css	(date 1715437369085)
+@@ -15,7 +15,7 @@
+   width: 80%; /* Adjust as needed */
+ }
+ 
+-.list-item {
++.navbar-list-item {
+   padding-left: 0;
+   padding: 0 1rem; /* Add space between items */
+   list-style-type: none;
+Index: frontend/src/app/SpaceMissions.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import Header from \"../components/Header\";\r\nimport Navbar from \"../components/Navbar\";\r\n\r\nexport default function SpaceMissions() {\r\n  return (\r\n    <div className=\"outer\">\r\n      <Header />\r\n      <Navbar />\r\n      <h1>Space Missions</h1>\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/SpaceMissions.tsx b/frontend/src/app/SpaceMissions.tsx
+--- a/frontend/src/app/SpaceMissions.tsx	(revision ee7ccb578690c9ba8f301f4780ca742dc8d8d2ee)
++++ b/frontend/src/app/SpaceMissions.tsx	(date 1715437369072)
+@@ -1,12 +1,45 @@
++import { useEffect, useState } from "react";
+ import Header from "../components/Header";
+ import Navbar from "../components/Navbar";
++import { SpaceMission } from "../data-types/props";
++import { getSpaceMissions } from "../calling/spaceMissionCaller";
+ 
+ export default function SpaceMissions() {
++  const [spaceMissions, setSpaceMissions] = useState<SpaceMission[]>([]);
++
++  // Fetch astronauts from the server
++  useEffect(() => {
++    getSpaceMissions({ token: "" }).then((data) => {
++      setSpaceMissions(data);
++    });
++  }, []);
++
+   return (
+     <div className="outer">
+       <Header />
+       <Navbar />
+-      <h1>Space Missions</h1>
++      <div className="list-container">
++        {spaceMissions.map((spaceMission: SpaceMission) => (
++          <div className="list-item" key={spaceMission.id}>
++            <div className="list-image-box">
++              <img src={spaceMission.image} />
++            </div>
++            <div className="list-information-box">
++              <p>Name: {spaceMission.missionName}</p>
++              <p>Objective: {spaceMission.objective}</p>
++              <p>Budget: {spaceMission.budget}</p>
++              <p>
++                Create Date:{" "}
++                {new Date(spaceMission.createDate).toLocaleDateString()}
++              </p>
++              <p>
++                Perform Date:{" "}
++                {new Date(spaceMission.performDate).toLocaleDateString()}
++              </p>
++            </div>
++          </div>
++        ))}
++      </div>
+     </div>
+   );
+ }
+Index: frontend/src/app/Astronauts.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import Header from \"../components/Header\";\r\nimport Navbar from \"../components/Navbar\";\r\n\r\nexport default function Astronauts() {\r\n  return (\r\n    <div className=\"outer\">\r\n      <Header />\r\n      <Navbar />\r\n      <h1>Astronauts</h1>\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/Astronauts.tsx b/frontend/src/app/Astronauts.tsx
+--- a/frontend/src/app/Astronauts.tsx	(revision ee7ccb578690c9ba8f301f4780ca742dc8d8d2ee)
++++ b/frontend/src/app/Astronauts.tsx	(date 1715437369070)
+@@ -1,12 +1,43 @@
++import { useEffect, useState } from "react";
+ import Header from "../components/Header";
+ import Navbar from "../components/Navbar";
++import { Astronaut } from "../data-types/props";
++import { getAstronauts } from "../calling/astronautCaller";
+ 
+ export default function Astronauts() {
++  const [astronauts, setAstronauts] = useState<Astronaut[]>([]);
++
++  // Fetch astronauts from the server
++  useEffect(() => {
++    getAstronauts({ token: "" }).then((data) => {
++      setAstronauts(data);
++    });
++  }, []);
++
+   return (
+     <div className="outer">
+       <Header />
+       <Navbar />
+-      <h1>Astronauts</h1>
++      <div className="list-container">
++        {astronauts.map((astronaut: Astronaut) => (
++          <div className="list-item" key={astronaut.id}>
++            <div className="list-image-box">
++              <img src={astronaut.image} />
++            </div>
++            <div className="list-information-box">
++              <p>Name: {astronaut.name}</p>
++              <p>Country: {astronaut.country}</p>
++              <p>
++                Date of Birth:{" "}
++                {new Date(astronaut.dateOfBirth).toLocaleDateString()}
++              </p>
++              <p>
++                {astronaut.onDuty ? "Is on mission" : "Available for mission"}
++              </p>
++            </div>
++          </div>
++        ))}
++      </div>
+     </div>
+   );
+ }
+Index: frontend/src/calling/astronautCaller.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>export function getAstronautProfile(id: number, user: { token: string }): Promise<any> {\r\n    const sentUrl = `http://localhost:8080/astronaut/profile/${id}`;\r\n  \r\n    return fetch(sentUrl, {\r\n      method: 'GET',\r\n      headers: {\r\n        'Content-Type': 'application/json',\r\n        'Authorization': `Bearer ${user.token}`\r\n      },\r\n    })\r\n    .then(response => {\r\n      if (response.status === 200) {\r\n        return response.json();\r\n      } else {\r\n        throw new Error(`Failed to fetch astronaut profile: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch(err => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n  }\r\n  \r\n  export function getAstronauts(user: { token: string }): Promise<any[]> {\r\n    const sentUrl = \"http://localhost:8080/astronaut/list\";\r\n  \r\n    return fetch(sentUrl, {\r\n      method: 'GET',\r\n      headers: {\r\n        'Content-Type': 'application/json',\r\n        'Authorization': `Bearer ${user.token}`\r\n      },\r\n    })\r\n    .then(response => {\r\n      if (response.status === 200) {\r\n        return response.json();\r\n      } else {\r\n        throw new Error(`Failed to fetch astronauts: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch(err => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n  }\r\n  \r\n  export function joinCompany(companyId: number, userId: number, user: { token: string }): Promise<void> {\r\n    const sentUrl = `http://localhost:8080/astronaut/joinCompany/${companyId}/${userId}`;\r\n  \r\n    return fetch(sentUrl, {\r\n      method: 'POST',\r\n      headers: {\r\n        'Content-Type': 'application/json',\r\n        'Authorization': `Bearer ${user.token}`\r\n      },\r\n    })\r\n    .then(response => {\r\n      if (response.status === 200) {\r\n        console.log(\"Joined company successfully\");\r\n      } else {\r\n        throw new Error(`Failed to join company: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch(err => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n  }\r\n  
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/calling/astronautCaller.tsx b/frontend/src/calling/astronautCaller.tsx
+--- a/frontend/src/calling/astronautCaller.tsx	(revision ee7ccb578690c9ba8f301f4780ca742dc8d8d2ee)
++++ b/frontend/src/calling/astronautCaller.tsx	(date 1715437369074)
+@@ -1,69 +1,80 @@
+-export function getAstronautProfile(id: number, user: { token: string }): Promise<any> {
+-    const sentUrl = `http://localhost:8080/astronaut/profile/${id}`;
+-  
+-    return fetch(sentUrl, {
+-      method: 'GET',
+-      headers: {
+-        'Content-Type': 'application/json',
+-        'Authorization': `Bearer ${user.token}`
+-      },
+-    })
+-    .then(response => {
++export function getAstronautProfile(
++  id: number,
++  user: { token: string }
++): Promise<any> {
++  const sentUrl = `http://localhost:8080/astronaut/profile/${id}`;
++
++  return fetch(sentUrl, {
++    method: "GET",
++    headers: {
++      "Content-Type": "application/json",
++      Authorization: `Bearer ${user.token}`,
++    },
++  })
++    .then((response) => {
+       if (response.status === 200) {
+         return response.json();
+       } else {
+-        throw new Error(`Failed to fetch astronaut profile: ${response.statusText}`);
++        throw new Error(
++          `Failed to fetch astronaut profile: ${response.statusText}`
++        );
+       }
+     })
+-    .catch(err => {
++    .catch((err) => {
+       console.error("Error:", err);
+       throw err;
+     });
+-  }
+-  
+-  export function getAstronauts(user: { token: string }): Promise<any[]> {
+-    const sentUrl = "http://localhost:8080/astronaut/list";
+-  
+-    return fetch(sentUrl, {
+-      method: 'GET',
+-      headers: {
+-        'Content-Type': 'application/json',
+-        'Authorization': `Bearer ${user.token}`
+-      },
+-    })
+-    .then(response => {
+-      if (response.status === 200) {
++}
++
++export function getAstronauts(user: { token: string }): Promise<any[]> {
++  const sentUrl = "http://localhost:8080/astronaut/list";
++
++  return fetch(sentUrl, {
++    method: "GET",
++    headers: {
++      "Content-Type": "application/json",
++      Authorization: `Bearer ${user.token}`,
++    },
++  })
++    .then((response) => {
++      if (response.ok) {
+         return response.json();
+       } else {
+         throw new Error(`Failed to fetch astronauts: ${response.statusText}`);
+       }
+     })
+-    .catch(err => {
++    .then((data) => {
++      return data;
++    })
++    .catch((err) => {
+       console.error("Error:", err);
+       throw err;
+     });
+-  }
+-  
+-  export function joinCompany(companyId: number, userId: number, user: { token: string }): Promise<void> {
+-    const sentUrl = `http://localhost:8080/astronaut/joinCompany/${companyId}/${userId}`;
+-  
+-    return fetch(sentUrl, {
+-      method: 'POST',
+-      headers: {
+-        'Content-Type': 'application/json',
+-        'Authorization': `Bearer ${user.token}`
+-      },
+-    })
+-    .then(response => {
++}
++
++export function joinCompany(
++  companyId: number,
++  userId: number,
++  user: { token: string }
++): Promise<void> {
++  const sentUrl = `http://localhost:8080/astronaut/joinCompany/${companyId}/${userId}`;
++
++  return fetch(sentUrl, {
++    method: "POST",
++    headers: {
++      "Content-Type": "application/json",
++      Authorization: `Bearer ${user.token}`,
++    },
++  })
++    .then((response) => {
+       if (response.status === 200) {
+         console.log("Joined company successfully");
+       } else {
+         throw new Error(`Failed to join company: ${response.statusText}`);
+       }
+     })
+-    .catch(err => {
++    .catch((err) => {
+       console.error("Error:", err);
+       throw err;
+     });
+-  }
+-  
+\ No newline at end of file
++}
+Index: frontend/src/styles/App.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.outer {\r\n  width: 100vw;\r\n  min-height: 100vh;\r\n  height: fit-content;\r\n  background-image: linear-gradient(to right, #b6fbff, #83a4d4);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/styles/App.css b/frontend/src/styles/App.css
+--- a/frontend/src/styles/App.css	(revision ee7ccb578690c9ba8f301f4780ca742dc8d8d2ee)
++++ b/frontend/src/styles/App.css	(date 1715437369083)
+@@ -4,3 +4,37 @@
+   height: fit-content;
+   background-image: linear-gradient(to right, #b6fbff, #83a4d4);
+ }
++
++.list-container {
++  display: flex;
++  flex-wrap: wrap;
++  justify-content: center;
++  align-items: center;
++  padding: 10px;
++}
++
++.list-item {
++  width: 45%;
++  height: 30vh;
++  background-color: rgb(255, 255, 255);
++  margin: 10px;
++  display: flex;
++  flex-direction: row;
++  border: 2px solid #83a4d4;
++  border-radius: 25px;
++}
++
++.list-image-box {
++  width: 200px;
++  height: 200px;
++  display: flex;
++  justify-content: center;
++  align-items: center;
++}
++
++.list-information-box {
++  max-height: 28vh;
++  overflow-y: auto;
++  width: 100%;
++  line-height: 1.2;
++}
+Index: frontend/src/components/Navbar.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Link } from \"react-router-dom\";\r\nimport \"../styles/Navbar.css\";\r\n\r\nexport default function Navbar() {\r\n  return (\r\n    <nav className=\"navbar-outer\">\r\n      <ul className=\"list\">\r\n        <li className=\"list-item\">\r\n          <Link className=\"link\" to=\"/space-missions\">\r\n            Space Missions\r\n          </Link>\r\n        </li>\r\n        <li className=\"list-item\">\r\n          <Link className=\"link\" to=\"/astronauts\">\r\n            Astronauts\r\n          </Link>\r\n        </li>\r\n        <li className=\"list-item\">\r\n          <Link className=\"link\" to=\"/companies\">\r\n            Companies\r\n          </Link>\r\n        </li>\r\n        <li className=\"list-item\">\r\n          <Link className=\"link\" to=\"/agencies\">\r\n            Agencies\r\n          </Link>\r\n        </li>\r\n        <li className=\"list-item\">\r\n          <Link className=\"link\" to=\"/platforms\">\r\n            Platforms\r\n          </Link>\r\n        </li>\r\n      </ul>\r\n    </nav>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/components/Navbar.tsx b/frontend/src/components/Navbar.tsx
+--- a/frontend/src/components/Navbar.tsx	(revision ee7ccb578690c9ba8f301f4780ca742dc8d8d2ee)
++++ b/frontend/src/components/Navbar.tsx	(date 1715437369078)
+@@ -5,27 +5,27 @@
+   return (
+     <nav className="navbar-outer">
+       <ul className="list">
+-        <li className="list-item">
++        <li className="navbar-list-item">
+           <Link className="link" to="/space-missions">
+             Space Missions
+           </Link>
+         </li>
+-        <li className="list-item">
++        <li className="navbar-list-item">
+           <Link className="link" to="/astronauts">
+             Astronauts
+           </Link>
+         </li>
+-        <li className="list-item">
++        <li className="navbar-list-item">
+           <Link className="link" to="/companies">
+             Companies
+           </Link>
+         </li>
+-        <li className="list-item">
++        <li className="navbar-list-item">
+           <Link className="link" to="/agencies">
+             Agencies
+           </Link>
+         </li>
+-        <li className="list-item">
++        <li className="navbar-list-item">
+           <Link className="link" to="/platforms">
+             Platforms
+           </Link>
+Index: .idea/dataSources.local.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"dataSourceStorageLocal\" created-in=\"IU-241.14494.240\">\r\n    <data-source name=\"spacemission\" uuid=\"0378a797-1c8b-4258-9528-e1495252471c\">\r\n      <database-info product=\"MySQL\" version=\"8.0.36\" jdbc-version=\"4.2\" driver-name=\"MySQL Connector/J\" driver-version=\"mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)\" dbms=\"MYSQL\" exact-version=\"8.0.36\" exact-driver-version=\"8.2\">\r\n        <extra-name-characters>#@</extra-name-characters>\r\n        <identifier-quote-string>`</identifier-quote-string>\r\n        <jdbc-catalog-is-schema>true</jdbc-catalog-is-schema>\r\n      </database-info>\r\n      <case-sensitivity plain-identifiers=\"lower\" quoted-identifiers=\"lower\" />\r\n      <secret-storage>master_key</secret-storage>\r\n      <user-name>root</user-name>\r\n      <schema-mapping>\r\n        <introspection-scope>\r\n          <node kind=\"schema\" qname=\"spacemission\" />\r\n        </introspection-scope>\r\n      </schema-mapping>\r\n    </data-source>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/dataSources.local.xml b/.idea/dataSources.local.xml
+--- a/.idea/dataSources.local.xml	(revision ee7ccb578690c9ba8f301f4780ca742dc8d8d2ee)
++++ b/.idea/dataSources.local.xml	(date 1715437369064)
+@@ -5,7 +5,6 @@
+       <database-info product="MySQL" version="8.0.36" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)" dbms="MYSQL" exact-version="8.0.36" exact-driver-version="8.2">
+         <extra-name-characters>#@</extra-name-characters>
+         <identifier-quote-string>`</identifier-quote-string>
+-        <jdbc-catalog-is-schema>true</jdbc-catalog-is-schema>
+       </database-info>
+       <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower" />
+       <secret-storage>master_key</secret-storage>

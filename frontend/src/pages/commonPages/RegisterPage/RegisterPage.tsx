@@ -7,9 +7,10 @@ interface UserType {
 }
 
 const userTypes: UserType[] = [
-    { value: 'type1', label: 'Type 1 User' },
-    { value: 'type2', label: 'Type 2 User' },
-    { value: 'type3', label: 'Type 3 User' }
+    { value: 'Agency', label: 'Agency' },
+    { value: 'Company', label: 'Company' },
+    { value: 'Astronaut', label: 'Astronaut' },
+    { value: 'Expert', label: 'Expert' }
 ];
 
 const RegistrationPage: React.FC = () => {
@@ -21,42 +22,73 @@ const RegistrationPage: React.FC = () => {
 
     const renderFormFields = () => {
         switch (activeUserType) {
-            case 'type1':
+            case 'Agency':
                 return (
                     <>
                         <div className="input-group">
-                            <label htmlFor="name">Name</label>
-                            <input type="text" id="name" name="name" required />
+                            <label htmlFor="Name">Name</label>
+                            <input type="text" id="Name" name="Name" required/>
                         </div>
                         <div className="input-group">
-                            <label htmlFor="title">Title</label>
-                            <input type="text" id="title" name="title" required />
+                            <label htmlFor="Country">Title</label>
+                            <input type="text" id="Country" name="Country" required/>
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="photoUpload">Upload Photo</label>
+                            <input type="file" id="photoUpload" name="photo" accept="image/jpeg, image/png"/>
+                        </div>
+
+                    </>
+                );
+            case 'Company':
+                return (
+                    <>
+                        <div className="input-group">
+                            <label htmlFor="Name">Department</label>
+                            <input type="text" id="Name" name="Name" required/>
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="Country">Specialization</label>
+                            <input type="text" id="Country" name="Country" required/>
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="photoUpload">Upload Photo</label>
+                            <input type="file" id="photoUpload" name="photo" accept="image/jpeg, image/png"/>
+                        </div>
+
+                    </>
+                );
+            case 'Astronaut':
+                return (
+                    <>
+                        <div className="input-group">
+                            <label htmlFor="name">Department</label>
+                            <input type="text" id="name" name="name" required/>
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="birth">Specialization</label>
+                            <input type="text" id="birth" name="birth" required/>
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="Country">Specialization</label>
+                            <input type="text" id="Country" name="Country" required/>
                         </div>
                     </>
                 );
-            case 'type2':
+            case 'Expert':
                 return (
                     <>
                         <div className="input-group">
-                            <label htmlFor="department">Department</label>
-                            <input type="text" id="department" name="department" required />
+                            <label htmlFor="name">Department</label>
+                            <input type="text" id="name" name="name" required/>
                         </div>
                         <div className="input-group">
-                            <label htmlFor="specialization">Specialization</label>
-                            <input type="text" id="specialization" name="specialization" required />
-                        </div>
-                    </>
-                );
-            case 'type3':
-                return (
-                    <>
-                        <div className="input-group">
-                            <label htmlFor="department">Department</label>
-                            <input type="text" id="department" name="department" required />
+                            <label htmlFor="birth">Specialization</label>
+                            <input type="text" id="birth" name="birth" required/>
                         </div>
                         <div className="input-group">
-                            <label htmlFor="specialization">Specialization</label>
-                            <input type="text" id="specialization" name="specialization" required />
+                            <label htmlFor="Country">Specialization</label>
+                            <input type="text" id="Country" name="Country" required/>
                         </div>
                     </>
                 );
@@ -99,7 +131,7 @@ const RegistrationPage: React.FC = () => {
                             {renderFormFields()}
                         </div>
                     </div>
-                    <button className="login-submit">Register</button>
+                    <button className="login-submit" >Register</button>
                 </form>
             </div>
         </div>

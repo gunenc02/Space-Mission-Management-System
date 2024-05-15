@@ -75,6 +75,13 @@
   margin-top: 25px;
   margin-left: 10px;
   margin-right: 10px;
+  width: 30%;
+}
+
+.modal-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .filter-mix-max-container {

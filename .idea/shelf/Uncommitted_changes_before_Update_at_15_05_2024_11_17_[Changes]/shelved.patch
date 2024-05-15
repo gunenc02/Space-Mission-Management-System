@@ -1,0 +1,1384 @@
+Index: spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package tr.edu.bilkent.spacemission.repository;\r\n\r\nimport org.springframework.jdbc.core.JdbcTemplate;\r\nimport org.springframework.stereotype.Repository;\r\nimport tr.edu.bilkent.spacemission.dto.CompanyDto;\r\nimport tr.edu.bilkent.spacemission.dto.Login;\r\nimport tr.edu.bilkent.spacemission.entity.Company;\r\n\r\nimport javax.sql.DataSource;\r\nimport java.sql.Connection;\r\nimport java.sql.PreparedStatement;\r\nimport java.sql.ResultSet;\r\nimport java.sql.SQLException;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\n// THIS IS OUR REPOSITORY THIS IS WHERE OUR QUERIES TAKE PLACE\r\n// THIS IS WRONG FOR NOW BUT AFTER THE CLARIFICATIONS I AM GOING TO FIX IT\r\n// I DONT KNOW FOR NOW HOW TO IMPLEMENT THOSE QUERIES WITHOUT THE HELP OF EXTERNAL LIBRARIES (JPA,CRUD) FOR NOW\r\n@Repository\r\npublic class CompanyRepository {\r\n\r\n    private final JdbcTemplate jdbcTemplate;\r\n    private final Connection connection;\r\n\r\n    public CompanyRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) throws SQLException {\r\n        this.jdbcTemplate = jdbcTemplate;\r\n        this.connection = dataSource.getConnection();\r\n    }\r\n\r\n    public List<CompanyDto> getAllCompanies() {\r\n        ArrayList<CompanyDto> list = new ArrayList<>();\r\n        try{\r\n            PreparedStatement ps = connection.prepareStatement(\"SELECT c.*, u.* FROM company c JOIN \" +\r\n                    \" user u ON c.company_id = u.user_id;\");\r\n            ResultSet rs = ps.executeQuery();\r\n            while(rs.next()){\r\n                CompanyDto dto = new CompanyDto();\r\n                dto.setUserId(rs.getLong(\"company_id\"));\r\n                dto.setName(rs.getString(\"company_name\"));\r\n                dto.setCountry(rs.getString(\"country\"));\r\n                dto.setUserMail(rs.getString(\"user_mail\"));\r\n                dto.setUserRole(rs.getString(\"user_role\"));\r\n                dto.setLogo(rs.getBytes(\"company_logo\"));\r\n                dto.setMoney(rs.getDouble(\"money\"));\r\n                list.add(dto);\r\n            }\r\n        }\r\n        catch(Exception ex){\r\n            System.out.println(ex.getMessage());\r\n        }\r\n        return list;\r\n    }\r\n\r\n    /**\r\n     * This method returns the profile of the company with the given id\r\n     * @param id Id of the company\r\n     * @return Company object\r\n     */\r\n    public Company getCompanyProfile(long id) {\r\n        Company company = null;\r\n        try {\r\n            PreparedStatement ps = connection.prepareStatement(\"SELECT c.*, u.* FROM company c JOIN \" +\r\n                                                                    \" user u ON c.company_id = u.user_id WHERE company_id = ?\");\r\n            ps.setLong(1, id);\r\n\r\n            ResultSet rs = ps.executeQuery();\r\n            company = new Company();\r\n            if (rs.next()) {\r\n                company.setId(rs.getLong(\"company_id\"));\r\n                company.setMail(rs.getString(\"u.user_mail\"));\r\n                company.setName(rs.getString(\"company_name\"));\r\n                company.setLogo(rs.getBytes(\"company_logo\"));\r\n                company.setCountry(rs.getString(\"country\"));\r\n                company.setWorkerCount(rs.getInt(\"worker_count\"));\r\n                company.setBudget(rs.getLong(\"money\"));\r\n            }\r\n\r\n        }\r\n        catch (SQLException e) {\r\n            e.printStackTrace();\r\n        }\r\n        return company;\r\n    }\r\n\r\n    public CompanyDto getByLogInfo(Login logInfo) {\r\n        String query = \"SELECT * FROM company WHERE company_mail = ? AND company_password = ?\";\r\n        return jdbcTemplate.queryForObject(query,\r\n             (rs, rowNum) -> new CompanyDto(\r\n                     rs.getLong(\"company_id\"),\r\n                     rs.getString(\"company_name\"),\r\n                     rs.getString(\"country\"),\r\n                     rs.getBytes(\"company_logo\"),\r\n                     rs.getDouble(\"money\")\r\n             ), logInfo.getUsername(), logInfo.getPassword()\r\n        );\r\n    }\r\n\r\n    //Fire the astronaut from the mission they are involved with this company\r\n    //Do this only for performer id matches\r\n    public void fireAstronaut(long id, long astronautId){\r\n        String query = \"WITH performer_company_missions(mission_id) AS (SELECT mission_id FROM space_mission WHERE performer_id = ?) \" +\r\n                        \"DELETE FROM mission_astronaut_recordings NATURAL JOIN performer_company_missions AS mp \" +\r\n                        \"WHERE mp.astronaut_id = ?;\";\r\n        try{\r\n            PreparedStatement ps = connection.prepareStatement(query);\r\n            ps.setString(1, String.valueOf(id));\r\n            ps.setString(2, String.valueOf(astronautId));\r\n            ps.executeQuery();\r\n        }\r\n        catch(Exception ex){\r\n            System.out.println(ex.getMessage());\r\n        }\r\n\r\n    }\r\n\r\n    public void offerJob(long astronautId) {\r\n    }\r\n    /**\r\n     *@param missionId id of the space mission to be performed\r\n     * returns whether the mission has been marked as performed in the database\r\n     * After successful update of perform_status to \"performed\", a SQL trigger will be executed to release\r\n     * currently deployed astronauts automatically\r\n     */\r\n    public boolean markSpaceMissionAsPerformed(long missionId){\r\n        boolean result = false;\r\n        //execute such a query that if a space mission with given attributes exists try and mark it as performed\r\n        //first check if there exists an entry in space mission performings with specified mission id and not yet performed\r\n        final String notPerformedStatus = \"pending\";\r\n        final String performedStatus = \"performed\";\r\n        String query = \"SELECT COUNT(*) FROM space_mission_performings \" +\r\n                \"WHERE space_mission_id = ? AND perform_status = ?;\";\r\n        //execute the first query and if retrieval yields something then update that entry\r\n        Integer count = jdbcTemplate.queryForObject(query, Integer.class, missionId, notPerformedStatus);\r\n        if(count != null && count > 0) {\r\n            //such a row exists, now we should modify the perform onDuty of that row\r\n            query = \"UPDATE space_mission_performings SET perform_status = ? \" +\r\n                    \"WHERE space_mission_id = ?;\";\r\n            int affectedRows = jdbcTemplate.update(query, performedStatus, missionId);\r\n            result = affectedRows > 0; //we expect affectedRows to be exactly 1 however\r\n        }\r\n        return result;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java b/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java
+--- a/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java	(date 1715760996167)
+@@ -100,8 +100,8 @@
+     //Do this only for performer id matches
+     public void fireAstronaut(long id, long astronautId){
+         String query = "WITH performer_company_missions(mission_id) AS (SELECT mission_id FROM space_mission WHERE performer_id = ?) " +
+-                        "DELETE FROM mission_astronaut_recordings NATURAL JOIN performer_company_missions AS mp " +
+-                        "WHERE mp.astronaut_id = ?;";
++                        "DELETE FROM mission_astronaut_recordings AS mas WHERE mas.mission_id IN (SELECT * FROM performer_company_missions) " +
++                        "AND mas.astronaut_id = ?; ";
+         try{
+             PreparedStatement ps = connection.prepareStatement(query);
+             ps.setString(1, String.valueOf(id));
+Index: frontend/src/app/profiles/CompanyProfile.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState, useEffect } from \"react\";\r\nimport { getCompanyProfile, getPerformedSpaceMissionsOfCompany } from \"../../calling/companyCaller\";\r\nimport { Company, SpaceMissionForListing } from \"../../data-types/entities\";\r\nimport { useParams } from \"react-router-dom\";\r\n\r\nexport default function CompanyProfile() {\r\n    const { companyId } = useParams<{ companyId?: string }>();\r\n    const [companyInfo, setCompanyInfo] = useState<Company | null>(null);\r\n    const [spaceMissions, setSpaceMissions] = useState<SpaceMissionForListing[] | null>(null);\r\n    const [error, setError] = useState('');\r\n\r\n    useEffect(() => {\r\n        if (!companyId) {\r\n            setError(\"Company ID is missing\");\r\n            return;\r\n        }\r\n\r\n        const numericCompanyId = parseInt(companyId, 10);\r\n        if (isNaN(numericCompanyId)) {\r\n            setError(\"Invalid Company ID\");\r\n            return;\r\n        }\r\n\r\n        const token = \"\"; // Assuming token management\r\n        const user = { token };\r\n\r\n        getCompanyProfile(numericCompanyId, user)\r\n            .then(data => {\r\n                setCompanyInfo(data);\r\n                return getPerformedSpaceMissionsOfCompany(numericCompanyId, user);\r\n            })\r\n            .then(missions => {\r\n                const missionsWithDates = missions.map(mission => ({\r\n                    ...mission,\r\n                    startDate: new Date(mission.startDate),\r\n                    endDate: new Date(mission.endDate)\r\n                }));\r\n                setSpaceMissions(missionsWithDates);\r\n                setError('');\r\n            })\r\n            .catch(err => {\r\n                setError(err.message);\r\n                setCompanyInfo(null);\r\n                setSpaceMissions(null);\r\n                console.error(\"API error:\", err);\r\n            });\r\n    }, [companyId]);\r\n\r\n    if (error) {\r\n        return <div>Error: {error}</div>;\r\n    }\r\n\r\n    if (!companyInfo) {\r\n        return <div>Loading...</div>;\r\n    }\r\n\r\n    return (\r\n        <div>\r\n            <h1>{companyInfo.name}</h1>\r\n            <p>Email: {companyInfo.userMail}</p>\r\n            <p>Country: {companyInfo.country}</p>\r\n            <img src={companyInfo.logo} alt={`${companyInfo.name} logo`} style={{ width: '100px' }} />\r\n            <p>Budget: ${companyInfo.money.toLocaleString()}</p>\r\n            {spaceMissions ? (\r\n                <div>\r\n                    <h2>Space Missions</h2>\r\n                    <ul>\r\n                        {spaceMissions.map(mission => (\r\n                            <li key={mission.id}>\r\n                                <h3>{mission.missionName}</h3>\r\n                                <p>Created by: {mission.creatorCompanyName}</p>\r\n                                <p>Status: {mission.status}</p>\r\n                                <p>Start Date: {mission.startDate.toLocaleDateString()}</p>\r\n                                <p>End Date: {mission.endDate.toLocaleDateString()}</p>\r\n                                <img src={mission.image} alt={mission.missionName} style={{ width: '100px' }} />\r\n                            </li>\r\n                        ))}\r\n                    </ul>\r\n                </div>\r\n            ) : (\r\n                <div>Loading space missions...</div>\r\n            )}\r\n        </div>\r\n    );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/profiles/CompanyProfile.tsx b/frontend/src/app/profiles/CompanyProfile.tsx
+--- a/frontend/src/app/profiles/CompanyProfile.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/profiles/CompanyProfile.tsx	(date 1715760996151)
+@@ -1,85 +1,116 @@
+ import { useState, useEffect } from "react";
+-import { getCompanyProfile, getPerformedSpaceMissionsOfCompany } from "../../calling/companyCaller";
++import {
++  getCompanyProfile,
++  getPerformedSpaceMissionsOfCompany,
++} from "../../calling/companyCaller";
+ import { Company, SpaceMissionForListing } from "../../data-types/entities";
+ import { useParams } from "react-router-dom";
++import RegisterExpert from "../modals/RegisterExpert";
+ 
+ export default function CompanyProfile() {
+-    const { companyId } = useParams<{ companyId?: string }>();
+-    const [companyInfo, setCompanyInfo] = useState<Company | null>(null);
+-    const [spaceMissions, setSpaceMissions] = useState<SpaceMissionForListing[] | null>(null);
+-    const [error, setError] = useState('');
++  const { id } = useParams();
++  const [companyInfo, setCompanyInfo] = useState<Company | null>(null);
++  const [spaceMissions, setSpaceMissions] = useState<
++    SpaceMissionForListing[] | null
++  >(null);
++  const [error, setError] = useState("");
++  const [registerExpertOpen, setRegisterExpertOpen] = useState<boolean>(false);
++
++  const handleRegisterExpertClick = () => {
++    setRegisterExpertOpen(!registerExpertOpen);
++  };
+ 
+-    useEffect(() => {
+-        if (!companyId) {
+-            setError("Company ID is missing");
+-            return;
+-        }
++  useEffect(() => {
++    if (!id) {
++      setError("Company ID is missing");
++      return;
++    }
+ 
+-        const numericCompanyId = parseInt(companyId, 10);
+-        if (isNaN(numericCompanyId)) {
+-            setError("Invalid Company ID");
+-            return;
+-        }
++    const numericId = parseInt(id, 10);
++    if (isNaN(numericId)) {
++      setError("Invalid Company ID");
++      return;
++    }
+ 
+-        const token = ""; // Assuming token management
+-        const user = { token };
++    const token = ""; // Assuming token management
++    const user = { token };
+ 
+-        getCompanyProfile(numericCompanyId, user)
+-            .then(data => {
+-                setCompanyInfo(data);
+-                return getPerformedSpaceMissionsOfCompany(numericCompanyId, user);
+-            })
+-            .then(missions => {
+-                const missionsWithDates = missions.map(mission => ({
+-                    ...mission,
+-                    startDate: new Date(mission.startDate),
+-                    endDate: new Date(mission.endDate)
+-                }));
+-                setSpaceMissions(missionsWithDates);
+-                setError('');
+-            })
+-            .catch(err => {
+-                setError(err.message);
+-                setCompanyInfo(null);
+-                setSpaceMissions(null);
+-                console.error("API error:", err);
+-            });
+-    }, [companyId]);
++    getCompanyProfile(numericId, user)
++      .then((data) => {
++        setCompanyInfo(data);
++        return getPerformedSpaceMissionsOfCompany(numericId, user);
++      })
++      .then((missions) => {
++        const missionsWithDates = missions.map((mission) => ({
++          ...mission,
++          startDate: new Date(mission.startDate),
++          endDate: new Date(mission.endDate),
++        }));
++        setSpaceMissions(missionsWithDates);
++        setError("");
++      })
++      .catch((err) => {
++        setError(err.message);
++        setCompanyInfo(null);
++        setSpaceMissions(null);
++        console.error("API error:", err);
++      });
++  }, [id]);
+ 
+-    if (error) {
+-        return <div>Error: {error}</div>;
+-    }
++  if (error) {
++    return <div>Error: {error}</div>;
++  }
+ 
+-    if (!companyInfo) {
+-        return <div>Loading...</div>;
+-    }
++  if (!companyInfo) {
++    return <div>Loading...</div>;
++  }
+ 
+-    return (
+-        <div>
+-            <h1>{companyInfo.name}</h1>
+-            <p>Email: {companyInfo.userMail}</p>
+-            <p>Country: {companyInfo.country}</p>
+-            <img src={companyInfo.logo} alt={`${companyInfo.name} logo`} style={{ width: '100px' }} />
+-            <p>Budget: ${companyInfo.money.toLocaleString()}</p>
+-            {spaceMissions ? (
+-                <div>
+-                    <h2>Space Missions</h2>
+-                    <ul>
+-                        {spaceMissions.map(mission => (
+-                            <li key={mission.id}>
+-                                <h3>{mission.missionName}</h3>
+-                                <p>Created by: {mission.creatorCompanyName}</p>
+-                                <p>Status: {mission.status}</p>
+-                                <p>Start Date: {mission.startDate.toLocaleDateString()}</p>
+-                                <p>End Date: {mission.endDate.toLocaleDateString()}</p>
+-                                <img src={mission.image} alt={mission.missionName} style={{ width: '100px' }} />
+-                            </li>
+-                        ))}
+-                    </ul>
+-                </div>
+-            ) : (
+-                <div>Loading space missions...</div>
+-            )}
+-        </div>
+-    );
++  return (
++    <div>
++      <button className="top-button" onClick={handleRegisterExpertClick}>
++        Register Expert
++      </button>
++      <h1>{companyInfo.name}</h1>
++      <p>Email: {companyInfo.userMail}</p>
++      <p>Country: {companyInfo.country}</p>
++      <img
++        src={companyInfo.logo}
++        alt={`${companyInfo.name} logo`}
++        style={{ width: "100px" }}
++      />
++      <p>Budget: ${companyInfo.money.toLocaleString()}</p>
++      {spaceMissions ? (
++        <div>
++          <h2>Space Missions</h2>
++          <ul>
++            {spaceMissions.map((mission) => (
++              <li key={mission.id}>
++                <h3>{mission.missionName}</h3>
++                <p>Created by: {mission.creatorCompanyName}</p>
++                <p>Status: {mission.status}</p>
++                <p>Start Date: {mission.startDate.toLocaleDateString()}</p>
++                <p>End Date: {mission.endDate.toLocaleDateString()}</p>
++                <img
++                  src={mission.image}
++                  alt={mission.missionName}
++                  style={{ width: "100px" }}
++                />
++              </li>
++            ))}
++          </ul>
++        </div>
++      ) : (
++        <div>Loading space missions...</div>
++      )}
++
++      <div>
++        {registerExpertOpen && (
++          <RegisterExpert
++            companyId={Number(id)}
++            onClose={handleRegisterExpertClick}
++          />
++        )}
++      </div>
++    </div>
++  );
+ }
+Index: frontend/src/app/modals/ApproveAgency.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//import { useState } from \"react\";\r\nimport { ApproveAgencyProps } from \"../../data-types/modal-props\";\r\nimport \"../../styles/Modal.css\";\r\n\r\nexport default function ApproveAgency(props: ApproveAgencyProps) {\r\n  const approveHandler = function(){\r\n    const postUrl = `http://localhost:8080/admin`;\r\n\r\n    const requestBody = {\r\n      id: props.agencyId\r\n    };\r\n    // send a post request for approval of this agency\r\n    fetch(postUrl, {\r\n      method: \"POST\",\r\n      headers: {\r\n        \"Content-Type\": \"application/json\", \r\n      },\r\n      body: JSON.stringify(requestBody),  \r\n    \r\n    })\r\n    .then((response) => {\r\n      if(!response.ok){\r\n        throw new Error(\"Network response was not ok\");\r\n      }\r\n      else{\r\n        //ToDo\r\n        //If there is anything to be done programmatically in front end after\r\n        //agency has been approved, this is the place\r\n        props.onClose();\r\n      }\r\n    }).catch((error) =>{\r\n      console.error(\"ApproveAgency post request failed, trace: \", error);\r\n    });\r\n  }\r\n\r\n  return (\r\n    <div className=\"modal-overlay\">\r\n      <div className=\"modal-outer\">\r\n        <p className=\"modal-title\">Approve Agency</p>\r\n        <p className=\"modal-warning-text\">\r\n          Are you sure you want to approve this agency?\r\n        </p>\r\n\r\n        <button\r\n          onClick={props.onClose}\r\n          style={{ backgroundColor: \"red\", color: \"white\" }}\r\n          className=\"modal-button\"\r\n        >\r\n          Cancel\r\n        </button>\r\n        <button\r\n          onClick={approveHandler}\r\n          style={{ backgroundColor: \"green\", color: \"white\" }}\r\n          className=\"modal-button\"\r\n        >\r\n          Approve\r\n        </button>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/modals/ApproveAgency.tsx b/frontend/src/app/modals/ApproveAgency.tsx
+--- a/frontend/src/app/modals/ApproveAgency.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/modals/ApproveAgency.tsx	(date 1715760996136)
+@@ -3,35 +3,31 @@
+ import "../../styles/Modal.css";
+ 
+ export default function ApproveAgency(props: ApproveAgencyProps) {
+-  const approveHandler = function(){
+-    const postUrl = `http://localhost:8080/admin`;
++  const approveHandler = function () {
++    const postUrl = `http://localhost:8080/admin/confirm/${props.agencyId}`;
+ 
+-    const requestBody = {
+-      id: props.agencyId
+-    };
+     // send a post request for approval of this agency
+     fetch(postUrl, {
+       method: "POST",
+       headers: {
+-        "Content-Type": "application/json", 
++        "Content-Type": "application/json",
++        Authorization: `Bearer ${"dsdsa"}`,
+       },
+-      body: JSON.stringify(requestBody),  
+-    
+     })
+-    .then((response) => {
+-      if(!response.ok){
+-        throw new Error("Network response was not ok");
+-      }
+-      else{
+-        //ToDo
+-        //If there is anything to be done programmatically in front end after
+-        //agency has been approved, this is the place
+-        props.onClose();
+-      }
+-    }).catch((error) =>{
+-      console.error("ApproveAgency post request failed, trace: ", error);
+-    });
+-  }
++      .then((response) => {
++        if (!response.ok) {
++          throw new Error("Network response was not ok");
++        } else {
++          //ToDo
++          //If there is anything to be done programmatically in front end after
++          //agency has been approved, this is the place
++          props.onClose();
++        }
++      })
++      .catch((error) => {
++        console.error("ApproveAgency post request failed, trace: ", error);
++      });
++  };
+ 
+   return (
+     <div className="modal-overlay">
+@@ -40,21 +36,22 @@
+         <p className="modal-warning-text">
+           Are you sure you want to approve this agency?
+         </p>
+-
+-        <button
+-          onClick={props.onClose}
+-          style={{ backgroundColor: "red", color: "white" }}
+-          className="modal-button"
+-        >
+-          Cancel
+-        </button>
+-        <button
+-          onClick={approveHandler}
+-          style={{ backgroundColor: "green", color: "white" }}
+-          className="modal-button"
+-        >
+-          Approve
+-        </button>
++        <div className="modal-button-container">
++          <button
++            onClick={props.onClose}
++            style={{ backgroundColor: "red", color: "white" }}
++            className="modal-button"
++          >
++            Cancel
++          </button>
++          <button
++            onClick={approveHandler}
++            style={{ backgroundColor: "green", color: "white" }}
++            className="modal-button"
++          >
++            Approve
++          </button>
++        </div>
+       </div>
+     </div>
+   );
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f\" name=\"Changes\" comment=\"Add some missing endpoints\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources.local.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/dataSources.local.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/dataSources.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0.xml\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0/storage_v2/_src_/schema/information_schema.FNRwLQ.meta\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0/storage_v2/_src_/schema/mysql.osA4Bg.meta\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0/storage_v2/_src_/schema/performance_schema.kIw0nw.meta\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0/storage_v2/_src_/schema/sys.zb4BAA.meta\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a/storage_v2/_src_/schema/spacemission.xn27ug.zip\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a/storage_v2/_src_/schema/spacemission.xn27ug.zip\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_24_24__14_45__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_24_24__14_45__Changes_.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_27_24__16_19__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_27_24__16_19__Changes_.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_27_24__19_01__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_27_24__19_01__Changes_.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_11_24__15_59__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_11_24__15_59__Changes_.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_11_24__16_08__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_11_24__16_08__Changes_.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_12_24__19_44__Changes_.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_12_24__19_44__Changes_.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/sqldialects.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/sqldialects.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AdminController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AdminController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/SpaceMissionController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/SpaceMissionController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AdminRepository.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AdminRepository.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/SpaceMissionRepository.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/SpaceMissionRepository.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/SpaceMissionService.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/SpaceMissionService.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\"><![CDATA[{\r\n  \"lastFilter\": {\r\n    \"state\": \"OPEN\",\r\n    \"assignee\": \"emirtuglu\"\r\n  }\r\n}]]></component>\r\n  <component name=\"GithubPullRequestsUISettings\"><![CDATA[{\r\n  \"selectedUrlAndAccountId\": {\r\n    \"url\": \"https://github.com/gunenc02/Space-Mission-Management-System.git\",\r\n    \"accountId\": \"b4bc43ab-31db-47b7-baee-150c196649ad\"\r\n  }\r\n}]]></component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 7\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2fhJiIM1ZtQOoH2VP1Mpb2OzP3D\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,\r\n    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,\r\n    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,\r\n    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;Spring Boot.SpaceMissionManagement.executor&quot;: &quot;Run&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;ts.external.directory.path&quot;: &quot;/Users/mac/Desktop/Bilkent3_2/CS 353/cs353_project/Space-Mission-Management-System/frontend/node_modules/typescript/lib&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"SpaceMissionManagement\" type=\"SpringBootApplicationConfigurationType\" factoryName=\"Spring Boot\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"spacemission\" />\r\n      <option name=\"SPRING_BOOT_MAIN_CLASS\" value=\"tr.edu.bilkent.spacemission.SpaceMissionManagement\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"tr.edu.bilkent.spacemission.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Spring Boot.SpaceMissionManagement\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240\" />\r\n        <option value=\"bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f\" name=\"Changes\" comment=\"\" />\r\n      <created>1714247516454</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1714247516454</updated>\r\n      <workItem from=\"1714247521564\" duration=\"239000\" />\r\n      <workItem from=\"1714266444223\" duration=\"6618000\" />\r\n      <workItem from=\"1714309792567\" duration=\"4370000\" />\r\n      <workItem from=\"1714376338318\" duration=\"4238000\" />\r\n      <workItem from=\"1714383543546\" duration=\"4624000\" />\r\n      <workItem from=\"1714414207291\" duration=\"1810000\" />\r\n      <workItem from=\"1714461245117\" duration=\"6843000\" />\r\n      <workItem from=\"1714480566423\" duration=\"331000\" />\r\n      <workItem from=\"1714628517948\" duration=\"6286000\" />\r\n      <workItem from=\"1714637209620\" duration=\"259000\" />\r\n      <workItem from=\"1715233550859\" duration=\"2550000\" />\r\n      <workItem from=\"1715534440740\" duration=\"9785000\" />\r\n      <workItem from=\"1715585662697\" duration=\"12754000\" />\r\n      <workItem from=\"1715628434680\" duration=\"3533000\" />\r\n      <workItem from=\"1715701660435\" duration=\"5019000\" />\r\n      <workItem from=\"1715758624468\" duration=\"2130000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Add some missing endpoints\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1715418534760</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1715418534760</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Finalized Triggers &amp; Views&#10;&#10;Apparently this is all we need for triggers and views, however we should conduct tests later on.\" />\r\n    <MESSAGE value=\"Add some missing endpoints\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Add some missing endpoints\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/.idea/workspace.xml	(date 1715761034583)
+@@ -5,28 +5,10 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0.xml" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0/storage_v2/_src_/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0/storage_v2/_src_/schema/mysql.osA4Bg.meta" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0/storage_v2/_src_/schema/performance_schema.kIw0nw.meta" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0/storage_v2/_src_/schema/sys.zb4BAA.meta" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a/storage_v2/_src_/schema/spacemission.xn27ug.zip" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a/storage_v2/_src_/schema/spacemission.xn27ug.zip" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_24_24__14_45__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_24_24__14_45__Changes_.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_27_24__16_19__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_27_24__16_19__Changes_.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_27_24__19_01__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_27_24__19_01__Changes_.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_11_24__15_59__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_11_24__15_59__Changes_.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_11_24__16_08__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_11_24__16_08__Changes_.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_12_24__19_44__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_12_24__19_44__Changes_.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AdminController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/SpaceMissionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/SpaceMissionController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AdminRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AdminRepository.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/SpaceMissionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/SpaceMissionRepository.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/SpaceMissionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/SpaceMissionService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -43,18 +25,6 @@
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+-  "lastFilter": {
+-    "state": "OPEN",
+-    "assignee": "emirtuglu"
+-  }
+-}]]></component>
+-  <component name="GithubPullRequestsUISettings"><![CDATA[{
+-  "selectedUrlAndAccountId": {
+-    "url": "https://github.com/gunenc02/Space-Mission-Management-System.git",
+-    "accountId": "b4bc43ab-31db-47b7-baee-150c196649ad"
+-  }
+-}]]></component>
+   <component name="ProjectColorInfo">{
+   &quot;associatedIndex&quot;: 7
+ }</component>
+@@ -135,7 +105,7 @@
+       <workItem from="1715585662697" duration="12754000" />
+       <workItem from="1715628434680" duration="3533000" />
+       <workItem from="1715701660435" duration="5019000" />
+-      <workItem from="1715758624468" duration="2130000" />
++      <workItem from="1715752359911" duration="2188000" />
+     </task>
+     <task id="LOCAL-00001" summary="Add some missing endpoints">
+       <option name="closed" value="true" />
+Index: frontend/src/app/modals/HealthRecordDetails.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//import { useState } from \"react\";\r\nimport { HealthRecordDetailsProps } from \"../../data-types/modal-props\";\r\nimport \"../../styles/Modal.css\";\r\nimport { HealthRecord } from \"../../data-types/entities\";\r\n\r\nexport default function CreateHealthRecord(props: HealthRecordDetailsProps) {\r\n  const healthRecord: HealthRecord = {\r\n    id: 1,\r\n    astronautId: 123,\r\n    expertId: 456,\r\n    date: new Date(),\r\n    availabilityForMission: true,\r\n    weight: 70,\r\n    height: 180,\r\n    heartRate: 75,\r\n    bloodPressure: 120,\r\n    vaccinations: \"COVID-19, Influenza\",\r\n    notes: \"No significant issues.\",\r\n  };\r\n\r\n  return (\r\n    <div className=\"modal-overlay\">\r\n      <div className=\"modal-outer\">\r\n        <p className=\"modal-title\">Health Record Details</p>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"height\">\r\n            Height: {healthRecord.height}\r\n          </label>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"weight\">\r\n            Weight: {healthRecord.weight}\r\n          </label>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"heartRate\">\r\n            Heart Rate: {healthRecord.heartRate}\r\n          </label>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"bloodPressure\">\r\n            Blood Pressure: {healthRecord.bloodPressure}\r\n          </label>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"vaccinations\">\r\n            Vaccinations: {healthRecord.vaccinations}\r\n          </label>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"notes\">\r\n            Notes: {healthRecord.notes}\r\n          </label>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"notes\">\r\n            Eligible for Mission:{\" \"}\r\n            {healthRecord.availabilityForMission ? \"Yes\" : \"No\"}\r\n          </label>\r\n        </div>\r\n\r\n        <button\r\n          className=\"modal-button\"\r\n          style={{ backgroundColor: \"blue\", color: \"white\" }}\r\n          onClick={props.onClose}\r\n        >\r\n          OK\r\n        </button>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/modals/HealthRecordDetails.tsx b/frontend/src/app/modals/HealthRecordDetails.tsx
+--- a/frontend/src/app/modals/HealthRecordDetails.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/modals/HealthRecordDetails.tsx	(date 1715760996136)
+@@ -59,13 +59,15 @@
+           </label>
+         </div>
+ 
+-        <button
+-          className="modal-button"
+-          style={{ backgroundColor: "blue", color: "white" }}
+-          onClick={props.onClose}
+-        >
+-          OK
+-        </button>
++        <div className="modal-button-container">
++          <button
++            className="modal-button"
++            style={{ backgroundColor: "blue", color: "white" }}
++            onClick={props.onClose}
++          >
++            OK
++          </button>
++        </div>
+       </div>
+     </div>
+   );
+Index: frontend/src/app/modals/FireAstronaut.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//import { useState } from \"react\";\r\nimport { FireAstronautProps } from \"../../data-types/modal-props\";\r\nimport \"../../styles/Modal.css\";\r\n\r\nexport default function FireAstronaut(props: FireAstronautProps) {\r\n  const handleFire = function(){\r\n    const deleteUrl = \"http://localhost:8080/fireAstronaut\";\r\n    const performerId = \"??????????companyId\" // company id we must retrieve via login\r\n    const requestBody = {\r\n      id: performerId,\r\n      astronautId: props.astronautId,\r\n    }\r\n\r\n    fetch(deleteUrl, {\r\n      method: \"DELETE\",\r\n      headers: {\r\n        \"Content-Type\": \"application/json\",\r\n      },\r\n      body: JSON.stringify(requestBody),\r\n    }).then((response) => {\r\n      if(!response.ok){\r\n        throw new Error(\"Network respone was not ok\");\r\n      }\r\n      else{\r\n        //delete successful close the modal\r\n        props.onClose();\r\n      }\r\n    }).catch((error) => {\r\n      // Handle errors here\r\n      console.error(\r\n        \"There was a problem with the fetch (delete (fireAstronaut)) operation:\",\r\n        error\r\n      );\r\n    });\r\n  }\r\n\r\n  //FIX BACKEND FIRST TO IMPLEMENT FETCH OF THIS\r\n  return (\r\n    <div className=\"modal-overlay\">\r\n      <div className=\"modal-outer\">\r\n        <p className=\"modal-title\">Fire Astronaut</p>\r\n        <p className=\"modal-warning-text\">\r\n          Are you sure you want to fire this astronaut?\r\n        </p>\r\n\r\n        <button\r\n          onClick={props.onClose}\r\n          style={{ backgroundColor: \"blue\", color: \"white\" }}\r\n          className=\"modal-button\"\r\n        >\r\n          Cancel\r\n        </button>\r\n        <button\r\n          onClick={handleFire}\r\n          style={{ backgroundColor: \"red\", color: \"white\" }}\r\n          className=\"modal-button\"\r\n        >\r\n          Fire\r\n        </button>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/modals/FireAstronaut.tsx b/frontend/src/app/modals/FireAstronaut.tsx
+--- a/frontend/src/app/modals/FireAstronaut.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/modals/FireAstronaut.tsx	(date 1715760996136)
+@@ -3,13 +3,13 @@
+ import "../../styles/Modal.css";
+ 
+ export default function FireAstronaut(props: FireAstronautProps) {
+-  const handleFire = function(){
++  const handleFire = function () {
+     const deleteUrl = "http://localhost:8080/fireAstronaut";
+-    const performerId = "??????????companyId" // company id we must retrieve via login
++    const performerId = "??????????companyId"; // company id we must retrieve via login
+     const requestBody = {
+       id: performerId,
+       astronautId: props.astronautId,
+-    }
++    };
+ 
+     fetch(deleteUrl, {
+       method: "DELETE",
+@@ -17,22 +17,23 @@
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify(requestBody),
+-    }).then((response) => {
+-      if(!response.ok){
+-        throw new Error("Network respone was not ok");
+-      }
+-      else{
+-        //delete successful close the modal
+-        props.onClose();
+-      }
+-    }).catch((error) => {
+-      // Handle errors here
+-      console.error(
+-        "There was a problem with the fetch (delete (fireAstronaut)) operation:",
+-        error
+-      );
+-    });
+-  }
++    })
++      .then((response) => {
++        if (!response.ok) {
++          throw new Error("Network respone was not ok");
++        } else {
++          //delete successful close the modal
++          props.onClose();
++        }
++      })
++      .catch((error) => {
++        // Handle errors here
++        console.error(
++          "There was a problem with the fetch (delete (fireAstronaut)) operation:",
++          error
++        );
++      });
++  };
+ 
+   //FIX BACKEND FIRST TO IMPLEMENT FETCH OF THIS
+   return (
+@@ -43,20 +44,22 @@
+           Are you sure you want to fire this astronaut?
+         </p>
+ 
+-        <button
+-          onClick={props.onClose}
+-          style={{ backgroundColor: "blue", color: "white" }}
+-          className="modal-button"
+-        >
+-          Cancel
+-        </button>
+-        <button
+-          onClick={handleFire}
+-          style={{ backgroundColor: "red", color: "white" }}
+-          className="modal-button"
+-        >
+-          Fire
+-        </button>
++        <div className="modal-button-container">
++          <button
++            onClick={props.onClose}
++            style={{ backgroundColor: "blue", color: "white" }}
++            className="modal-button"
++          >
++            Cancel
++          </button>
++          <button
++            onClick={handleFire}
++            style={{ backgroundColor: "red", color: "white" }}
++            className="modal-button"
++          >
++            Fire
++          </button>
++        </div>
+       </div>
+     </div>
+   );
+Index: frontend/src/app/modals/CreateHealthRecord.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState } from \"react\";\r\n//import React from \"react\";\r\nimport { CreateHealthRecordProps } from \"../../data-types/modal-props\";\r\nimport \"../../styles/Modal.css\";\r\n\r\n/*function fetchSuccess() {}\r\nfunction handleChange() {\r\n  //empty function\r\n}*/\r\n\r\nexport default function CreateHealthRecord(props: CreateHealthRecordProps) {\r\n  const [errVisible, setErrVisible] = useState<boolean>(false);\r\n  const [formData, setFormData] = useState({\r\n    height: \"\",\r\n    weight: \"\",\r\n    heartRate: \"\",\r\n    bloodPressure: \"\",\r\n    vaccinations: \"\",\r\n    notes: \"\",\r\n    eligible: \"\",\r\n  });\r\n\r\n  const updateForm = function (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {\r\n    console.log(\"CHR debug: updateForm invoked\");\r\n    //this will simply update formData when a change occurs in one of our input elements\r\n    const { id, value } = e.target;\r\n    console.log(id + \",\" + value);\r\n    setFormData((prevState) => ({\r\n      ...prevState, //preserve the unchanged attributes of prevState\r\n      [id]: value,\r\n    }));\r\n  };\r\n  const radioChange = function (e: React.ChangeEvent<HTMLInputElement>) {\r\n    setFormData((prevState) => ({\r\n      ...prevState,\r\n      eligible: e.target.value,\r\n    }));\r\n  };\r\n  const registerHandler = function () {\r\n    console.log(\"CHR debug: registerHandler invoked\");\r\n\r\n    //console.log(\"CHR debug formData is: \" + formData.toString());\r\n    //evaluate formData to ensure that retrieved input is okay\r\n    console.log(\"Debug CHR:\" + formData.height + \"\" + formData.weight);\r\n    if (\r\n      formData.height !== \"\" &&\r\n      formData.weight !== \"\" &&\r\n      formData.heartRate !== \"\" &&\r\n      formData.bloodPressure !== \"\" &&\r\n      formData.vaccinations !== \"\" &&\r\n      formData.eligible !== \"\"\r\n    ) {\r\n      setErrVisible(false);\r\n      const castedHeight = parseFloat(formData.height);\r\n      const castedWeight = parseFloat(formData.weight);\r\n      const castedHeartRate = parseInt(formData.heartRate);\r\n\r\n      if (castedHeight == 0 || castedWeight == 0 || castedHeartRate === 0) {\r\n        setErrVisible(true);\r\n      } else {\r\n        console.log(\"CHR debug: about to send the post request\");\r\n        //we can register the healthRecord to backend now\r\n        const postUrl = `http://localhost:8080/healthRecord/create`;\r\n\r\n        const currDate = new Date();\r\n        const day = currDate.getDate();\r\n        const month = currDate.getMonth() + 1;\r\n        const year = currDate.getFullYear();\r\n        const dateStr = year + \"-\" + month + \"-\" + day;\r\n\r\n        const requestBody = {\r\n          height: castedHeight,\r\n          weight: castedWeight,\r\n          heartRate: castedHeartRate,\r\n          bloodPressure: formData.bloodPressure,\r\n          vaccinations: formData.vaccinations,\r\n          notes: formData.notes,\r\n          availibilityForMission: formData.eligible,\r\n          date: dateStr,\r\n        };\r\n\r\n        // Send a POST request to register the health record\r\n        fetch(postUrl, {\r\n          method: \"POST\",\r\n          headers: {\r\n            \"Content-Type\": \"application/json\",\r\n          },\r\n          body: JSON.stringify(requestBody),\r\n        })\r\n          .then((response) => {\r\n            if (!response.ok) {\r\n              throw new Error(\"Network response was not ok\");\r\n              console.log(\"Debug CHR: first then if\");\r\n            } else {\r\n              //close the modal, the health record has been registered\r\n              props.onClose();\r\n            }\r\n          })\r\n          .catch((error) => {\r\n            // Handle errors here\r\n            console.error(\r\n              \"There was a problem with the fetch operation:\",\r\n              error\r\n            );\r\n          });\r\n      }\r\n    } else {\r\n      console.log(\"Debug CHR: outer else\");\r\n      setErrVisible(true);\r\n    }\r\n  };\r\n  return (\r\n    <div className=\"modal-overlay\">\r\n      <div className=\"modal-outer\">\r\n        <p className=\"modal-title\">Create Health Record</p>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"height\">\r\n            Height:\r\n          </label>\r\n          <input\r\n            className=\"modal-input\"\r\n            type=\"text\"\r\n            value={formData.height}\r\n            onChange={updateForm}\r\n            id=\"height\"\r\n          ></input>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"weight\">\r\n            Weight:\r\n          </label>\r\n\r\n          <input\r\n            className=\"modal-input\"\r\n            type=\"text\"\r\n            value={formData.weight}\r\n            onChange={updateForm}\r\n            id=\"weight\"\r\n          ></input>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"heartRate\">\r\n            Heart Rate:\r\n          </label>\r\n          <input\r\n            className=\"modal-input\"\r\n            type=\"text\"\r\n            value={formData.heartRate}\r\n            onChange={updateForm}\r\n            id=\"heartRate\"\r\n          ></input>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"bloodPressure\">\r\n            Blood Pressure:\r\n          </label>\r\n          <input\r\n            className=\"modal-input\"\r\n            type=\"text\"\r\n            value={formData.bloodPressure}\r\n            onChange={updateForm}\r\n            id=\"bloodPressure\"\r\n          ></input>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"vaccinations\">\r\n            Vaccinations (, separated list)\r\n          </label>\r\n          <textarea\r\n            className=\"modal-input\"\r\n            id=\"vaccinations\"\r\n            value={formData.vaccinations}\r\n            onChange={updateForm}\r\n          ></textarea>\r\n        </div>\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"notes\">\r\n            Notes\r\n          </label>\r\n          <textarea\r\n            className=\"modal-text-area\"\r\n            id=\"notes\"\r\n            value={formData.notes}\r\n            onChange={updateForm}\r\n          ></textarea>\r\n        </div>\r\n\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\"> Eligible for mission: </label>\r\n          <div className=\"modal-radio-container\">\r\n            <label htmlFor=\"radioYes\">Yes</label>\r\n            <input\r\n              className=\"modal-radio\"\r\n              type=\"radio\"\r\n              id=\"radioYes\"\r\n              value=\"yes\"\r\n              name=\"eligible\"\r\n              onChange={radioChange}\r\n            ></input>\r\n            <label htmlFor=\"radioNo\">No</label>\r\n            <input\r\n              className=\"modal-radio\"\r\n              type=\"radio\"\r\n              id=\"radiono\"\r\n              value=\"no\"\r\n              name=\"eligible\"\r\n              onChange={radioChange}\r\n            ></input>\r\n          </div>\r\n        </div>\r\n\r\n        <h5\r\n          style={{\r\n            color: \"red\",\r\n            visibility: errVisible ? \"visible\" : \"hidden\",\r\n          }}\r\n        >\r\n          Fields (except notes) cannot be empty\r\n        </h5>\r\n        <button\r\n          className=\"modal-button\"\r\n          onClick={props.onClose}\r\n          style={{ backgroundColor: \"red\", color: \"white\" }}\r\n        >\r\n          Cancel\r\n        </button>\r\n        <button\r\n          className=\"modal-button\"\r\n          onClick={registerHandler}\r\n          style={{ backgroundColor: \"green\", color: \"white\" }}\r\n        >\r\n          Register\r\n        </button>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/modals/CreateHealthRecord.tsx b/frontend/src/app/modals/CreateHealthRecord.tsx
+--- a/frontend/src/app/modals/CreateHealthRecord.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/modals/CreateHealthRecord.tsx	(date 1715760996136)
+@@ -20,7 +20,9 @@
+     eligible: "",
+   });
+ 
+-  const updateForm = function (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
++  const updateForm = function (
++    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
++  ) {
+     console.log("CHR debug: updateForm invoked");
+     //this will simply update formData when a change occurs in one of our input elements
+     const { id, value } = e.target;
+@@ -217,20 +219,23 @@
+         >
+           Fields (except notes) cannot be empty
+         </h5>
+-        <button
+-          className="modal-button"
+-          onClick={props.onClose}
+-          style={{ backgroundColor: "red", color: "white" }}
+-        >
+-          Cancel
+-        </button>
+-        <button
+-          className="modal-button"
+-          onClick={registerHandler}
+-          style={{ backgroundColor: "green", color: "white" }}
+-        >
+-          Register
+-        </button>
++
++        <div className="modal-button-container">
++          <button
++            className="modal-button"
++            onClick={props.onClose}
++            style={{ backgroundColor: "red", color: "white" }}
++          >
++            Cancel
++          </button>
++          <button
++            className="modal-button"
++            onClick={registerHandler}
++            style={{ backgroundColor: "green", color: "white" }}
++          >
++            Create
++          </button>
++        </div>
+       </div>
+     </div>
+   );
+Index: frontend/src/App.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState } from \"react\";\r\nimport { BrowserRouter, Route, Routes } from \"react-router-dom\";\r\n\r\nimport LoginPage from \"./pages/commonPages/LoginPage/LoginPage.tsx\";\r\nimport RegisterPage from \"./pages/commonPages/RegisterPage/RegisterPage.tsx\";\r\nimport SpaceMissions from \"./app/pages/SpaceMissions\";\r\nimport Astronauts from \"./app/pages/Astronauts\";\r\nimport Agencies from \"./app/pages/Agencies\";\r\nimport Companies from \"./app/pages/Companies\";\r\nimport Platform from \"./app/pages/Platform\";\r\nimport AstronautProfile from \"./app/profiles/AstronautProfile\";\r\nimport CompanyProfile from \"./app/profiles/CompanyProfile.tsx\";\r\nimport ReceivedBids from \"./app/pages/ReceivedBids\";\r\nimport Login from \"./app/Login.tsx\";\r\nimport OfferedBids from \"./app/pages/OfferedBids.tsx\";\r\n\r\n\r\n\r\n\r\nfunction App() {\r\n  return (\r\n    <div>\r\n      <BrowserRouter>\r\n        <Routes>\r\n          <Route path=\"/\" element={<SpaceMissions />} />\r\n          <Route path=\"/space-missions\" element={<SpaceMissions />} />\r\n          <Route path=\"/astronauts\" element={<Astronauts />} />\r\n          <Route path=\"/companies\" element={<Companies />} />\r\n          <Route path=\"/agencies\" element={<Agencies />} />\r\n          <Route path=\"/platforms\" element={<Platform />} />\r\n          <Route path=\"/astronaut/:id\" element={<AstronautProfile />}></Route>\r\n          <Route path=\"/companyProfile/:companyId\" element={<CompanyProfile />}></Route>\r\n          <Route path=\"/login\" element={<LoginPage/>} />\r\n          <Route path=\"/register\" element={<RegisterPage/>} />\r\n          <Route path=\"/bid/receivedList/:id\" element={<ReceivedBids />} /> \r\n          <Route path=\"/test\" element={<Login />} />\r\n          <Route path=\"/bid/offeredList/:id\" element={<OfferedBids />} />\r\n        </Routes>\r\n      </BrowserRouter>\r\n    </div>\r\n  );\r\n}\r\n\r\nexport default App;\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/App.tsx b/frontend/src/App.tsx
+--- a/frontend/src/App.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/App.tsx	(date 1715760996136)
+@@ -13,9 +13,7 @@
+ import ReceivedBids from "./app/pages/ReceivedBids";
+ import Login from "./app/Login.tsx";
+ import OfferedBids from "./app/pages/OfferedBids.tsx";
+-
+-
+-
++import AgencyProfile from "./app/profiles/AgencyProfile.tsx";
+ 
+ function App() {
+   return (
+@@ -29,10 +27,11 @@
+           <Route path="/agencies" element={<Agencies />} />
+           <Route path="/platforms" element={<Platform />} />
+           <Route path="/astronaut/:id" element={<AstronautProfile />}></Route>
+-          <Route path="/companyProfile/:companyId" element={<CompanyProfile />}></Route>
+-          <Route path="/login" element={<LoginPage/>} />
+-          <Route path="/register" element={<RegisterPage/>} />
+-          <Route path="/bid/receivedList/:id" element={<ReceivedBids />} /> 
++          <Route path="/company/:id" element={<CompanyProfile />}></Route>
++          <Route path="/agency/:id" element={<AgencyProfile />}></Route>
++          <Route path="/login" element={<LoginPage />} />
++          <Route path="/register" element={<RegisterPage />} />
++          <Route path="/bid/receivedList/:id" element={<ReceivedBids />} />
+           <Route path="/test" element={<Login />} />
+           <Route path="/bid/offeredList/:id" element={<OfferedBids />} />
+         </Routes>
+Index: frontend/src/app/modals/RegisterExpert.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useState } from \"react\";\r\nimport {\r\n  //FireAstronautProps,\r\n  RegisterExpertProps,\r\n} from \"../../data-types/modal-props\";\r\nimport \"../../styles/Modal.css\";\r\n\r\nexport default function RegisterExpert(props: RegisterExpertProps) {\r\n\r\n\r\n  const [formData, setFormData] = useState({\r\n    name: \"\",\r\n    email: \"\",\r\n    password: \"\",\r\n    confirm_password: \"\",\r\n  });\r\n\r\n  const updateForm = function(e: React.ChangeEvent<HTMLInputElement> ){\r\n    const { id, value } = e.target;\r\n    console.log(id + \",\" + value);\r\n    setFormData((prevState) => ({\r\n      ...prevState, //preserve the unchanged attributes of prevState\r\n      [id]: value,\r\n    }));\r\n  }\r\n\r\n  const registerHandler = function (){\r\n    const postUrl = `http://localhost:8080/expert/register`;\r\n\r\n\r\n    if(formData.password === formData.confirm_password){\r\n      const requestBody = {\r\n        id: props.expertId,\r\n        companyId: props.companyId,\r\n        name: formData.name,\r\n        mail: formData.email,\r\n        password: formData.password,\r\n      }\r\n\r\n      fetch(postUrl, {\r\n        method: \"POST\",\r\n        headers: {\r\n          \"Content-Type\": \"application/json\",\r\n        },\r\n        body: JSON.stringify(requestBody),\r\n      }).then((response) => {\r\n        if (!response.ok) {\r\n          throw new Error(\"Network response was not ok\");\r\n        } \r\n        else {\r\n          //close the modal, the health record has been registered\r\n          props.onClose();\r\n        }\r\n      })\r\n      .catch((error) => {\r\n        // Handle errors here\r\n        console.error(\r\n          \"There was a problem with the fetch operation:\",\r\n          error\r\n        );\r\n      });\r\n\r\n    }\r\n    else{\r\n      console.log(\"Passwords don't match\");\r\n      //ToDo\r\n      //Display a red label indicating passwords do not match\r\n    }    \r\n  }\r\n\r\n\r\n  return (\r\n    <div className=\"modal-overlay\">\r\n      <div className=\"modal-outer\">\r\n        <p className=\"modal-title\">Register Expert</p>\r\n\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"name\">\r\n            Expert Name\r\n          </label>\r\n\r\n          <input className=\"modal-input\" value={formData.name} onChange={updateForm} type=\"text\" id=\"name\"></input>\r\n        </div>\r\n\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"email\">\r\n            Expert Email\r\n          </label>\r\n\r\n          <input className=\"modal-input\" value={formData.email} onChange={updateForm} type=\"text\" id=\"email\"></input>\r\n        </div>\r\n\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"password\">\r\n            Expert Password\r\n          </label>\r\n\r\n          <input className=\"modal-input\" value={formData.password} onChange={updateForm} type=\"password\" id=\"password\"></input>\r\n        </div>\r\n\r\n        <div className=\"modal-input-container\">\r\n          <label className=\"modal-label\" htmlFor=\"confirm_password\">\r\n            Confirm Expert Password\r\n          </label>\r\n\r\n          <input\r\n            className=\"modal-input\"\r\n            value={formData.confirm_password}\r\n            onChange={updateForm}\r\n            type=\"password\"\r\n            id=\"confirm_password\"\r\n          ></input>\r\n        </div>\r\n\r\n        <button\r\n          onClick={props.onClose}\r\n          style={{ backgroundColor: \"red\", color: \"white\" }}\r\n          className=\"modal-button\"\r\n        >\r\n          Cancel\r\n        </button>\r\n        <button\r\n          onClick={registerHandler}\r\n          style={{ backgroundColor: \"green\", color: \"white\" }}\r\n          className=\"modal-button\"\r\n        >\r\n          Register\r\n        </button>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/modals/RegisterExpert.tsx b/frontend/src/app/modals/RegisterExpert.tsx
+--- a/frontend/src/app/modals/RegisterExpert.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/modals/RegisterExpert.tsx	(date 1715760996136)
+@@ -6,8 +6,6 @@
+ import "../../styles/Modal.css";
+ 
+ export default function RegisterExpert(props: RegisterExpertProps) {
+-
+-
+   const [formData, setFormData] = useState({
+     name: "",
+     email: "",
+@@ -15,27 +13,26 @@
+     confirm_password: "",
+   });
+ 
+-  const updateForm = function(e: React.ChangeEvent<HTMLInputElement> ){
++  const updateForm = function (e: React.ChangeEvent<HTMLInputElement>) {
+     const { id, value } = e.target;
+     console.log(id + "," + value);
+     setFormData((prevState) => ({
+       ...prevState, //preserve the unchanged attributes of prevState
+       [id]: value,
+     }));
+-  }
++  };
+ 
+-  const registerHandler = function (){
++  const registerHandler = function () {
+     const postUrl = `http://localhost:8080/expert/register`;
+ 
+-
+-    if(formData.password === formData.confirm_password){
++    if (formData.password === formData.confirm_password) {
+       const requestBody = {
+         id: props.expertId,
+         companyId: props.companyId,
+         name: formData.name,
+         mail: formData.email,
+         password: formData.password,
+-      }
++      };
+ 
+       fetch(postUrl, {
+         method: "POST",
+@@ -43,31 +40,25 @@
+           "Content-Type": "application/json",
+         },
+         body: JSON.stringify(requestBody),
+-      }).then((response) => {
+-        if (!response.ok) {
+-          throw new Error("Network response was not ok");
+-        } 
+-        else {
+-          //close the modal, the health record has been registered
+-          props.onClose();
+-        }
+-      })
+-      .catch((error) => {
+-        // Handle errors here
+-        console.error(
+-          "There was a problem with the fetch operation:",
+-          error
+-        );
+-      });
+-
+-    }
+-    else{
++      })
++        .then((response) => {
++          if (!response.ok) {
++            throw new Error("Network response was not ok");
++          } else {
++            //close the modal, the health record has been registered
++            props.onClose();
++          }
++        })
++        .catch((error) => {
++          // Handle errors here
++          console.error("There was a problem with the fetch operation:", error);
++        });
++    } else {
+       console.log("Passwords don't match");
+       //ToDo
+       //Display a red label indicating passwords do not match
+-    }    
+-  }
+-
++    }
++  };
+ 
+   return (
+     <div className="modal-overlay">
+@@ -79,7 +70,13 @@
+             Expert Name
+           </label>
+ 
+-          <input className="modal-input" value={formData.name} onChange={updateForm} type="text" id="name"></input>
++          <input
++            className="modal-input"
++            value={formData.name}
++            onChange={updateForm}
++            type="text"
++            id="name"
++          ></input>
+         </div>
+ 
+         <div className="modal-input-container">
+@@ -87,7 +84,13 @@
+             Expert Email
+           </label>
+ 
+-          <input className="modal-input" value={formData.email} onChange={updateForm} type="text" id="email"></input>
++          <input
++            className="modal-input"
++            value={formData.email}
++            onChange={updateForm}
++            type="text"
++            id="email"
++          ></input>
+         </div>
+ 
+         <div className="modal-input-container">
+@@ -95,7 +98,13 @@
+             Expert Password
+           </label>
+ 
+-          <input className="modal-input" value={formData.password} onChange={updateForm} type="password" id="password"></input>
++          <input
++            className="modal-input"
++            value={formData.password}
++            onChange={updateForm}
++            type="password"
++            id="password"
++          ></input>
+         </div>
+ 
+         <div className="modal-input-container">
+@@ -112,20 +121,22 @@
+           ></input>
+         </div>
+ 
+-        <button
+-          onClick={props.onClose}
+-          style={{ backgroundColor: "red", color: "white" }}
+-          className="modal-button"
+-        >
+-          Cancel
+-        </button>
+-        <button
+-          onClick={registerHandler}
+-          style={{ backgroundColor: "green", color: "white" }}
+-          className="modal-button"
+-        >
+-          Register
+-        </button>
++        <div className="modal-button-container">
++          <button
++            onClick={props.onClose}
++            style={{ backgroundColor: "red", color: "white" }}
++            className="modal-button"
++          >
++            Cancel
++          </button>
++          <button
++            onClick={registerHandler}
++            style={{ backgroundColor: "green", color: "white" }}
++            className="modal-button"
++          >
++            Register
++          </button>
++        </div>
+       </div>
+     </div>
+   );
+Index: frontend/src/data-types/modal-props.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>export interface CreateHealthRecordProps {\r\n  astronautId: number;\r\n  onClose: () => void;\r\n}\r\n\r\nexport interface HealthRecordDetailsProps {\r\n  healthRecordId: number;\r\n  onClose: () => void;\r\n}\r\n\r\nexport interface FireAstronautProps {\r\n  astronautId: number;\r\n  onClose: () => void;\r\n}\r\n\r\nexport interface RegisterExpertProps {\r\n  expertId: number;\r\n  companyId: number;\r\n  onClose: () => void;\r\n}\r\n\r\nexport interface ApproveAgencyProps {\r\n  agencyId: number;\r\n  onClose: () => void;\r\n}\r\n\r\nexport interface CreateMissionProps {\r\n  companyId: number;\r\n  onClose: () => void;\r\n}\r\n\r\nexport interface SubmitBidProps {\r\n  fromCompanyId: number;\r\n  toCompanyId: number;\r\n  onClose: () => void;\r\n}\r\n\r\nexport interface SubmitBidErrorProps {\r\n  onClose: () => void;\r\n}\r\n\r\nexport interface FilterProps {\r\n  onClose: () => void;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/data-types/modal-props.tsx b/frontend/src/data-types/modal-props.tsx
+--- a/frontend/src/data-types/modal-props.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/data-types/modal-props.tsx	(date 1715760996151)
+@@ -14,7 +14,6 @@
+ }
+ 
+ export interface RegisterExpertProps {
+-  expertId: number;
+   companyId: number;
+   onClose: () => void;
+ }
+Index: frontend/src/data-types/entities.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>export interface Astronaut {\r\n  id: number;\r\n  name: string;\r\n  image: string;\r\n  dateOfBirth: Date;\r\n  onDuty: boolean;\r\n  country: string;\r\n  salary: number;\r\n}\r\n\r\nexport interface Agency {\r\n  id: number;\r\n  name: string;\r\n  mail: string;\r\n  logo: string;\r\n  isApproved: boolean;\r\n}\r\n\r\nexport interface Company {\r\n  id: number;\r\n  name: string;\r\n  userMail: string;\r\n  country: string;\r\n  logo: string;\r\n  money: number;\r\n}\r\n\r\nexport interface SpaceMission {\r\n  id: number;\r\n  missionName: string;\r\n  image: string;\r\n  objective: string;\r\n  budget: number;\r\n  createDate: Date;\r\n  performDate: Date;\r\n  platformId: number;\r\n  creatorId: number;\r\n  performerId: number;\r\n  performStatus: string;\r\n}\r\n\r\nexport interface Platform {\r\n  id: number;\r\n  platformName: string;\r\n  productionYear: number;\r\n  image: string;\r\n  costPerLaunch: number;\r\n}\r\n\r\nexport interface HealthRecord {\r\n  id: number;\r\n  astronautId: number;\r\n  expertId: number;\r\n  date: Date;\r\n  availabilityForMission: boolean;\r\n  weight: number;\r\n  height: number;\r\n  heartRate: number;\r\n  bloodPressure: number;\r\n  vaccinations: string;\r\n  notes: string;\r\n}\r\n\r\nexport interface SpaceMissionForListing{\r\n  id:number,\r\n  missionName:string,\r\n  creatorCompanyName:string,\r\n  status:string,\r\n  startDate:Date,\r\n  endDate:Date,\r\n  image:string\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/data-types/entities.tsx b/frontend/src/data-types/entities.tsx
+--- a/frontend/src/data-types/entities.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/data-types/entities.tsx	(date 1715760996151)
+@@ -17,7 +17,7 @@
+ }
+ 
+ export interface Company {
+-  id: number;
++  userId: number;
+   name: string;
+   userMail: string;
+   country: string;
+@@ -61,12 +61,12 @@
+   notes: string;
+ }
+ 
+-export interface SpaceMissionForListing{
+-  id:number,
+-  missionName:string,
+-  creatorCompanyName:string,
+-  status:string,
+-  startDate:Date,
+-  endDate:Date,
+-  image:string
++export interface SpaceMissionForListing {
++  id: number;
++  missionName: string;
++  creatorCompanyName: string;
++  status: string;
++  startDate: Date;
++  endDate: Date;
++  image: string;
+ }
+Index: frontend/src/app/pages/Agencies.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect, useState } from \"react\";\r\nimport Header from \"../../components/Header\";\r\nimport Navbar from \"../../components/Navbar\";\r\nimport { Agency } from \"../../data-types/entities\";\r\nimport { getAgencies } from \"../../calling/agencyCaller\";\r\n\r\nexport default function Agencies() {\r\n  const [agencies, setAgencies] = useState<Agency[]>([]);\r\n\r\n  useEffect(() => {\r\n    getAgencies({ token: \"\" }).then((data) => {\r\n      setAgencies(data);\r\n    });\r\n  }, []);\r\n\r\n  return (\r\n    <div className=\"outer\">\r\n      <Header />\r\n      <Navbar />\r\n      <div className=\"list-container\">\r\n        {agencies.map((agency: Agency) => (\r\n          <div className=\"list-item\" key={agency.id}>\r\n            <div className=\"list-image-box\">\r\n              <img src={agency.logo} />\r\n            </div>\r\n            <div className=\"list-information-box\">\r\n              <p>Name: {agency.name}</p>\r\n              <p>{agency.isApproved ? \"Approved\" : \"Not approved\"}</p>\r\n            </div>\r\n          </div>\r\n        ))}\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/pages/Agencies.tsx b/frontend/src/app/pages/Agencies.tsx
+--- a/frontend/src/app/pages/Agencies.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/pages/Agencies.tsx	(date 1715760996136)
+@@ -3,6 +3,7 @@
+ import Navbar from "../../components/Navbar";
+ import { Agency } from "../../data-types/entities";
+ import { getAgencies } from "../../calling/agencyCaller";
++import { Link } from "react-router-dom";
+ 
+ export default function Agencies() {
+   const [agencies, setAgencies] = useState<Agency[]>([]);
+@@ -19,7 +20,11 @@
+       <Navbar />
+       <div className="list-container">
+         {agencies.map((agency: Agency) => (
+-          <div className="list-item" key={agency.id}>
++          <Link
++            to={"/agency/" + agency.id}
++            className="list-item"
++            key={agency.id}
++          >
+             <div className="list-image-box">
+               <img src={agency.logo} />
+             </div>
+@@ -27,7 +32,7 @@
+               <p>Name: {agency.name}</p>
+               <p>{agency.isApproved ? "Approved" : "Not approved"}</p>
+             </div>
+-          </div>
++          </Link>
+         ))}
+       </div>
+     </div>
+Index: frontend/src/styles/Modal.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.modal-overlay {\r\n  justify-content: center;\r\n  align-items: center;\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  background: rgba(0, 0, 0, 0.5);\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n  z-index: 1000;\r\n}\r\n\r\n.modal-outer {\r\n  background-color: white;\r\n  border: 2px solid rgb(21, 104, 134);\r\n  border-radius: 20px;\r\n  width: 35%;\r\n  height: fit-content;\r\n  padding-bottom: 20px;\r\n  text-align: center;\r\n}\r\n\r\n.modal-input-container {\r\n  align-self: center;\r\n  display: flex;\r\n  flex-direction: column;\r\n  height: fit-content;\r\n  width: 100%;\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.modal-title {\r\n  color: black;\r\n  font-size: 1.8rem;\r\n  font-weight: bold;\r\n  margin-bottom: 15px;\r\n}\r\n\r\n.modal-input {\r\n  width: 65%;\r\n  align-self: center;\r\n  height: 22px;\r\n}\r\n\r\n.modal-text-area {\r\n  width: 65%;\r\n  align-self: center;\r\n  height: 70px;\r\n}\r\n\r\n.modal-label {\r\n  width: 65%;\r\n  color: black;\r\n  align-self: center;\r\n  text-align: left;\r\n}\r\n\r\n.modal-radio-container {\r\n  display: flex;\r\n  flex-direction: row;\r\n  justify-content: center;\r\n  align-items: center;\r\n}\r\n\r\n.modal-warning-text {\r\n  color: black;\r\n  font-size: 1.2rem;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.modal-button {\r\n  margin-top: 25px;\r\n  margin-left: 10px;\r\n  margin-right: 10px;\r\n}\r\n\r\n.filter-mix-max-container {\r\n  align-self: center;\r\n  display: flex;\r\n  flex-direction: row;\r\n  height: fit-content;\r\n  width: 100%;\r\n  margin-bottom: 5px;\r\n  margin-top: 5px;\r\n  justify-content: center;\r\n}\r\n\r\n.filter-min-max-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  width: 40%;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/styles/Modal.css b/frontend/src/styles/Modal.css
+--- a/frontend/src/styles/Modal.css	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/styles/Modal.css	(date 1715760996167)
+@@ -75,6 +75,13 @@
+   margin-top: 25px;
+   margin-left: 10px;
+   margin-right: 10px;
++  width: 30%;
++}
++
++.modal-button-container {
++  display: flex;
++  flex-direction: row;
++  justify-content: center;
+ }
+ 
+ .filter-mix-max-container {
+Index: frontend/src/app/pages/Companies.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect, useState } from \"react\";\r\nimport Header from \"../../components/Header\";\r\nimport Navbar from \"../../components/Navbar\";\r\nimport \"../../styles/App.css\";\r\nimport { Company } from \"../../data-types/entities\";\r\nimport { getCompanies } from \"../../calling/companyCaller\";\r\n\r\nexport default function Companies() {\r\n  const [companies, setCompanies] = useState<Company[]>([]);\r\n\r\n  useEffect(() => {\r\n    getCompanies({ token: \"\" }).then((data) => {\r\n      setCompanies(data);\r\n    });\r\n  }, []);\r\n\r\n  return (\r\n    <div className=\"outer\">\r\n      <Header />\r\n      <Navbar />\r\n      <div className=\"list-container\">\r\n        {companies.map((company: Company) => (\r\n          <div className=\"list-item\" key={company.id}>\r\n            <div className=\"list-image-box\">\r\n              <img src={company.logo}/>\r\n            </div>\r\n            <div className=\"list-information-box\">\r\n              <p>Name: {company.name}</p>\r\n              <p>Country: {company.country}</p>\r\n              <p>Budget: {company.money}</p>\r\n            </div>\r\n          </div>\r\n        ))}\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/pages/Companies.tsx b/frontend/src/app/pages/Companies.tsx
+--- a/frontend/src/app/pages/Companies.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/pages/Companies.tsx	(date 1715760996151)
+@@ -4,6 +4,7 @@
+ import "../../styles/App.css";
+ import { Company } from "../../data-types/entities";
+ import { getCompanies } from "../../calling/companyCaller";
++import { Link } from "react-router-dom";
+ 
+ export default function Companies() {
+   const [companies, setCompanies] = useState<Company[]>([]);
+@@ -20,16 +21,20 @@
+       <Navbar />
+       <div className="list-container">
+         {companies.map((company: Company) => (
+-          <div className="list-item" key={company.id}>
++          <Link
++            to={"/company/" + company.userId}
++            className="list-item"
++            key={company.userId}
++          >
+             <div className="list-image-box">
+-              <img src={company.logo}/>
++              <img src={company.logo} />
+             </div>
+             <div className="list-information-box">
+               <p>Name: {company.name}</p>
+               <p>Country: {company.country}</p>
+               <p>Budget: {company.money}</p>
+             </div>
+-          </div>
++          </Link>
+         ))}
+       </div>
+     </div>
+Index: frontend/src/app/profiles/AstronautProfile.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useParams } from \"react-router-dom\";\r\nimport CreateHealthRecord from \"../modals/CreateHealthRecord\";\r\nimport { useState } from \"react\";\r\nimport HealthRecordDetails from \"../modals/HealthRecordDetails\";\r\nimport FireAstronaut from \"../modals/FireAstronaut\";\r\n\r\nimport { Link } from 'react-router-dom';\r\nimport Header from \"../../components/Header\";\r\nimport Navbar from \"../../components/Navbar\";\r\n\r\nexport default function AstronautProfile() {\r\n    const spaceMissions = [\r\n        { id: 1, name: 'YAKBE-2024, SpaceY' }\r\n    ];\r\n\r\n    const healthRecords = [\r\n        { id: 1, date: '25.03.2024', doctor: 'Dr. OZ' },\r\n        { id: 2, date: '25.03.2024', doctor: 'Dr. OZ' }\r\n    ];\r\n\r\n    const { id } = useParams();\r\n    const [createHealthRecordOpen, setCreateHealthRecordOpen] =\r\n        useState<boolean>(false);\r\n    const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);\r\n    const [healthRecordDetailsOpen, setHealthRecordDetailsOpen] =\r\n        useState<boolean>(false);\r\n\r\n    const handleCreateHealthRecordClick = () => {\r\n        setCreateHealthRecordOpen(!createHealthRecordOpen);\r\n    };\r\n\r\n    const handleFireAstronautClick = () => {\r\n        setFireAstronautOpen(!fireAstronautOpen);\r\n    };\r\n\r\n    const handleHealthRecordDetailsClick = () => {\r\n        setHealthRecordDetailsOpen(!healthRecordDetailsOpen);\r\n    };\r\n\r\n    return (\r\n        <div className=\"outer\">\r\n            <Header/>\r\n            <Navbar/>\r\n            <div className=\"button-bar\">\r\n                <button className=\"top-button\" onClick={handleCreateHealthRecordClick}>Create Health Record</button>\r\n                <button className=\"top-button\" onClick={handleFireAstronautClick}>Fire Astronaut</button>\r\n                <button className=\"top-button\" onClick={handleHealthRecordDetailsClick}>Health Record Details</button>\r\n            </div>\r\n            <div className=\"profile-container\">\r\n                <div className=\"profile-header\">\r\n                    <div className=\"profile-image\">\r\n                        <img src=\"astronaut-image.png\" alt=\"Astronaut\" style={{width: '150px', height: '150px'}}/>\r\n                    </div>\r\n                    <div className=\"profile-info\">\r\n                        <h1>Bahadır Günenç</h1>\r\n                        <p>Country: Türkiye</p>\r\n                        <p>Date of Birth: 01.01.1700</p>\r\n                        <p>Status: On Mission</p>\r\n                    </div>\r\n                </div>\r\n                <div className=\"profile-details\">\r\n                    <div className=\"missions-section\">\r\n                        <h2>Space Missions</h2>\r\n                        {spaceMissions.map(mission => (\r\n                            <Link to=\"/missions\" key={mission.id} className=\"mission-entry\">\r\n                                {mission.name}\r\n                            </Link>\r\n                        ))}\r\n                    </div>\r\n                    <div className=\"health-section\">\r\n                        <h2>Health Records</h2>\r\n                        {healthRecords.map(record => (\r\n                            <Link to={`/health-records/${record.id}`} key={record.id} className=\"health-record\">\r\n                                {record.date}, {record.doctor}\r\n                            </Link>\r\n                        ))}\r\n                    </div>\r\n                </div>\r\n                <style>{`\r\n                    .profile-container {\r\n                        display: flex;\r\n                        flex-direction: column;\r\n                        align-items: center;\r\n                        padding: 20px;\r\n                        max-width: 800px;\r\n                        margin: auto;\r\n                    }\r\n                    .profile-header {\r\n                        display: flex;\r\n                        justify-content: space-around;\r\n                        width: 100%;\r\n                        margin-bottom: 20px;\r\n                    }\r\n                    .profile-info {\r\n                        margin-left: 20px;\r\n                    }\r\n                    .profile-details {\r\n                        display: flex;\r\n                        justify-content: space-between;\r\n                        width: 100%;\r\n                    }\r\n                    .missions-section, .health-section {\r\n                        flex: 1;\r\n                        padding: 10px;\r\n                        margin: 5px;\r\n                        background: #f0f0f0;\r\n                        border: 1px solid #ccc;\r\n                    }\r\n                    .mission-entry, .health-record {\r\n                        padding: 8px;\r\n                        margin: 5px 0;\r\n                        background: white;\r\n                        border: 1px solid #ddd;\r\n                        display: block;\r\n                        text-decoration: none;\r\n                        color: black;\r\n                    }\r\n                    .button-bar {\r\n                        display: flex;\r\n                        justify-content: center;\r\n                        width: 100%;\r\n                        margin-top: 10px;\r\n                    }\r\n                    .top-button {\r\n                        padding: 8px 16px;\r\n                        margin: 0 10px;\r\n                        background-color: #007bff;\r\n                        color: white;\r\n                        border: none;\r\n                        border-radius: 5px;\r\n                        cursor: pointer;\r\n                    }\r\n                    .top-button:hover {\r\n                        background-color: #0056b3;\r\n                    }\r\n                `}</style>\r\n            </div>\r\n        </div>\r\n    );\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/profiles/AstronautProfile.tsx b/frontend/src/app/profiles/AstronautProfile.tsx
+--- a/frontend/src/app/profiles/AstronautProfile.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/profiles/AstronautProfile.tsx	(date 1715760996151)
+@@ -4,79 +4,100 @@
+ import HealthRecordDetails from "../modals/HealthRecordDetails";
+ import FireAstronaut from "../modals/FireAstronaut";
+ 
+-import { Link } from 'react-router-dom';
++import { Link } from "react-router-dom";
+ import Header from "../../components/Header";
+ import Navbar from "../../components/Navbar";
+ 
+ export default function AstronautProfile() {
+-    const spaceMissions = [
+-        { id: 1, name: 'YAKBE-2024, SpaceY' }
+-    ];
++  const spaceMissions = [{ id: 1, name: "YAKBE-2024, SpaceY" }];
+ 
+-    const healthRecords = [
+-        { id: 1, date: '25.03.2024', doctor: 'Dr. OZ' },
+-        { id: 2, date: '25.03.2024', doctor: 'Dr. OZ' }
+-    ];
++  const healthRecords = [
++    { id: 1, date: "25.03.2024", doctor: "Dr. OZ" },
++    { id: 2, date: "25.03.2024", doctor: "Dr. OZ" },
++  ];
+ 
+-    const { id } = useParams();
+-    const [createHealthRecordOpen, setCreateHealthRecordOpen] =
+-        useState<boolean>(false);
+-    const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);
+-    const [healthRecordDetailsOpen, setHealthRecordDetailsOpen] =
+-        useState<boolean>(false);
++  const { id } = useParams();
++  const [createHealthRecordOpen, setCreateHealthRecordOpen] =
++    useState<boolean>(false);
++  const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);
++  const [healthRecordDetailsOpen, setHealthRecordDetailsOpen] =
++    useState<boolean>(false);
+ 
+-    const handleCreateHealthRecordClick = () => {
+-        setCreateHealthRecordOpen(!createHealthRecordOpen);
+-    };
++  const handleCreateHealthRecordClick = () => {
++    setCreateHealthRecordOpen(!createHealthRecordOpen);
++  };
+ 
+-    const handleFireAstronautClick = () => {
+-        setFireAstronautOpen(!fireAstronautOpen);
+-    };
++  const handleFireAstronautClick = () => {
++    setFireAstronautOpen(!fireAstronautOpen);
++  };
+ 
+-    const handleHealthRecordDetailsClick = () => {
+-        setHealthRecordDetailsOpen(!healthRecordDetailsOpen);
+-    };
++  const handleHealthRecordDetailsClick = () => {
++    setHealthRecordDetailsOpen(!healthRecordDetailsOpen);
++  };
+ 
+-    return (
+-        <div className="outer">
+-            <Header/>
+-            <Navbar/>
+-            <div className="button-bar">
+-                <button className="top-button" onClick={handleCreateHealthRecordClick}>Create Health Record</button>
+-                <button className="top-button" onClick={handleFireAstronautClick}>Fire Astronaut</button>
+-                <button className="top-button" onClick={handleHealthRecordDetailsClick}>Health Record Details</button>
+-            </div>
+-            <div className="profile-container">
+-                <div className="profile-header">
+-                    <div className="profile-image">
+-                        <img src="astronaut-image.png" alt="Astronaut" style={{width: '150px', height: '150px'}}/>
+-                    </div>
+-                    <div className="profile-info">
+-                        <h1>Bahadır Günenç</h1>
+-                        <p>Country: Türkiye</p>
+-                        <p>Date of Birth: 01.01.1700</p>
+-                        <p>Status: On Mission</p>
+-                    </div>
+-                </div>
+-                <div className="profile-details">
+-                    <div className="missions-section">
+-                        <h2>Space Missions</h2>
+-                        {spaceMissions.map(mission => (
+-                            <Link to="/missions" key={mission.id} className="mission-entry">
+-                                {mission.name}
+-                            </Link>
+-                        ))}
+-                    </div>
+-                    <div className="health-section">
+-                        <h2>Health Records</h2>
+-                        {healthRecords.map(record => (
+-                            <Link to={`/health-records/${record.id}`} key={record.id} className="health-record">
+-                                {record.date}, {record.doctor}
+-                            </Link>
+-                        ))}
+-                    </div>
++  return (
++    <div className="outer">
++      <Header />
++      <Navbar />
++      <div className="button-bar">
++        <button className="top-button" onClick={handleCreateHealthRecordClick}>
++          Create Health Record
++        </button>
++        <button className="top-button" onClick={handleFireAstronautClick}>
++          Fire Astronaut
++        </button>
++      </div>
++      <div className="profile-container">
++        <div className="profile-header">
++          <div className="profile-image">
++            <img
++              src="astronaut-image.png"
++              alt="Astronaut"
++              style={{ width: "150px", height: "150px" }}
++            />
++          </div>
++          <div className="profile-info">
++            <h1>Bahadır Günenç</h1>
++            <p>Country: Türkiye</p>
++            <p>Date of Birth: 01.01.1700</p>
++            <p>Status: On Mission</p>
++          </div>
++        </div>
++        <div className="profile-details">
++          <div className="missions-section">
++            <h2>Space Missions</h2>
++            {spaceMissions.map((mission) => (
++              <Link to="/missions" key={mission.id} className="mission-entry">
++                {mission.name}
++              </Link>
++            ))}
++          </div>
++          <div className="health-section">
++            <h2>Health Records</h2>
++            {healthRecords.map((record) => (
++              <div className="health-record-container">
++                <div key={record.id} className="health-record">
++                  {record.date}, {record.doctor}
++                </div>
++                <button
++                  className="health-record-details-button"
++                  onClick={handleHealthRecordDetailsClick}
++                >
++                  Details
++                </button>
++                <div>
++                  {healthRecordDetailsOpen && (
++                    <HealthRecordDetails
++                      healthRecordId={record.id}
++                      onClose={handleHealthRecordDetailsClick}
++                    />
++                  )}
+                 </div>
+-                <style>{`
++              </div>
++            ))}
++          </div>
++        </div>
++        <style>{`
+                     .profile-container {
+                         display: flex;
+                         flex-direction: column;
+@@ -106,7 +127,7 @@
+                         background: #f0f0f0;
+                         border: 1px solid #ccc;
+                     }
+-                    .mission-entry, .health-record {
++                    .mission-entry {
+                         padding: 8px;
+                         margin: 5px 0;
+                         background: white;
+@@ -129,13 +150,49 @@
+                         border: none;
+                         border-radius: 5px;
+                         cursor: pointer;
++                        width: fit-content;
++                        align-self: flex-end;
+                     }
+                     .top-button:hover {
+                         background-color: #0056b3;
+                     }
++                    .health-record-container {
++                        display: flex;
++                        flex-direction: row;
++                        background: #ffffff;
++                    }
++                    .health-record-details-button {
++                        width: 10vw;
++                        height: fit-content;
++                        background-color: #007bff;
++                    }
++                    .health-record {
++                        padding: 8px;
++                        margin: 5px 0;
++                        background: white;
++                        display: block;
++                        text-decoration: none;
++                        color: black;
++                        width: 12vw;
++                    }
+                 `}</style>
+-            </div>
+-        </div>
+-    );
++      </div>
++      <div>
++        {createHealthRecordOpen && (
++          <CreateHealthRecord
++            astronautId={Number(id)}
++            onClose={handleCreateHealthRecordClick}
++          />
++        )}
++      </div>
++      <div>
++        {fireAstronautOpen && (
++          <FireAstronaut
++            astronautId={Number(id)}
++            onClose={handleFireAstronautClick}
++          />
++        )}
++      </div>
++    </div>
++  );
+ }
+-
+Index: frontend/src/app/profiles/AgencyProfile.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { useEffect, useState } from \"react\";\r\nimport Header from \"../../components/Header.tsx\";\r\nimport Navbar from \"../../components/Navbar.tsx\";\r\nimport { Agency } from \"../../data-types/entities.tsx\";\r\nimport { getAgencies } from \"../../calling/agencyCaller.tsx\";\r\nimport { Link } from 'react-router-dom';\r\n\r\nexport default function Agencies() {\r\n\r\n    const [agencies, setAgencies] = useState<Agency[]>([]);\r\n    const missions = [\r\n        { id: 1, name: 'YAKBE-2024, SpaceY' },\r\n        { id: 2, name: 'R-25, ROKETSAN' }\r\n    ];\r\n\r\n    const astronauts = [\r\n        { id: 1, name: 'John Doe' },\r\n        { id: 2, name: 'Ahmet Reşat Demir' },\r\n        { id: 3, name: 'Bahadır Günenc' }\r\n    ];\r\n\r\n    useEffect(() => {\r\n        getAgencies({ token: \"\" }).then((data) => {\r\n            setAgencies(data);\r\n        });\r\n    }, []);\r\n\r\n    return (\r\n        <div className=\"outer\">\r\n            <Header/>\r\n            <Navbar/>\r\n\r\n            <div className=\"agency-profile-container\">\r\n                <div className=\"header\">\r\n                    <div className=\"logo-container\">\r\n                        <img src=\"photo.png\" alt=\"NASA Logo\" style={{height: '100px'}}/>\r\n                    </div>\r\n                    <div className=\"information-box\">\r\n                        <h1>NASA</h1>\r\n                        <p>Country: USA</p>\r\n                        <p>Email: info@nasa.com</p>\r\n                    </div>\r\n                </div>\r\n                <div className=\"content\">\r\n                    <div className=\"missions\">\r\n                        <h2>Approved Space Missions</h2>\r\n                        {missions.map((mission) => (\r\n                            <Link to=\"/\" key={mission.id} className=\"mission-box\">\r\n                                {mission.name}\r\n                            </Link>\r\n                        ))}\r\n                    </div>\r\n                    <div className=\"astronauts\">\r\n                        <h2>Approved Astronauts</h2>\r\n                        {astronauts.map((astronaut) => (\r\n                            <Link to=\"/\" key={astronaut.id} className=\"astronaut-box\">\r\n                                {astronaut.name}\r\n                            </Link>\r\n                        ))}\r\n                    </div>\r\n                </div>\r\n                <style>{`\r\n                  .agency-profile-container {\r\n                      display: flex;\r\n                      flex-direction: column;\r\n                      align-items: center;\r\n                      padding: 20px;\r\n                      margin: auto;\r\n                      max-width: 960px;\r\n                  }\r\n\r\n                  .header {\r\n                      display: flex;\r\n                      justify-content: space-between;\r\n                      width: 100%;\r\n                      margin-bottom: 20px;\r\n                  }\r\n\r\n                  .logo-container img {\r\n                      width: auto;\r\n                      height: 80px;\r\n                  }\r\n\r\n                  .information-box {\r\n                      text-align: right;\r\n                  }\r\n\r\n                  .content {\r\n                      display: flex;\r\n                      justify-content: space-around;\r\n                      width: 100%;\r\n                  }\r\n\r\n                  .missions, .astronauts {\r\n                      width: 300px;\r\n                      padding: 10px;\r\n                      margin: 5px 0;\r\n                      display: flex;\r\n                      flex-direction: column;\r\n                      align-items: center;\r\n                  }\r\n\r\n                  .mission-box, .astronaut-box {\r\n                      width: 280px; \r\n                      padding: 10px;\r\n                      margin: 5px 0;\r\n                      background: #f0f0f0;\r\n                      color: black;\r\n                      text-decoration: none;\r\n                      border: 1px solid #ccc;\r\n                      text-align: center;\r\n                  }\r\n\r\n                  .mission-box:hover, .astronaut-box:hover {\r\n                      background: #e0e0e0;\r\n                  }\r\n              `}</style>\r\n            </div>\r\n\r\n        </div>\r\n    );\r\n}\r\n\r\n/*\r\n<div className=\"list-container\">\r\n\r\n   {agencies.map((agency: Agency) => (\r\n       <div className=\"list-item\" key={agency.id}>\r\n           <div className=\"list-image-box\">\r\n               <img src={agency.logo} />\r\n           </div>\r\n           <div className=\"list-information-box\">\r\n               <p>Name: {agency.name}</p>\r\n               <p>{agency.isApproved ? \"Approved\" : \"Not approved\"}</p>\r\n           </div>\r\n       </div>\r\n\r\n   ))}\r\n</div>\r\n*/
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/profiles/AgencyProfile.tsx b/frontend/src/app/profiles/AgencyProfile.tsx
+--- a/frontend/src/app/profiles/AgencyProfile.tsx	(revision 1cb9f13451d100f01a450da5bd8294ca5b9e43e9)
++++ b/frontend/src/app/profiles/AgencyProfile.tsx	(date 1715760996151)
+@@ -3,63 +3,73 @@
+ import Navbar from "../../components/Navbar.tsx";
+ import { Agency } from "../../data-types/entities.tsx";
+ import { getAgencies } from "../../calling/agencyCaller.tsx";
+-import { Link } from 'react-router-dom';
++import { Link } from "react-router-dom";
++import ApproveAgency from "../modals/ApproveAgency.tsx";
++import { useParams } from "next/navigation";
+ 
+-export default function Agencies() {
+-
+-    const [agencies, setAgencies] = useState<Agency[]>([]);
+-    const missions = [
+-        { id: 1, name: 'YAKBE-2024, SpaceY' },
+-        { id: 2, name: 'R-25, ROKETSAN' }
+-    ];
++export default function AgencyProfile() {
++  const [agencies, setAgencies] = useState<Agency[]>([]);
++  const [approveAgencyOpen, setApproveAgencyOpen] = useState<boolean>(false);
++
++  const handleApproveAgencyClick = () => {
++    setApproveAgencyOpen(!approveAgencyOpen);
++  };
++
++  const missions = [
++    { id: 1, name: "YAKBE-2024, SpaceY" },
++    { id: 2, name: "R-25, ROKETSAN" },
++  ];
+ 
+-    const astronauts = [
+-        { id: 1, name: 'John Doe' },
+-        { id: 2, name: 'Ahmet Reşat Demir' },
+-        { id: 3, name: 'Bahadır Günenc' }
+-    ];
++  const astronauts = [
++    { id: 1, name: "John Doe" },
++    { id: 2, name: "Ahmet Reşat Demir" },
++    { id: 3, name: "Bahadır Günenc" },
++  ];
+ 
+-    useEffect(() => {
+-        getAgencies({ token: "" }).then((data) => {
+-            setAgencies(data);
+-        });
+-    }, []);
++  useEffect(() => {
++    getAgencies({ token: "" }).then((data) => {
++      setAgencies(data);
++    });
++  }, []);
+ 
+-    return (
+-        <div className="outer">
+-            <Header/>
+-            <Navbar/>
++  return (
++    <div className="outer">
++      <Header />
++      <Navbar />
+ 
+-            <div className="agency-profile-container">
+-                <div className="header">
+-                    <div className="logo-container">
+-                        <img src="photo.png" alt="NASA Logo" style={{height: '100px'}}/>
+-                    </div>
+-                    <div className="information-box">
+-                        <h1>NASA</h1>
+-                        <p>Country: USA</p>
+-                        <p>Email: info@nasa.com</p>
+-                    </div>
+-                </div>
+-                <div className="content">
+-                    <div className="missions">
+-                        <h2>Approved Space Missions</h2>
+-                        {missions.map((mission) => (
+-                            <Link to="/" key={mission.id} className="mission-box">
+-                                {mission.name}
+-                            </Link>
+-                        ))}
+-                    </div>
+-                    <div className="astronauts">
+-                        <h2>Approved Astronauts</h2>
+-                        {astronauts.map((astronaut) => (
+-                            <Link to="/" key={astronaut.id} className="astronaut-box">
+-                                {astronaut.name}
+-                            </Link>
+-                        ))}
+-                    </div>
+-                </div>
+-                <style>{`
++      <div className="agency-profile-container">
++        <button className="top-button" onClick={handleApproveAgencyClick}>
++          Approve Agency
++        </button>
++        <div className="header">
++          <div className="logo-container">
++            <img src="photo.png" alt="NASA Logo" style={{ height: "100px" }} />
++          </div>
++          <div className="information-box">
++            <h1>NASA</h1>
++            <p>Country: USA</p>
++            <p>Email: info@nasa.com</p>
++          </div>
++        </div>
++        <div className="content">
++          <div className="missions">
++            <h2>Approved Space Missions</h2>
++            {missions.map((mission) => (
++              <Link to="/" key={mission.id} className="mission-box">
++                {mission.name}
++              </Link>
++            ))}
++          </div>
++          <div className="astronauts">
++            <h2>Approved Astronauts</h2>
++            {astronauts.map((astronaut) => (
++              <Link to="/" key={astronaut.id} className="astronaut-box">
++                {astronaut.name}
++              </Link>
++            ))}
++          </div>
++        </div>
++        <style>{`
+                   .agency-profile-container {
+                       display: flex;
+                       flex-direction: column;
+@@ -114,11 +124,30 @@
+                   .mission-box:hover, .astronaut-box:hover {
+                       background: #e0e0e0;
+                   }
++
++                  .top-button {
++                        padding: 8px 16px;
++                        margin: 0 10px;
++                        background-color: #007bff;
++                        color: white;
++                        border: none;
++                        border-radius: 5px;
++                        cursor: pointer;
++                        width: fit-content;
++                        align-self: flex-end;
++                  }
+               `}</style>
+-            </div>
+-
+-        </div>
+-    );
++      </div>
++      <div>
++        {approveAgencyOpen && (
++          <ApproveAgency
++            agencyId={Number(1)}
++            onClose={handleApproveAgencyClick}
++          />
++        )}
++      </div>
++    </div>
++  );
+ }
+ 
+ /*
+@@ -137,4 +166,4 @@
+ 
+    ))}
+ </div>
+-*/
+\ No newline at end of file
++*/

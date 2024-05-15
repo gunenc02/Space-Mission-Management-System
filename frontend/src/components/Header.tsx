@@ -21,7 +21,7 @@ export default function Header() {
               <Link to="/myprofile" className="header-profile-dropdown-link">
                 View Profile
               </Link>
-              <Link to="/bids" className="header-profile-dropdown-link">
+              <Link to="/bid" className="header-profile-dropdown-link">
                 Bids
               </Link>
               <Link to="/settings" className="header-profile-dropdown-link">

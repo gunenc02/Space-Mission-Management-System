@@ -6,9 +6,9 @@ import tr.edu.bilkent.spacemission.dto.ExpertRegisterDto;
 import tr.edu.bilkent.spacemission.dto.HealthRecordsInExpertPortfolio;
 import tr.edu.bilkent.spacemission.entity.Expert;
 import tr.edu.bilkent.spacemission.service.ExpertService;
-
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/expert")
 public class ExpertController {

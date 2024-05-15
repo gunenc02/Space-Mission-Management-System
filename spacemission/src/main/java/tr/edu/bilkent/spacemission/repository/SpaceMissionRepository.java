@@ -144,17 +144,16 @@ public class SpaceMissionRepository {
     public void createSpaceMission(SpaceMission spaceMission) {
         try {
             PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO space_mission (mission_name, mission_image, objective, budget, create_date, perform_date, platform_id, creator_id, performer_id, perform_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                    "INSERT INTO space_mission (mission_name, mission_image, objective, budget, create_date, perform_date, creator_id, performer_id, perform_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
             ps.setString(1, spaceMission.getMissionName());
             ps.setBytes(2, spaceMission.getImage());
             ps.setString(3, spaceMission.getObjective());
             ps.setDouble(4, spaceMission.getBudget());
             ps.setDate(5, spaceMission.getCreateDate());
             ps.setDate(6, spaceMission.getPerformDate());
-            ps.setInt(7, spaceMission.getPlatformId());
-            ps.setInt(8, spaceMission.getCreatorId());
-            ps.setInt(9, spaceMission.getPerformerId());
-            ps.setString(10, spaceMission.getPerformStatus());
+            ps.setInt(7, spaceMission.getCreatorId());
+            ps.setNull(8, java.sql.Types.INTEGER);
+            ps.setString(9, spaceMission.getPerformStatus());
             ps.executeUpdate();
         }
         catch (SQLException e) {

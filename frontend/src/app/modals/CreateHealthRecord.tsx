@@ -20,7 +20,9 @@ export default function CreateHealthRecord(props: CreateHealthRecordProps) {
     eligible: "",
   });
 
-  const updateForm = function (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  const updateForm = function (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     console.log("CHR debug: updateForm invoked");
     //this will simply update formData when a change occurs in one of our input elements
     const { id, value } = e.target;
@@ -217,20 +219,23 @@ export default function CreateHealthRecord(props: CreateHealthRecordProps) {
         >
           Fields (except notes) cannot be empty
         </h5>
-        <button
-          className="modal-button"
-          onClick={props.onClose}
-          style={{ backgroundColor: "red", color: "white" }}
-        >
-          Cancel
-        </button>
-        <button
-          className="modal-button"
-          onClick={registerHandler}
-          style={{ backgroundColor: "green", color: "white" }}
-        >
-          Register
-        </button>
+
+        <div className="modal-button-container">
+          <button
+            className="modal-button"
+            onClick={props.onClose}
+            style={{ backgroundColor: "red", color: "white" }}
+          >
+            Cancel
+          </button>
+          <button
+            className="modal-button"
+            onClick={registerHandler}
+            style={{ backgroundColor: "green", color: "white" }}
+          >
+            Create
+          </button>
+        </div>
       </div>
     </div>
   );
