@@ -7,6 +7,8 @@ import tr.edu.bilkent.spacemission.dto.SpaceMissionsInCompanyPortfolioDto;
 import tr.edu.bilkent.spacemission.repository.SpaceMissionRepository;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,6 +28,8 @@ public class SpaceMissionService {
     }
 
     public void createSpaceMission (SpaceMission spaceMission) {
+        spaceMission.setCreateDate(Date.valueOf(LocalDate.now()));
+        spaceMission.setPerformStatus("pending");
         spaceMissionRepository.createSpaceMission(spaceMission);
     }
 
