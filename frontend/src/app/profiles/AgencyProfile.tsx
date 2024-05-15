@@ -38,9 +38,12 @@ export default function AgencyProfile() {
       <Navbar />
 
       <div className="agency-profile-container">
-        <button className="top-button" onClick={handleApproveAgencyClick}>
-          Approve Agency
-        </button>
+        {localStorage.getItem("userRole") == "ADMIN" && (
+          <button className="top-button" onClick={handleApproveAgencyClick}>
+            Approve Agency
+          </button>
+        )}
+
         <div className="header">
           <div className="logo-container">
             <img src="photo.png" alt="NASA Logo" style={{ height: "100px" }} />

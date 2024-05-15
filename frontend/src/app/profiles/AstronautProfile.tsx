@@ -40,12 +40,20 @@ export default function AstronautProfile() {
       <Header />
       <Navbar />
       <div className="button-bar">
-        <button className="top-button" onClick={handleCreateHealthRecordClick}>
-          Create Health Record
-        </button>
-        <button className="top-button" onClick={handleFireAstronautClick}>
-          Fire Astronaut
-        </button>
+        {localStorage.getItem("userRole") === "EXPERT" && (
+          <button
+            className="top-button"
+            onClick={handleCreateHealthRecordClick}
+          >
+            Create Health Record
+          </button>
+        )}
+
+        {localStorage.getItem("userRole") === "COMPANY" && ( // When you get astronaut from backend, add && userId === astronaut.companyId
+          <button className="top-button" onClick={handleFireAstronautClick}>
+            Fire Astronaut
+          </button>
+        )}
       </div>
       <div className="profile-container">
         <div className="profile-header">

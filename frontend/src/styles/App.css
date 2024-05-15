@@ -38,3 +38,17 @@
   width: 100%;
   line-height: 1.2;
 }
+
+.top-button {
+  padding: 8px 16px;
+  margin: 0 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: 5vw;
+  margin-top: 2vh;
+}
