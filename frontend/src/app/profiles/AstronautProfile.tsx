@@ -11,10 +11,7 @@ import Navbar from "../../components/Navbar";
 export default function AstronautProfile() {
   const spaceMissions = [{ id: 1, name: "YAKBE-2024, SpaceY" }];
 
-  const healthRecords = [
-    { id: 1, date: "25.03.2024", doctor: "Dr. OZ" },
-    { id: 2, date: "25.03.2024", doctor: "Dr. OZ" },
-  ];
+  const healthRecords = [{ id: 1, date: "25.03.2024", doctor: "Dr. OZ" }];
 
   const { id } = useParams();
   const [createHealthRecordOpen, setCreateHealthRecordOpen] =
