@@ -57,6 +57,12 @@ public class SpaceMissionController {
         return spaceMissionService.getPortfolio(companyId);
     }
 
+    @GetMapping("/getAllMissionsByAgency/{agencyId}")
+    public List<SpaceMissionsInCompanyPortfolioDto> getApprovedMissions(@PathVariable long agencyId){
+        return spaceMissionService.getApprovedMissions(agencyId);
+    }
+
+
     private SpaceMission convertDtoToEntity(SpaceMissionDto spaceMissionDto) {
         SpaceMission spaceMission = new SpaceMission();
         spaceMission.setId(spaceMissionDto.getId());

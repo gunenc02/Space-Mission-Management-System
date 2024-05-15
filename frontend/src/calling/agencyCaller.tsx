@@ -105,3 +105,60 @@ export function approveAstronaut(
       throw err;
     });
 }
+
+export function getApprovedSpaceMissionOfAgency(
+    id:number,
+    user:{token:string}
+): Promise<any>{
+  const sentUrl = `http://localhost:8080/spaceMission/getAllMissionsByAgency/${id}`;
+
+  return fetch(sentUrl, {
+    method:'GET',
+    headers:{
+      "contentType": "application/json",
+      authorization: `Bearer ${user.token}`
+    },
+  })
+      .then((response)=>{
+        if(response.status === 200){
+          return response.json();
+        } else {
+          throw new Error(
+              `Failed to fetch agency profile: ${response.statusText}`
+          );
+        }
+      })
+      .catch((err)=>{
+        console.log("Error")
+        throw(err);
+      });
+
+}
+
+export function getApprovedAstronautsOfAgency(
+    id:number,
+    user:{token:string}
+): Promise<any>{
+  const sentUrl = `http://localhost:8080/astronaut/getAllAstronautsByAgency/${id}`;
+
+  return fetch(sentUrl, {
+    method:'GET',
+    headers:{
+      "contentType": "application/json",
+      authorization: `Bearer ${user.token}`
+    },
+  })
+      .then((response) => {
+        if(response.status === 200){
+          return response.json();
+        } else {
+          throw new Error(
+              `Failed to fetch agency profile: ${response.statusText}`
+          );
+        }
+      })
+      .catch((err)=>{
+        console.log("Error")
+        throw(err);
+      });
+}

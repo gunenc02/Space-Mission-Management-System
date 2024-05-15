@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.dto.AstronautDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.entity.Astronaut;
 
@@ -106,5 +107,44 @@ public class AstronautRepository {
     public void leaveMission(long missionId, long astronautId) {
         query = "DELETE FROM mission_astronaut_recordings WHERE mission_id = ? AND astronaut_id = ?";
         jdbcTemplate.update(query, missionId, astronautId);
+    }
+
+    /**
+     * This method returns the list of astronauts that
+     * are approved by the agency
+     * @param agencyId ID of the agency
+     */
+    public List<AstronautDto> getApprovedAstronauts(long agencyId){
+        ArrayList<AstronautDto> astronauts = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT ast.*" +
+                            "FROM astronaut ast " +
+                            "JOIN agency_approve_astronaut aaa ON ast.astronaut_id = aaa.astronaut_id " +
+                            "JOIN agency a ON aaa.agency_id = a.agency_id " +
+                            "WHERE a.agency_id = ?"
+            );
+
+            ps.setLong(1, agencyId);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                AstronautDto astronaut = new AstronautDto();
+                astronaut.setUserId(rs.getInt("astronaut_id"));
+                astronaut.setName(rs.getString("astronaut_name"));
+                //astronaut.setImage(rs.getBytes("astronaut_image"));
+                astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
+                astronaut.setOnDuty(rs.getBoolean("on_duty"));
+                astronaut.setCountry(rs.getString("country"));
+                astronaut.setSalary(rs.getDouble("salary"));
+                astronauts.add(astronaut);
+            }
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return astronauts;
     }
 }

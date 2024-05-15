@@ -3,12 +3,14 @@ import CreateHealthRecord from "../modals/CreateHealthRecord";
 import { useState } from "react";
 import HealthRecordDetails from "../modals/HealthRecordDetails";
 import FireAstronaut from "../modals/FireAstronaut";
-
 import { Link } from 'react-router-dom';
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 
 export default function AstronautProfile() {
+
+    const { id } = useParams();
+
     const spaceMissions = [
         { id: 1, name: 'YAKBE-2024, SpaceY' }
     ];
@@ -18,7 +20,6 @@ export default function AstronautProfile() {
         { id: 2, date: '25.03.2024', doctor: 'Dr. OZ' }
     ];
 
-    const { id } = useParams();
     const [createHealthRecordOpen, setCreateHealthRecordOpen] =
         useState<boolean>(false);
     const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);

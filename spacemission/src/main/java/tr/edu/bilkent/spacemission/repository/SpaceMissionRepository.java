@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionsInCompanyPortfolioDto;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
@@ -131,6 +132,46 @@ public class SpaceMissionRepository {
             }
         }
         catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+
+        return missions;
+    }
+
+    /**
+     * This method returns the list of space missions that
+     * are approved by the agency
+     * @param agencyId ID of the agency
+     */
+
+    public List<SpaceMissionsInCompanyPortfolioDto> getApprovedMissions(long agencyId) {
+        ArrayList<SpaceMissionsInCompanyPortfolioDto> missions = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT sm.*, a.agency_name, c.company_name " +
+                            "FROM space_mission sm " +
+                            "JOIN agency_approve_space_mission aasm ON sm.mission_id = aasm.space_mission_id " +
+                            "JOIN agency a ON aasm.agency_id = a.agency_id " +
+                            "JOIN company c ON sm.creator_id = c.company_id " +
+                            "WHERE a.agency_id = ?"
+            );
+
+            ps.setLong(1, agencyId);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                SpaceMissionsInCompanyPortfolioDto mission = new SpaceMissionsInCompanyPortfolioDto();
+                mission.setId(rs.getLong("mission_id"));
+                mission.setMissionName(rs.getString("mission_name"));
+                mission.setImage(rs.getBytes("mission_image"));
+                mission.setStatus(rs.getString("perform_status"));
+                mission.setStartDate(rs.getDate("create_date"));
+                mission.setEndDate(rs.getDate("perform_date"));
+                mission.setCreatorCompanyName(rs.getString("company_name")); // Assuming you have this setter
+                missions.add(mission);
+            }
+        }
+        catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
 

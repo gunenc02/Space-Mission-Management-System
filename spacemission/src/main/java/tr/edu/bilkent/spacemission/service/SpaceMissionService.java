@@ -37,6 +37,10 @@ public class SpaceMissionService {
         return spaceMissionRepository.getPortfolio(companyId);
     }
 
+    public List<SpaceMissionsInCompanyPortfolioDto> getApprovedMissions(long agencyId){
+        return spaceMissionRepository.getApprovedMissions(agencyId);
+    }
+
     public void deleteSpaceMission (long id) {
         spaceMissionRepository.deleteSpaceMission(id);
     }
