@@ -100,8 +100,8 @@ public class CompanyRepository {
     //Do this only for performer id matches
     public void fireAstronaut(long id, long astronautId){
         String query = "WITH performer_company_missions(mission_id) AS (SELECT mission_id FROM space_mission WHERE performer_id = ?) " +
-                        "DELETE FROM mission_astronaut_recordings NATURAL JOIN performer_company_missions AS mp " +
-                        "WHERE mp.astronaut_id = ?;";
+                        "DELETE FROM mission_astronaut_recordings AS mas WHERE mas.mission_id IN (SELECT * FROM performer_company_missions) " +
+                        "AND mas.astronaut_id = ?; ";
         try{
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, String.valueOf(id));
