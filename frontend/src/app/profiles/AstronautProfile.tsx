@@ -4,79 +4,100 @@ import { useState } from "react";
 import HealthRecordDetails from "../modals/HealthRecordDetails";
 import FireAstronaut from "../modals/FireAstronaut";
 
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 
 export default function AstronautProfile() {
-    const spaceMissions = [
-        { id: 1, name: 'YAKBE-2024, SpaceY' }
-    ];
+  const spaceMissions = [{ id: 1, name: "YAKBE-2024, SpaceY" }];
 
-    const healthRecords = [
-        { id: 1, date: '25.03.2024', doctor: 'Dr. OZ' },
-        { id: 2, date: '25.03.2024', doctor: 'Dr. OZ' }
-    ];
+  const healthRecords = [
+    { id: 1, date: "25.03.2024", doctor: "Dr. OZ" },
+    { id: 2, date: "25.03.2024", doctor: "Dr. OZ" },
+  ];
 
-    const { id } = useParams();
-    const [createHealthRecordOpen, setCreateHealthRecordOpen] =
-        useState<boolean>(false);
-    const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);
-    const [healthRecordDetailsOpen, setHealthRecordDetailsOpen] =
-        useState<boolean>(false);
+  const { id } = useParams();
+  const [createHealthRecordOpen, setCreateHealthRecordOpen] =
+    useState<boolean>(false);
+  const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);
+  const [healthRecordDetailsOpen, setHealthRecordDetailsOpen] =
+    useState<boolean>(false);
 
-    const handleCreateHealthRecordClick = () => {
-        setCreateHealthRecordOpen(!createHealthRecordOpen);
-    };
+  const handleCreateHealthRecordClick = () => {
+    setCreateHealthRecordOpen(!createHealthRecordOpen);
+  };
 
-    const handleFireAstronautClick = () => {
-        setFireAstronautOpen(!fireAstronautOpen);
-    };
+  const handleFireAstronautClick = () => {
+    setFireAstronautOpen(!fireAstronautOpen);
+  };
 
-    const handleHealthRecordDetailsClick = () => {
-        setHealthRecordDetailsOpen(!healthRecordDetailsOpen);
-    };
+  const handleHealthRecordDetailsClick = () => {
+    setHealthRecordDetailsOpen(!healthRecordDetailsOpen);
+  };
 
-    return (
-        <div className="outer">
-            <Header/>
-            <Navbar/>
-            <div className="button-bar">
-                <button className="top-button" onClick={handleCreateHealthRecordClick}>Create Health Record</button>
-                <button className="top-button" onClick={handleFireAstronautClick}>Fire Astronaut</button>
-                <button className="top-button" onClick={handleHealthRecordDetailsClick}>Health Record Details</button>
-            </div>
-            <div className="profile-container">
-                <div className="profile-header">
-                    <div className="profile-image">
-                        <img src="astronaut-image.png" alt="Astronaut" style={{width: '150px', height: '150px'}}/>
-                    </div>
-                    <div className="profile-info">
-                        <h1>Bahadır Günenç</h1>
-                        <p>Country: Türkiye</p>
-                        <p>Date of Birth: 01.01.1700</p>
-                        <p>Status: On Mission</p>
-                    </div>
+  return (
+    <div className="outer">
+      <Header />
+      <Navbar />
+      <div className="button-bar">
+        <button className="top-button" onClick={handleCreateHealthRecordClick}>
+          Create Health Record
+        </button>
+        <button className="top-button" onClick={handleFireAstronautClick}>
+          Fire Astronaut
+        </button>
+      </div>
+      <div className="profile-container">
+        <div className="profile-header">
+          <div className="profile-image">
+            <img
+              src="astronaut-image.png"
+              alt="Astronaut"
+              style={{ width: "150px", height: "150px" }}
+            />
+          </div>
+          <div className="profile-info">
+            <h1>Bahadır Günenç</h1>
+            <p>Country: Türkiye</p>
+            <p>Date of Birth: 01.01.1700</p>
+            <p>Status: On Mission</p>
+          </div>
+        </div>
+        <div className="profile-details">
+          <div className="missions-section">
+            <h2>Space Missions</h2>
+            {spaceMissions.map((mission) => (
+              <Link to="/missions" key={mission.id} className="mission-entry">
+                {mission.name}
+              </Link>
+            ))}
+          </div>
+          <div className="health-section">
+            <h2>Health Records</h2>
+            {healthRecords.map((record) => (
+              <div className="health-record-container">
+                <div key={record.id} className="health-record">
+                  {record.date}, {record.doctor}
                 </div>
-                <div className="profile-details">
-                    <div className="missions-section">
-                        <h2>Space Missions</h2>
-                        {spaceMissions.map(mission => (
-                            <Link to="/missions" key={mission.id} className="mission-entry">
-                                {mission.name}
-                            </Link>
-                        ))}
-                    </div>
-                    <div className="health-section">
-                        <h2>Health Records</h2>
-                        {healthRecords.map(record => (
-                            <Link to={`/health-records/${record.id}`} key={record.id} className="health-record">
-                                {record.date}, {record.doctor}
-                            </Link>
-                        ))}
-                    </div>
+                <button
+                  className="health-record-details-button"
+                  onClick={handleHealthRecordDetailsClick}
+                >
+                  Details
+                </button>
+                <div>
+                  {healthRecordDetailsOpen && (
+                    <HealthRecordDetails
+                      healthRecordId={record.id}
+                      onClose={handleHealthRecordDetailsClick}
+                    />
+                  )}
                 </div>
-                <style>{`
+              </div>
+            ))}
+          </div>
+        </div>
+        <style>{`
                     .profile-container {
                         display: flex;
                         flex-direction: column;
@@ -106,7 +127,7 @@ export default function AstronautProfile() {
                         background: #f0f0f0;
                         border: 1px solid #ccc;
                     }
-                    .mission-entry, .health-record {
+                    .mission-entry {
                         padding: 8px;
                         margin: 5px 0;
                         background: white;
@@ -129,13 +150,49 @@ export default function AstronautProfile() {
                         border: none;
                         border-radius: 5px;
                         cursor: pointer;
+                        width: fit-content;
+                        align-self: flex-end;
                     }
                     .top-button:hover {
                         background-color: #0056b3;
                     }
+                    .health-record-container {
+                        display: flex;
+                        flex-direction: row;
+                        background: #ffffff;
+                    }
+                    .health-record-details-button {
+                        width: 10vw;
+                        height: fit-content;
+                        background-color: #007bff;
+                    }
+                    .health-record {
+                        padding: 8px;
+                        margin: 5px 0;
+                        background: white;
+                        display: block;
+                        text-decoration: none;
+                        color: black;
+                        width: 12vw;
+                    }
                 `}</style>
-            </div>
-        </div>
-    );
+      </div>
+      <div>
+        {createHealthRecordOpen && (
+          <CreateHealthRecord
+            astronautId={Number(id)}
+            onClose={handleCreateHealthRecordClick}
+          />
+        )}
+      </div>
+      <div>
+        {fireAstronautOpen && (
+          <FireAstronaut
+            astronautId={Number(id)}
+            onClose={handleFireAstronautClick}
+          />
+        )}
+      </div>
+    </div>
+  );
 }
-

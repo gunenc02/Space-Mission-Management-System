@@ -59,13 +59,15 @@ export default function CreateHealthRecord(props: HealthRecordDetailsProps) {
           </label>
         </div>
 
-        <button
-          className="modal-button"
-          style={{ backgroundColor: "blue", color: "white" }}
-          onClick={props.onClose}
-        >
-          OK
-        </button>
+        <div className="modal-button-container">
+          <button
+            className="modal-button"
+            style={{ backgroundColor: "blue", color: "white" }}
+            onClick={props.onClose}
+          >
+            OK
+          </button>
+        </div>
       </div>
     </div>
   );
