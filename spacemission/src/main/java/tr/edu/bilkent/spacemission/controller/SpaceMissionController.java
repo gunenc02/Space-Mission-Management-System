@@ -66,6 +66,7 @@ public class SpaceMissionController {
         spaceMission.setBudget(spaceMissionDto.getBudget());
         spaceMission.setCreateDate(spaceMissionDto.getCreateDate());
         spaceMission.setPerformDate(spaceMissionDto.getPerformDate());
+        spaceMission.setCreatorId(spaceMissionDto.getCreatorId());
         return spaceMission;
     }
 
@@ -78,6 +79,7 @@ public class SpaceMissionController {
         spaceMissionDto.setBudget(spaceMission.getBudget());
         spaceMissionDto.setCreateDate(spaceMission.getCreateDate());
         spaceMissionDto.setPerformDate(spaceMission.getPerformDate());
+        spaceMissionDto.setCreatorId(spaceMission.getCreatorId());
         return spaceMissionDto;
     }
 

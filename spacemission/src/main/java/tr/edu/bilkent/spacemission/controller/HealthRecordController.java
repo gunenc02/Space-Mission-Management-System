@@ -5,6 +5,7 @@ import tr.edu.bilkent.spacemission.dto.HealthRecordDto;
 import tr.edu.bilkent.spacemission.entity.HealthRecord;
 import tr.edu.bilkent.spacemission.service.HealthRecordService;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/healthRecord")
 public class HealthRecordController {

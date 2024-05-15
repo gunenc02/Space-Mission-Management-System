@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataSource name="spacemission">
+<dataSource name="spacemission@localhost">
   <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.52">
     <root id="1"/>
     <collation id="2" parent="1" name="armscii8_general_ci">
@@ -914,6 +914,8 @@
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="292" parent="1" name="spacemission">
+      <Current>1</Current>
+      <LastIntrospectionLocalTimestamp>2024-05-01.15:09:41</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="293" parent="1" name="fullstack">
@@ -937,5 +939,861 @@
     <user id="297" parent="1" name="root">
       <Host>localhost</Host>
     </user>
+    <table id="298" parent="292" name="admin">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="299" parent="292" name="agency">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="300" parent="292" name="agency_approve_astronaut">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="301" parent="292" name="agency_approve_space_mission">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="302" parent="292" name="astronaut">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="303" parent="292" name="bid">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="304" parent="292" name="company">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="305" parent="292" name="expert">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="306" parent="292" name="expert_examine_astronaut">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="307" parent="292" name="health_record">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="308" parent="292" name="mission_astronaut_recordings">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="309" parent="292" name="platform">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="310" parent="292" name="space_mission">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="311" parent="292" name="transaction">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <table id="312" parent="292" name="user">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <view id="313" parent="292" name="company_mission_info">
+      <Definer>root@localhost</Definer>
+      <SourceTextLength>528</SourceTextLength>
+    </view>
+    <column id="314" parent="298" name="admin_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="315" parent="298" name="admin_name">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="316" parent="298" name="is_approved">
+      <DasType>tinyint(1)|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <foreign-key id="317" parent="298" name="admin_ibfk_1">
+      <ColNames>admin_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>user_id</RefColNames>
+      <RefTableName>user</RefTableName>
+    </foreign-key>
+    <index id="318" parent="298" name="PRIMARY">
+      <ColNames>admin_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="319" parent="298" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="320" parent="299" name="agency_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="321" parent="299" name="agency_name">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="322" parent="299" name="agency_logo">
+      <DasType>blob|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="323" parent="299" name="is_approved">
+      <DasType>tinyint(1)|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <foreign-key id="324" parent="299" name="agency_ibfk_1">
+      <ColNames>agency_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>user_id</RefColNames>
+      <RefTableName>user</RefTableName>
+    </foreign-key>
+    <index id="325" parent="299" name="PRIMARY">
+      <ColNames>agency_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="326" parent="299" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="327" parent="300" name="id">
+      <AutoIncrement>1</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="328" parent="300" name="astronaut_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="329" parent="300" name="agency_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <foreign-key id="330" parent="300" name="agency_approve_astronaut_ibfk_1">
+      <ColNames>astronaut_id</ColNames>
+      <RefColNames>astronaut_id</RefColNames>
+      <RefTableName>astronaut</RefTableName>
+    </foreign-key>
+    <foreign-key id="331" parent="300" name="agency_approve_astronaut_ibfk_2">
+      <ColNames>agency_id</ColNames>
+      <RefColNames>agency_id</RefColNames>
+      <RefTableName>agency</RefTableName>
+    </foreign-key>
+    <index id="332" parent="300" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="333" parent="300" name="astronaut_id">
+      <ColNames>astronaut_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="334" parent="300" name="agency_id">
+      <ColNames>agency_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="335" parent="300" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="336" parent="301" name="id">
+      <AutoIncrement>1</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="337" parent="301" name="space_mission_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="338" parent="301" name="agency_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <foreign-key id="339" parent="301" name="agency_approve_space_mission_ibfk_1">
+      <ColNames>space_mission_id</ColNames>
+      <RefColNames>mission_id</RefColNames>
+      <RefTableName>space_mission</RefTableName>
+    </foreign-key>
+    <foreign-key id="340" parent="301" name="agency_approve_space_mission_ibfk_2">
+      <ColNames>agency_id</ColNames>
+      <RefColNames>agency_id</RefColNames>
+      <RefTableName>agency</RefTableName>
+    </foreign-key>
+    <index id="341" parent="301" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="342" parent="301" name="space_mission_id">
+      <ColNames>space_mission_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="343" parent="301" name="agency_id">
+      <ColNames>agency_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="344" parent="301" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="345" parent="302" name="astronaut_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="346" parent="302" name="astronaut_name">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="347" parent="302" name="astronaut_image">
+      <DasType>blob|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="348" parent="302" name="date_of_birth">
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="349" parent="302" name="on_duty">
+      <DasType>tinyint(1)|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="350" parent="302" name="country">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <column id="351" parent="302" name="salary">
+      <DasType>double|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+    </column>
+    <column id="352" parent="302" name="is_approved">
+      <DasType>tinyint(1)|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+    </column>
+    <foreign-key id="353" parent="302" name="astronaut_ibfk_1">
+      <ColNames>astronaut_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>user_id</RefColNames>
+      <RefTableName>user</RefTableName>
+    </foreign-key>
+    <index id="354" parent="302" name="PRIMARY">
+      <ColNames>astronaut_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="355" parent="302" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <check id="356" parent="303" name="bid_chk_1">
+      <NameSurrogate>1</NameSurrogate>
+      <Predicate>(`status` = _utf8mb4\&apos;approved\&apos;) or (`status` = _utf8mb4\&apos;rejected\&apos;) or (`status` = _utf8mb4\&apos;pending\&apos;)</Predicate>
+    </check>
+    <column id="357" parent="303" name="bid_id">
+      <AutoIncrement>1</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="358" parent="303" name="price">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="359" parent="303" name="offer_date">
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="360" parent="303" name="deadline">
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="361" parent="303" name="description">
+      <DasType>varchar(2555)|0s</DasType>
+      <Position>5</Position>
+    </column>
+    <column id="362" parent="303" name="status">
+      <DasType>text|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <column id="363" parent="303" name="offerer_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+    </column>
+    <column id="364" parent="303" name="receiver_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+    </column>
+    <column id="365" parent="303" name="mission_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+    </column>
+    <foreign-key id="366" parent="303" name="bid_ibfk_1">
+      <ColNames>offerer_id</ColNames>
+      <RefColNames>company_id</RefColNames>
+      <RefTableName>company</RefTableName>
+    </foreign-key>
+    <foreign-key id="367" parent="303" name="bid_ibfk_2">
+      <ColNames>receiver_id</ColNames>
+      <RefColNames>company_id</RefColNames>
+      <RefTableName>company</RefTableName>
+    </foreign-key>
+    <foreign-key id="368" parent="303" name="bid_ibfk_3">
+      <ColNames>mission_id</ColNames>
+      <RefColNames>mission_id</RefColNames>
+      <RefTableName>space_mission</RefTableName>
+    </foreign-key>
+    <index id="369" parent="303" name="PRIMARY">
+      <ColNames>bid_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="370" parent="303" name="offerer_id">
+      <ColNames>offerer_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="371" parent="303" name="receiver_id">
+      <ColNames>receiver_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="372" parent="303" name="mission_id">
+      <ColNames>mission_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="373" parent="303" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="374" parent="304" name="company_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="375" parent="304" name="company_name">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="376" parent="304" name="company_logo">
+      <DasType>blob|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="377" parent="304" name="worker_count">
+      <DasType>int|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="378" parent="304" name="country">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="379" parent="304" name="money">
+      <DasType>double|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <column id="380" parent="304" name="is_approved">
+      <DasType>tinyint(1)|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+    </column>
+    <foreign-key id="381" parent="304" name="company_ibfk_1">
+      <ColNames>company_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>user_id</RefColNames>
+      <RefTableName>user</RefTableName>
+    </foreign-key>
+    <index id="382" parent="304" name="PRIMARY">
+      <ColNames>company_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="383" parent="304" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="384" parent="305" name="expert_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="385" parent="305" name="expert_name">
+      <DasType>varchar(255)|0s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="386" parent="305" name="expert_company">
+      <DasType>int|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <foreign-key id="387" parent="305" name="expert_ibfk_1">
+      <ColNames>expert_id</ColNames>
+      <RefColNames>user_id</RefColNames>
+      <RefTableName>user</RefTableName>
+    </foreign-key>
+    <foreign-key id="388" parent="305" name="expert_ibfk_2">
+      <ColNames>expert_company</ColNames>
+      <RefColNames>company_id</RefColNames>
+      <RefTableName>company</RefTableName>
+    </foreign-key>
+    <index id="389" parent="305" name="PRIMARY">
+      <ColNames>expert_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="390" parent="305" name="expert_name">
+      <ColNames>expert_name</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="391" parent="305" name="expert_company">
+      <ColNames>expert_company</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="392" parent="305" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="393" parent="305" name="expert_name">
+      <UnderlyingIndexName>expert_name</UnderlyingIndexName>
+    </key>
+    <column id="394" parent="306" name="examine_id">
+      <AutoIncrement>1</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="395" parent="306" name="expert_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="396" parent="306" name="astronaut_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <foreign-key id="397" parent="306" name="expert_examine_astronaut_ibfk_1">
+      <ColNames>expert_id</ColNames>
+      <RefColNames>expert_id</RefColNames>
+      <RefTableName>expert</RefTableName>
+    </foreign-key>
+    <foreign-key id="398" parent="306" name="expert_examine_astronaut_ibfk_2">
+      <ColNames>astronaut_id</ColNames>
+      <RefColNames>astronaut_id</RefColNames>
+      <RefTableName>astronaut</RefTableName>
+    </foreign-key>
+    <index id="399" parent="306" name="PRIMARY">
+      <ColNames>examine_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="400" parent="306" name="expert_id">
+      <ColNames>expert_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="401" parent="306" name="astronaut_id">
+      <ColNames>astronaut_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="402" parent="306" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="403" parent="307" name="health_record_id">
+      <AutoIncrement>1</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="404" parent="307" name="date">
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="405" parent="307" name="availibility_for_mission">
+      <DasType>binary(1)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="406" parent="307" name="weight">
+      <DasType>double|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="407" parent="307" name="height">
+      <DasType>double|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="408" parent="307" name="heart_rate">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <column id="409" parent="307" name="blood_pressure">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+    </column>
+    <column id="410" parent="307" name="vaccinations">
+      <DasType>text|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+    </column>
+    <column id="411" parent="307" name="astronaut_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+    </column>
+    <foreign-key id="412" parent="307" name="health_record_ibfk_1">
+      <ColNames>astronaut_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>astronaut_id</RefColNames>
+      <RefTableName>astronaut</RefTableName>
+    </foreign-key>
+    <index id="413" parent="307" name="PRIMARY">
+      <ColNames>health_record_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="414" parent="307" name="astronaut_id">
+      <ColNames>astronaut_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="415" parent="307" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="416" parent="308" name="mission_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="417" parent="308" name="astronaut_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <foreign-key id="418" parent="308" name="mission_astronaut_recordings_ibfk_1">
+      <ColNames>mission_id</ColNames>
+      <RefColNames>mission_id</RefColNames>
+      <RefTableName>space_mission</RefTableName>
+    </foreign-key>
+    <foreign-key id="419" parent="308" name="mission_astronaut_recordings_ibfk_2">
+      <ColNames>astronaut_id</ColNames>
+      <RefColNames>astronaut_id</RefColNames>
+      <RefTableName>astronaut</RefTableName>
+    </foreign-key>
+    <index id="420" parent="308" name="PRIMARY">
+      <ColNames>mission_id
+astronaut_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="421" parent="308" name="astronaut_id">
+      <ColNames>astronaut_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="422" parent="308" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="423" parent="309" name="platform_id">
+      <AutoIncrement>1</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="424" parent="309" name="platform_name">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="425" parent="309" name="production_year">
+      <DasType>year|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="426" parent="309" name="platform_image">
+      <DasType>blob|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="427" parent="309" name="cost_per_launch">
+      <DasType>double|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <index id="428" parent="309" name="PRIMARY">
+      <ColNames>platform_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="429" parent="309" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <check id="430" parent="310" name="space_mission_chk_1">
+      <NameSurrogate>1</NameSurrogate>
+      <Predicate>(`perform_status` = _utf8mb4\&apos;pending\&apos;) or (`perform_status` = _utf8mb4\&apos;performed\&apos;)</Predicate>
+    </check>
+    <column id="431" parent="310" name="mission_id">
+      <AutoIncrement>1</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="432" parent="310" name="mission_name">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="433" parent="310" name="mission_image">
+      <DasType>blob|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="434" parent="310" name="objective">
+      <DasType>text|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="435" parent="310" name="budget">
+      <DasType>double|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <column id="436" parent="310" name="create_date">
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <column id="437" parent="310" name="perform_date">
+      <DasType>date|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="438" parent="310" name="platform_id">
+      <DasType>int|0s</DasType>
+      <Position>8</Position>
+    </column>
+    <column id="439" parent="310" name="creator_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+    </column>
+    <column id="440" parent="310" name="performer_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>10</Position>
+    </column>
+    <column id="441" parent="310" name="perform_status">
+      <DasType>varchar(10)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>11</Position>
+    </column>
+    <foreign-key id="442" parent="310" name="space_mission_ibfk_1">
+      <ColNames>platform_id</ColNames>
+      <RefColNames>platform_id</RefColNames>
+      <RefTableName>platform</RefTableName>
+    </foreign-key>
+    <foreign-key id="443" parent="310" name="space_mission_ibfk_2">
+      <ColNames>creator_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>company_id</RefColNames>
+      <RefTableName>company</RefTableName>
+    </foreign-key>
+    <foreign-key id="444" parent="310" name="space_mission_ibfk_3">
+      <ColNames>performer_id</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>company_id</RefColNames>
+      <RefTableName>company</RefTableName>
+    </foreign-key>
+    <index id="445" parent="310" name="PRIMARY">
+      <ColNames>mission_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="446" parent="310" name="platform_id">
+      <ColNames>platform_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="447" parent="310" name="creator_id">
+      <ColNames>creator_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="448" parent="310" name="performer_id">
+      <ColNames>performer_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="449" parent="310" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <trigger id="450" parent="310" name="release_astronaut">
+      <Definer>root@localhost</Definer>
+      <Events>U</Events>
+      <SourceTextLength>166</SourceTextLength>
+    </trigger>
+    <column id="451" parent="311" name="transaction_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="452" parent="311" name="fromcompany_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="453" parent="311" name="tocompany_id">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="454" parent="311" name="transaction_amount">
+      <DasType>double|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <foreign-key id="455" parent="311" name="transaction_ibfk_1">
+      <ColNames>fromcompany_id</ColNames>
+      <RefColNames>company_id</RefColNames>
+      <RefTableName>company</RefTableName>
+    </foreign-key>
+    <foreign-key id="456" parent="311" name="transaction_ibfk_2">
+      <ColNames>tocompany_id</ColNames>
+      <RefColNames>company_id</RefColNames>
+      <RefTableName>company</RefTableName>
+    </foreign-key>
+    <index id="457" parent="311" name="PRIMARY">
+      <ColNames>transaction_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="458" parent="311" name="fromcompany_id">
+      <ColNames>fromcompany_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="459" parent="311" name="tocompany_id">
+      <ColNames>tocompany_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="460" parent="311" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="461" parent="312" name="user_id">
+      <AutoIncrement>1</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="462" parent="312" name="user_mail">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="463" parent="312" name="user_password">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <index id="464" parent="312" name="PRIMARY">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="465" parent="312" name="user_mail">
+      <ColNames>user_mail</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="466" parent="312" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="467" parent="312" name="user_mail">
+      <UnderlyingIndexName>user_mail</UnderlyingIndexName>
+    </key>
+    <column id="468" parent="313" name="company_name">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="469" parent="313" name="worker_count">
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="470" parent="313" name="mission_name">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="471" parent="313" name="objective">
+      <DasType>text|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="472" parent="313" name="astronaut_name">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
   </database-model>
 </dataSource>

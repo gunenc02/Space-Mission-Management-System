@@ -328,7 +328,7 @@ public class AccountRepository {
 
             if(tmp.getUserRole().equals("ASTRONAUT")){
                 AstronautDto astronaut = new AstronautDto();
-                ps2 = connection.prepareStatement("SELECT  *  FROM astronaut WHERE astronaut_id = ?");
+                ps2 = connection.prepareStatement("SELECT * FROM astronaut WHERE astronaut_id = ?");
                 ps2.setLong(1, tmp.getId());
                 rs2 = ps2.executeQuery();
                 while (rs2.next()) {
