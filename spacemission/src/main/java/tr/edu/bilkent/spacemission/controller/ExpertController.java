@@ -6,6 +6,7 @@ import tr.edu.bilkent.spacemission.dto.ExpertRegisterDto;
 import tr.edu.bilkent.spacemission.entity.Expert;
 import tr.edu.bilkent.spacemission.service.ExpertService;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/expert")
 public class ExpertController {

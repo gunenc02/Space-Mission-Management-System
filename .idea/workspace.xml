@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/1c209c0d-416e-44f6-968c-2b37370e34d0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/ExpertController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/ExpertController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
