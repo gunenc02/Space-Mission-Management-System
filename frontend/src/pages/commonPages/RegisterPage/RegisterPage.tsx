@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './Register.css'; // Update the path if necessary
+import { useNavigate } from 'react-router-dom';
+import './Register.css';
 
 interface UserType {
     value: string;
@@ -24,6 +25,8 @@ const RegistrationPage: React.FC = () => {
         dateOfBirth: '',
         money: ''
     });
+
+    const history = useNavigate();
 
     const handleUserTypeChange = (value: string) => {
         setActiveUserType(value);
@@ -181,7 +184,10 @@ const RegistrationPage: React.FC = () => {
                                 {renderFormFields()}
                             </div>
                         </div>
-                        <button className="login-submit">Register</button>
+                        <div className="button-container">
+                            <button className="login-submit" type="submit">Register</button>
+                            <button type="button" className="back-to-login" onClick={() => history('/login')}>Back to Login</button>
+                        </div>
                     </form>
                 </div>
             </div>
