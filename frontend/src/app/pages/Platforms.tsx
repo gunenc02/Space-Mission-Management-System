@@ -37,7 +37,7 @@ export default function Platforms() {
   };
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 min-h-screen">
+    <div className="flex flex-col items-center bg-blue-100 min-h-screen">
       <Header />
       <Navbar />
       <div className="w-full max-w-6xl p-6">

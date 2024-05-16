@@ -198,33 +198,31 @@ public class AstronautRepository {
     public List<HealthRecordDto> getHealthRecords(long id) {
         ArrayList<HealthRecordDto> records = new ArrayList<>();
 
-        String query = "SELECT * FROM health_records " +
-                        "WHERE astronaut_id = ? " +
-                        "ORDER BY date DESC;";
-        try{
-            PreparedStatement ps = connection.prepareStatement(query);
+        String query = "SELECT * FROM health_record " +
+                "WHERE astronaut_id = ? " +
+                "ORDER BY date DESC;";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 HealthRecordDto healthRecord = new HealthRecordDto();
 
-                healthRecord.setId(rs.getLong("id"));
+                healthRecord.setId(rs.getLong("health_record_id")); // Correct column name from schema
                 healthRecord.setAstronautId(rs.getLong("astronaut_id"));
                 healthRecord.setExpertId(rs.getLong("expert_id"));
                 healthRecord.setDate(rs.getDate("date"));
-                healthRecord.setAvailabilityForMission(rs.getBoolean("availability_for_mission"));
+                healthRecord.setAvailabilityForMission(rs.getBoolean("availibility_for_mission"));
                 healthRecord.setWeight(rs.getDouble("weight"));
                 healthRecord.setHeight(rs.getDouble("height"));
-                healthRecord.setHeartRate(rs.getDouble("heart_rate"));
-                healthRecord.setBloodPressure(rs.getDouble("blood_pressure"));
+                healthRecord.setHeartRate(rs.getInt("heart_rate"));
+                healthRecord.setBloodPressure(rs.getString("blood_pressure"));
                 healthRecord.setVaccinations(rs.getString("vaccinations").split(","));
                 healthRecord.setNotes(rs.getString("notes"));
 
                 records.add(healthRecord);
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return records;

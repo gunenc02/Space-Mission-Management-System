@@ -18,7 +18,7 @@ public class HealthRecordDto {
     private double weight;
     private double height;
     private double heartRate;
-    private double bloodPressure;
+    private String bloodPressure;
     private String[] vaccinations;
     private String notes;
 }
