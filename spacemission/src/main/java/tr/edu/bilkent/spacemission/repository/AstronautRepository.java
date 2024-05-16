@@ -121,7 +121,7 @@ public class AstronautRepository {
 
         try {
             PreparedStatement ps = connection.prepareStatement(
-                    "SELECT ast.*" +
+                    "SELECT ast.* " +
                             "FROM astronaut ast " +
                             "JOIN agency_approve_astronaut aaa ON ast.astronaut_id = aaa.astronaut_id " +
                             "JOIN agency a ON aaa.agency_id = a.agency_id " +

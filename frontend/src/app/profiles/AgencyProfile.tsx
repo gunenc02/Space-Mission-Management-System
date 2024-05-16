@@ -1,172 +1,197 @@
 import { useEffect, useState } from "react";
 import Header from "../../components/Header.tsx";
 import Navbar from "../../components/Navbar.tsx";
-import { Agency } from "../../data-types/entities.tsx";
-import { getAgencies } from "../../calling/agencyCaller.tsx";
-import { Link } from "react-router-dom";
-import ApproveAgency from "../modals/ApproveAgency.tsx";
-import { useParams } from "next/navigation";
+import { Agency, Astronaut, SpaceMissionForListing } from "../../data-types/entities.tsx";
+import { useParams } from "react-router-dom";
+import {
+  getAgencyProfile,
+  getApprovedSpaceMissionOfAgency,
+  getApprovedAstronautsOfAgency,
+} from "../../calling/agencyCaller.tsx";
 
 export default function AgencyProfile() {
-  const [agencies, setAgencies] = useState<Agency[]>([]);
-  const [approveAgencyOpen, setApproveAgencyOpen] = useState<boolean>(false);
-
-  const handleApproveAgencyClick = () => {
-    setApproveAgencyOpen(!approveAgencyOpen);
-  };
-
-  const missions = [
-    { id: 1, name: "YAKBE-2024, SpaceY" },
-    { id: 2, name: "R-25, ROKETSAN" },
-  ];
-
-  const astronauts = [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Ahmet Reşat Demir" },
-    { id: 3, name: "Bahadır Günenc" },
-  ];
+  const { id } = useParams<{ id?: string }>();
+  const [agencyInfo, setAgencyInfo] = useState<Agency | null>(null);
+  const [spaceMissions, setSpaceMissions] = useState<SpaceMissionForListing[] | null>(null);
+  const [astronauts, setAstronauts] = useState<Astronaut[] | null>(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    getAgencies({ token: "" }).then((data) => {
-      setAgencies(data);
-    });
-  }, []);
+    if (!id) {
+      setError("Company ID is missing");
+      return;
+    }
+
+    const numericAgencyId = parseInt(id, 10);
+    if (isNaN(numericAgencyId)) {
+      setError("Invalid Company ID");
+      return;
+    }
+
+    const token = ""; // Assuming token management
+    const user = { token };
+
+    getAgencyProfile(numericAgencyId, user)
+        .then((data) => {
+          setAgencyInfo(data);
+          return getApprovedSpaceMissionOfAgency(numericAgencyId, user);
+        })
+        .then((missions) => {
+          const parsedMissions = missions.map((mission) => ({
+            ...mission,
+            startDate: new Date(mission.startDate),
+            endDate: new Date(mission.endDate),
+          }));
+          setSpaceMissions(parsedMissions);
+
+          setError(""); // Clear any previous errors
+        })
+        .catch((err) => {
+          setError(err.message);
+          setAgencyInfo(null);
+          setSpaceMissions(null);
+          console.error("API error:", err);
+        });
+  }, [id]);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!agencyInfo) {
+    return <div>Loading...</div>;
+  }
+
+  const handleApproveAgencyClick = () => {
+    // Placeholder for approval functionality
+  };
 
   return (
-    <div className="outer">
-      <Header />
-      <Navbar />
+      <div className="outer">
+        <Header />
+        <Navbar />
 
-      <div className="agency-profile-container">
-        {localStorage.getItem("userRole") == "ADMIN" && (
-          <button className="top-button" onClick={handleApproveAgencyClick}>
-            Approve Agency
-          </button>
-        )}
-
-        <div className="header">
-          <div className="logo-container">
-            <img src="photo.png" alt="NASA Logo" style={{ height: "100px" }} />
+        <div className="profile-container">
+          <div className="button-bar">
+            {localStorage.getItem("userRole") === "ADMIN" && (
+                <button className="top-button" onClick={handleApproveAgencyClick}>
+                  Approve Agency
+                </button>
+            )}
           </div>
-          <div className="information-box">
-            <h1>NASA</h1>
-            <p>Country: USA</p>
-            <p>Email: info@nasa.com</p>
+
+          <div className="profile-header">
+            <div className="profile-image">
+              <img src={agencyInfo.logo} alt={`${agencyInfo.name} logo`} style={{ width: "150px" }} />
+            </div>
+            <div className="profile-info">
+              <h1>{agencyInfo.name}</h1>
+              <p>Email: {agencyInfo.mail}</p>
+              <p>Is Approved: {agencyInfo.isApproved}</p>
+            </div>
+          </div>
+
+          <div className="profile-details">
+            <div className="missions-section">
+              <h2>Space Missions</h2>
+              {spaceMissions ? (
+                  <ul>
+                    {spaceMissions.map((mission) => (
+                        <li key={mission.id}>
+                          <h3>{mission.missionName}</h3>
+                          <p>Created by: {mission.companyName}</p>
+                          <p>Status: {mission.status}</p>
+                          <p>Start Date: {mission.startDate.toLocaleDateString()}</p>
+                          <p>End Date: {mission.endDate.toLocaleDateString()}</p>
+                          <img src={mission.image} alt={mission.missionName} style={{ width: "100px" }} />
+                        </li>
+                    ))}
+                  </ul>
+              ) : (
+                  <div>Loading space missions...</div>
+              )}
+            </div>
+            <div className="astronauts-section">
+              <h2>Approved Astronauts</h2>
+              {astronauts ? (
+                  <ul>
+                    {astronauts.map((astronaut) => (
+                        <li key={astronaut.id}>
+                          <img src={astronaut.image} alt={astronaut.name} style={{ width: "100px", height: "100px" }} />
+                          <h3>{astronaut.name}</h3>
+                          <p>Date of Birth: {new Date(astronaut.dateOfBirth).toLocaleDateString()}</p>
+                          <p>Country: {astronaut.country}</p>
+                          <p>On Duty: {astronaut.onDuty ? "Yes" : "No"}</p>
+                          <p>Salary: ${astronaut.salary.toLocaleString()}</p>
+                        </li>
+                    ))}
+                  </ul>
+              ) : (
+                  <div>Loading astronauts...</div>
+              )}
+            </div>
           </div>
         </div>
-        <div className="content">
-          <div className="missions">
-            <h2>Approved Space Missions</h2>
-            {missions.map((mission) => (
-              <Link to="/" key={mission.id} className="mission-box">
-                {mission.name}
-              </Link>
-            ))}
-          </div>
-          <div className="astronauts">
-            <h2>Approved Astronauts</h2>
-            {astronauts.map((astronaut) => (
-              <Link to="/" key={astronaut.id} className="astronaut-box">
-                {astronaut.name}
-              </Link>
-            ))}
-          </div>
-        </div>
+
         <style>{`
-                  .agency-profile-container {
-                      display: flex;
-                      flex-direction: column;
-                      align-items: center;
-                      padding: 20px;
-                      margin: auto;
-                      max-width: 960px;
-                  }
-
-                  .header {
-                      display: flex;
-                      justify-content: space-between;
-                      width: 100%;
-                      margin-bottom: 20px;
-                  }
-
-                  .logo-container img {
-                      width: auto;
-                      height: 80px;
-                  }
-
-                  .information-box {
-                      text-align: right;
-                  }
-
-                  .content {
-                      display: flex;
-                      justify-content: space-around;
-                      width: 100%;
-                  }
-
-                  .missions, .astronauts {
-                      width: 300px;
-                      padding: 10px;
-                      margin: 5px 0;
-                      display: flex;
-                      flex-direction: column;
-                      align-items: center;
-                  }
-
-                  .mission-box, .astronaut-box {
-                      width: 280px; 
-                      padding: 10px;
-                      margin: 5px 0;
-                      background: #f0f0f0;
-                      color: black;
-                      text-decoration: none;
-                      border: 1px solid #ccc;
-                      text-align: center;
-                  }
-
-                  .mission-box:hover, .astronaut-box:hover {
-                      background: #e0e0e0;
-                  }
-
-                  .top-button {
-                        padding: 8px 16px;
-                        margin: 0 10px;
-                        background-color: #007bff;
-                        color: white;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        width: fit-content;
-                        align-self: flex-end;
-                  }
-              `}</style>
+        .profile-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 20px;
+          max-width: 960px;
+          margin: auto;
+        }
+        .profile-header {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          margin-bottom: 20px;
+        }
+        .profile-image img {
+          width: auto;
+          height: 150px;
+        }
+        .profile-info {
+          margin-left: 20px;
+        }
+        .profile-details {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+        }
+        .missions-section, .astronauts-section {
+          flex: 1;
+          padding: 10px;
+          margin: 5px;
+          background: #f0f0f0;
+          border: 1px solid #ccc;
+        }
+        ul {
+          list-style: none;
+          padding: 0;
+        }
+        li {
+          margin-bottom: 10px;
+          background: white;
+          padding: 10px;
+          border: 1px solid #ddd;
+        }
+        .top-button {
+          padding: 8px 16px;
+          margin: 0 10px;
+          background-color: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          width: fit-content;
+          align-self: flex-end;
+        }
+        .top-button:hover {
+          background-color: #0056b3;
+        }
+      `}</style>
       </div>
-      <div>
-        {approveAgencyOpen && (
-          <ApproveAgency
-            agencyId={Number(1)}
-            onClose={handleApproveAgencyClick}
-          />
-        )}
-      </div>
-    </div>
   );
 }
-
-/*
-<div className="list-container">
-
-   {agencies.map((agency: Agency) => (
-       <div className="list-item" key={agency.id}>
-           <div className="list-image-box">
-               <img src={agency.logo} />
-           </div>
-           <div className="list-information-box">
-               <p>Name: {agency.name}</p>
-               <p>{agency.isApproved ? "Approved" : "Not approved"}</p>
-           </div>
-       </div>
-
-   ))}
-</div>
-*/
