@@ -11,7 +11,6 @@ import {
 } from "../../data-types/entities";
 import SubmitBid from "../modals/SubmitBid";
 import { getAstronautsByMissionId } from "../../calling/astronautCaller";
-import { get } from "http";
 import { getCompanyProfile } from "../../calling/companyCaller";
 import { getPlatformById } from "../../calling/platformCaller";
 
@@ -63,7 +62,7 @@ export default function SpaceMissionDetails() {
         console.error("Error:", err);
         throw err;
       });
-  }, []);
+  }, [id]);
 
   return (
     <div className="outer">

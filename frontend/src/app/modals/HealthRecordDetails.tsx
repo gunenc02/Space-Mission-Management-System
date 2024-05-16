@@ -1,10 +1,9 @@
-//import { useState } from "react";
 import { HealthRecordDetailsProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 import { HealthRecord } from "../../data-types/entities";
 import { useEffect, useState } from "react";
 
-export default function CreateHealthRecord(props: HealthRecordDetailsProps) {
+export default function HealthRecordDetails(props: HealthRecordDetailsProps) {
   const [healthRecord, setHealthRecord] = useState<HealthRecord>({
     id: 0,
     astronautId: 0,
@@ -35,7 +34,7 @@ export default function CreateHealthRecord(props: HealthRecordDetailsProps) {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, []);
+  }, [props.healthRecordId]);
 
   return (
     <div className="modal-overlay">
