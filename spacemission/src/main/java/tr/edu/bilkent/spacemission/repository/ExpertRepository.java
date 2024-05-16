@@ -3,13 +3,13 @@ package tr.edu.bilkent.spacemission.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import tr.edu.bilkent.spacemission.dto.ExpertRegisterDto;
+import tr.edu.bilkent.spacemission.dto.HealthRecordsInExpertPortfolio;
 import tr.edu.bilkent.spacemission.entity.Expert;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class ExpertRepository {
@@ -45,6 +45,7 @@ public class ExpertRepository {
             ResultSet rs2 = ps2.executeQuery();
             if (rs2.next()) {
                 expert.setName(rs2.getString("expert_name"));
+                expert.setCompanyId(rs2.getLong("expert_company"));
             }
 
         }
@@ -94,5 +95,29 @@ public class ExpertRepository {
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<HealthRecordsInExpertPortfolio> getExpertPortfolio(long expertId) {
+        ArrayList<HealthRecordsInExpertPortfolio> list = new ArrayList<>();
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT hr.health_record_id, hr.date, hr.notes, " +
+                    "(SELECT astronaut_name FROM astronaut a WHERE a.astronaut_id = hr.astronaut_id) AS astronaut_name " +
+                    "FROM health_record hr WHERE hr.expert_id = ?");
+            ps.setLong(1, expertId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                HealthRecordsInExpertPortfolio record = new HealthRecordsInExpertPortfolio();
+                record.setId(rs.getLong("health_record_id"));
+                record.setDate(rs.getDate("date"));
+                record.setNotes(rs.getString("notes"));
+                record.setAstronautName(rs.getString("astronaut_name"));
+                list.add(record);
+            }
+
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return list;
     }
 }

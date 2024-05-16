@@ -34,8 +34,14 @@ public class CompanyService {
         companyRepository.offerJob(astronautId);
     }
 
+    public void fireAstronaut(long id, long astronautId){companyRepository.fireAstronaut(id, astronautId);}
+
     //returns whether the space mission is performed after attempt
     public boolean markSpaceMissionAsPerformed(long missionId){
         return companyRepository.markSpaceMissionAsPerformed(missionId);
+    }
+
+    public String getCompanyName(long companyId) {
+        return companyRepository.getCompanyName(companyId);
     }
 }

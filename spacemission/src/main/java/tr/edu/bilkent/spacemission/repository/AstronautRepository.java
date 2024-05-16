@@ -4,7 +4,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import tr.edu.bilkent.spacemission.dto.AstronautDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
+import tr.edu.bilkent.spacemission.dto.HealthRecordDto;
 import tr.edu.bilkent.spacemission.entity.Astronaut;
+import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -114,7 +116,7 @@ public class AstronautRepository {
      * are approved by the agency
      * @param agencyId ID of the agency
      */
-    public List<AstronautDto> getApprovedAstronauts(long agencyId){
+    public List<AstronautDto> getApprovedAstronauts(long agencyId) {
         ArrayList<AstronautDto> astronauts = new ArrayList<>();
 
         try {
@@ -129,7 +131,7 @@ public class AstronautRepository {
             ps.setLong(1, agencyId);
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()) {
+            while (rs.next()) {
                 AstronautDto astronaut = new AstronautDto();
                 astronaut.setUserId(rs.getInt("astronaut_id"));
                 astronaut.setName(rs.getString("astronaut_name"));
@@ -140,11 +142,91 @@ public class AstronautRepository {
                 astronaut.setSalary(rs.getDouble("salary"));
                 astronauts.add(astronaut);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
 
         return astronauts;
+    }
+     /**
+     * @param id of the astronaut
+     * @return list of all missions the astronaut is associated with including ongoing and completed missions
+     */
+    public List<SpaceMissionDto> getMissions(long id){
+        ArrayList<SpaceMissionDto> missions = new ArrayList<>();
+
+        String query = "WITH astronaut_missions(mission_id) " +
+                        "AS (SELECT mission_id FROM mission_astronaut_recordings WHERE astronaut_id = ?) " +
+                        "SELECT * FROM space_mission " +
+                        "WHERE mission_id IN astronaut_missions " +
+                        "ORDER BY performed_status ASC, DATE DESC;";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+
+
+            while(rs.next()){
+                SpaceMissionDto spaceMission = new SpaceMissionDto();
+
+                spaceMission.setId(rs.getLong("mission_id"));
+                spaceMission.setMissionName(rs.getString("mission_name"));
+                spaceMission.setImage(rs.getBytes("mission_image"));
+                spaceMission.setObjective(rs.getString("objective"));
+                spaceMission.setBudget(rs.getDouble("budget"));
+                spaceMission.setCreateDate(rs.getDate("create_date"));
+                spaceMission.setPerformDate(rs.getDate("perform_date"));
+                spaceMission.setPlatformId(rs.getInt("platform_id"));
+                spaceMission.setCreatorId(rs.getInt("creator_id"));
+                spaceMission.setPerformerId(rs.getInt("performer_id"));
+                spaceMission.setPerformStatus(rs.getString("perform_status"));
+
+                missions.add(spaceMission);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return missions;
+    }
+
+    /**
+     *
+     * @param id astronaut id
+     * @return all of the health records of the astronaut sorted by date
+     */
+    public List<HealthRecordDto> getHealthRecords(long id) {
+        ArrayList<HealthRecordDto> records = new ArrayList<>();
+
+        String query = "SELECT * FROM health_records " +
+                        "WHERE astronaut_id = ? " +
+                        "ORDER BY date DESC;";
+        try{
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                HealthRecordDto healthRecord = new HealthRecordDto();
+
+                healthRecord.setId(rs.getLong("id"));
+                healthRecord.setAstronautId(rs.getLong("astronaut_id"));
+                healthRecord.setExpertId(rs.getLong("expert_id"));
+                healthRecord.setDate(rs.getDate("date"));
+                healthRecord.setAvailabilityForMission(rs.getBoolean("availability_for_mission"));
+                healthRecord.setWeight(rs.getDouble("weight"));
+                healthRecord.setHeight(rs.getDouble("height"));
+                healthRecord.setHeartRate(rs.getDouble("heart_rate"));
+                healthRecord.setBloodPressure(rs.getDouble("blood_pressure"));
+                healthRecord.setVaccinations(rs.getString("vaccinations").split(","));
+                healthRecord.setNotes(rs.getString("notes"));
+
+                records.add(healthRecord);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return records;
     }
 }

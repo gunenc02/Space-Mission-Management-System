@@ -3,63 +3,76 @@ import Header from "../../components/Header.tsx";
 import Navbar from "../../components/Navbar.tsx";
 import { Agency } from "../../data-types/entities.tsx";
 import { getAgencies } from "../../calling/agencyCaller.tsx";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import ApproveAgency from "../modals/ApproveAgency.tsx";
+import { useParams } from "next/navigation";
 
-export default function Agencies() {
+export default function AgencyProfile() {
+  const [agencies, setAgencies] = useState<Agency[]>([]);
+  const [approveAgencyOpen, setApproveAgencyOpen] = useState<boolean>(false);
 
-    const [agencies, setAgencies] = useState<Agency[]>([]);
-    const missions = [
-        { id: 1, name: 'YAKBE-2024, SpaceY' },
-        { id: 2, name: 'R-25, ROKETSAN' }
-    ];
+  const handleApproveAgencyClick = () => {
+    setApproveAgencyOpen(!approveAgencyOpen);
+  };
 
-    const astronauts = [
-        { id: 1, name: 'John Doe' },
-        { id: 2, name: 'Ahmet Reşat Demir' },
-        { id: 3, name: 'Bahadır Günenc' }
-    ];
+  const missions = [
+    { id: 1, name: "YAKBE-2024, SpaceY" },
+    { id: 2, name: "R-25, ROKETSAN" },
+  ];
 
-    useEffect(() => {
-        getAgencies({ token: "" }).then((data) => {
-            setAgencies(data);
-        });
-    }, []);
+  const astronauts = [
+    { id: 1, name: "John Doe" },
+    { id: 2, name: "Ahmet Reşat Demir" },
+    { id: 3, name: "Bahadır Günenc" },
+  ];
 
-    return (
-        <div className="outer">
-            <Header/>
-            <Navbar/>
+  useEffect(() => {
+    getAgencies({ token: "" }).then((data) => {
+      setAgencies(data);
+    });
+  }, []);
 
-            <div className="agency-profile-container">
-                <div className="header">
-                    <div className="logo-container">
-                        <img src="photo.png" alt="NASA Logo" style={{height: '100px'}}/>
-                    </div>
-                    <div className="information-box">
-                        <h1>NASA</h1>
-                        <p>Country: USA</p>
-                        <p>Email: info@nasa.com</p>
-                    </div>
-                </div>
-                <div className="content">
-                    <div className="missions">
-                        <h2>Approved Space Missions</h2>
-                        {missions.map((mission) => (
-                            <Link to="/" key={mission.id} className="mission-box">
-                                {mission.name}
-                            </Link>
-                        ))}
-                    </div>
-                    <div className="astronauts">
-                        <h2>Approved Astronauts</h2>
-                        {astronauts.map((astronaut) => (
-                            <Link to="/" key={astronaut.id} className="astronaut-box">
-                                {astronaut.name}
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-                <style>{`
+  return (
+    <div className="outer">
+      <Header />
+      <Navbar />
+
+      <div className="agency-profile-container">
+        {localStorage.getItem("userRole") == "ADMIN" && (
+          <button className="top-button" onClick={handleApproveAgencyClick}>
+            Approve Agency
+          </button>
+        )}
+
+        <div className="header">
+          <div className="logo-container">
+            <img src="photo.png" alt="NASA Logo" style={{ height: "100px" }} />
+          </div>
+          <div className="information-box">
+            <h1>NASA</h1>
+            <p>Country: USA</p>
+            <p>Email: info@nasa.com</p>
+          </div>
+        </div>
+        <div className="content">
+          <div className="missions">
+            <h2>Approved Space Missions</h2>
+            {missions.map((mission) => (
+              <Link to="/" key={mission.id} className="mission-box">
+                {mission.name}
+              </Link>
+            ))}
+          </div>
+          <div className="astronauts">
+            <h2>Approved Astronauts</h2>
+            {astronauts.map((astronaut) => (
+              <Link to="/" key={astronaut.id} className="astronaut-box">
+                {astronaut.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+        <style>{`
                   .agency-profile-container {
                       display: flex;
                       flex-direction: column;
@@ -114,11 +127,30 @@ export default function Agencies() {
                   .mission-box:hover, .astronaut-box:hover {
                       background: #e0e0e0;
                   }
-              `}</style>
-            </div>
 
-        </div>
-    );
+                  .top-button {
+                        padding: 8px 16px;
+                        margin: 0 10px;
+                        background-color: #007bff;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        width: fit-content;
+                        align-self: flex-end;
+                  }
+              `}</style>
+      </div>
+      <div>
+        {approveAgencyOpen && (
+          <ApproveAgency
+            agencyId={Number(1)}
+            onClose={handleApproveAgencyClick}
+          />
+        )}
+      </div>
+    </div>
+  );
 }
 
 /*

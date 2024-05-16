@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import { Agency } from "../../data-types/entities";
 import { getAgencies } from "../../calling/agencyCaller";
+import { Link } from "react-router-dom";
 
 export default function Agencies() {
   const [agencies, setAgencies] = useState<Agency[]>([]);
@@ -17,17 +18,21 @@ export default function Agencies() {
     <div className="outer">
       <Header />
       <Navbar />
-      <div className="list-container">
+      <div className="smm-list-container">
         {agencies.map((agency: Agency) => (
-          <div className="list-item" key={agency.id}>
-            <div className="list-image-box">
+          <Link
+            to={"/agency/" + agency.id}
+            className="smm-list-item"
+            key={agency.id}
+          >
+            <div className="smm-list-image-box">
               <img src={agency.logo} />
             </div>
-            <div className="list-information-box">
+            <div className="smm-list-information-box">
               <p>Name: {agency.name}</p>
               <p>{agency.isApproved ? "Approved" : "Not approved"}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

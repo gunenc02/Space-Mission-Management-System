@@ -17,7 +17,7 @@ export interface Agency {
 }
 
 export interface Company {
-  id: number;
+  userId: number;
   name: string;
   userMail: string;
   country: string;
@@ -61,12 +61,28 @@ export interface HealthRecord {
   notes: string;
 }
 
-export interface SpaceMissionForListing{
+export interface SpaceMissionForListing {
+  id: number;
+  missionName: string;
+  companyName: string;
+  status: string;
+  startDate: Date;
+  endDate: Date;
+  image: string;
+}
+
+export interface Expert{
   id:number,
-  missionName:string,
-  creatorCompanyName:string,
-  status:string,
-  startDate:Date,
-  endDate:Date,
-  image:string
+  userMail:string,
+  userRole:string,
+  name:string,
+  companyName:string,
+  companyLogo:string
+}
+
+export interface HealthRecordForListing {
+  id: number,
+  date: Date,
+  astronautName: string,
+  notes: string
 }

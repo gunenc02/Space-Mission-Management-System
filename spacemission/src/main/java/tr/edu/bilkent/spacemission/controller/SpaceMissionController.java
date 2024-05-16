@@ -2,11 +2,10 @@ package tr.edu.bilkent.spacemission.controller;
 
 import org.springframework.web.bind.annotation.*;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
-import tr.edu.bilkent.spacemission.dto.SpaceMissionsInCompanyPortfolioDto;
+import tr.edu.bilkent.spacemission.dto.SpaceMissionsInPortfolioDto;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 import tr.edu.bilkent.spacemission.service.SpaceMissionService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -53,7 +52,7 @@ public class SpaceMissionController {
     }
 
     @GetMapping("/getAllMissionsByCompany/{companyId}")
-    public List<SpaceMissionsInCompanyPortfolioDto> getPortfolio(@PathVariable long companyId){
+    public List<SpaceMissionsInPortfolioDto> getPortfolio(@PathVariable long companyId){
         return spaceMissionService.getPortfolio(companyId);
     }
 
@@ -62,6 +61,10 @@ public class SpaceMissionController {
         return spaceMissionService.getApprovedMissions(agencyId);
     }
 
+    @GetMapping("/getSpaceMissionsByAstronautId/{astronautId}")
+    public List<SpaceMissionsInPortfolioDto> getAstronautPortfolio(@PathVariable long astronautId){
+        return spaceMissionService.getAstronautPortfolio(astronautId);
+    }
 
     private SpaceMission convertDtoToEntity(SpaceMissionDto spaceMissionDto) {
         SpaceMission spaceMission = new SpaceMission();
@@ -72,6 +75,7 @@ public class SpaceMissionController {
         spaceMission.setBudget(spaceMissionDto.getBudget());
         spaceMission.setCreateDate(spaceMissionDto.getCreateDate());
         spaceMission.setPerformDate(spaceMissionDto.getPerformDate());
+        spaceMission.setCreatorId(spaceMissionDto.getCreatorId());
         return spaceMission;
     }
 
@@ -84,6 +88,7 @@ public class SpaceMissionController {
         spaceMissionDto.setBudget(spaceMission.getBudget());
         spaceMissionDto.setCreateDate(spaceMission.getCreateDate());
         spaceMissionDto.setPerformDate(spaceMission.getPerformDate());
+        spaceMissionDto.setCreatorId(spaceMission.getCreatorId());
         return spaceMissionDto;
     }
 

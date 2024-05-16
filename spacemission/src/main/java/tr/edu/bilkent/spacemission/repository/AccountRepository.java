@@ -283,7 +283,7 @@ public class AccountRepository {
 
     public UserDto getLoggedUser(String usermail, String password) {
         try{
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE user_mail=? AND user_password = ?;");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE user_mail = ? AND user_password = ?;");
             ps.setString(1, usermail);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
@@ -328,7 +328,7 @@ public class AccountRepository {
 
             if(tmp.getUserRole().equals("ASTRONAUT")){
                 AstronautDto astronaut = new AstronautDto();
-                ps2 = connection.prepareStatement("SELECT  *  FROM astronaut WHERE astronaut_id = ?");
+                ps2 = connection.prepareStatement("SELECT * FROM astronaut WHERE astronaut_id = ?");
                 ps2.setLong(1, tmp.getId());
                 rs2 = ps2.executeQuery();
                 while (rs2.next()) {
@@ -371,10 +371,10 @@ public class AccountRepository {
                     expert.setUserId(tmp.getId());
                     expert.setUserRole(tmp.getUserRole());
                     expert.setUserMail(tmp.getMail());
-                    expert.setName(rs2.getString("astronaut_name"));
-                    expert.setCompanyId(rs.getLong("company_id"));
+                    expert.setName(rs2.getString("expert_name"));
+                    expert.setCompanyId(rs2.getLong("expert_company"));
                     PreparedStatement ps3 = connection.prepareStatement("SELECT company_id, company_name, company_logo FROM company WHERE company_id = ?");
-                    ps3.setLong(1, rs2.getLong("company_id"));
+                    ps3.setLong(1, rs2.getLong("expert_company"));
                     ResultSet rs3 = ps3.executeQuery();
                     while (rs3.next()) {
                         expert.setCompanyName(rs3.getString("company_name"));

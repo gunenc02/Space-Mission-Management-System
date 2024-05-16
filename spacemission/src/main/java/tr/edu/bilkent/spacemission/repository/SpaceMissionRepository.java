@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
-import tr.edu.bilkent.spacemission.dto.SpaceMissionsInCompanyPortfolioDto;
+import tr.edu.bilkent.spacemission.dto.SpaceMissionsInPortfolioDto;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 
 import javax.sql.DataSource;
@@ -109,8 +109,8 @@ public class SpaceMissionRepository {
         return spaceMission;
     }
 
-    public List<SpaceMissionsInCompanyPortfolioDto> getPortfolio(long companyId){
-        ArrayList<SpaceMissionsInCompanyPortfolioDto> missions = new ArrayList<>();
+    public List<SpaceMissionsInPortfolioDto> getPortfolio(long companyId){
+        ArrayList<SpaceMissionsInPortfolioDto> missions = new ArrayList<>();
         try{
             PreparedStatement ps = connection.prepareStatement(
                     "SELECT space_mission.*," +
@@ -120,11 +120,11 @@ public class SpaceMissionRepository {
             ps.setLong(1,companyId);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
-                SpaceMissionsInCompanyPortfolioDto mission = new SpaceMissionsInCompanyPortfolioDto();
+                SpaceMissionsInPortfolioDto mission = new SpaceMissionsInPortfolioDto();
                 mission.setId(rs.getLong("mission_id"));
                 mission.setMissionName(rs.getString("mission_name"));
                 mission.setImage(rs.getBytes("mission_image"));
-                mission.setCreatorCompanyName(rs.getString("creator_name"));
+                mission.setCompanyName(rs.getString("creator_name"));
                 mission.setStatus(rs.getString("perform_status"));
                 mission.setStartDate(rs.getDate("create_date"));
                 mission.setEndDate(rs.getDate("perform_date"));
@@ -185,17 +185,16 @@ public class SpaceMissionRepository {
     public void createSpaceMission(SpaceMission spaceMission) {
         try {
             PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO space_mission (mission_name, mission_image, objective, budget, create_date, perform_date, platform_id, creator_id, performer_id, perform_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                    "INSERT INTO space_mission (mission_name, mission_image, objective, budget, create_date, perform_date, creator_id, performer_id, perform_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
             ps.setString(1, spaceMission.getMissionName());
             ps.setBytes(2, spaceMission.getImage());
             ps.setString(3, spaceMission.getObjective());
             ps.setDouble(4, spaceMission.getBudget());
             ps.setDate(5, spaceMission.getCreateDate());
             ps.setDate(6, spaceMission.getPerformDate());
-            ps.setInt(7, spaceMission.getPlatformId());
-            ps.setInt(8, spaceMission.getCreatorId());
-            ps.setInt(9, spaceMission.getPerformerId());
-            ps.setString(10, spaceMission.getPerformStatus());
+            ps.setInt(7, spaceMission.getCreatorId());
+            ps.setNull(8, java.sql.Types.INTEGER);
+            ps.setString(9, spaceMission.getPerformStatus());
             ps.executeUpdate();
         }
         catch (SQLException e) {
@@ -241,5 +240,35 @@ public class SpaceMissionRepository {
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<SpaceMissionsInPortfolioDto> getMissionByAstronautId(long astronautId) {
+        ArrayList<SpaceMissionsInPortfolioDto> list = new ArrayList<>();
+        try{
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT space_mission.*," +
+                            "(SELECT company_name FROM  company WHERE company_id = space_mission.creator_id) AS creator_name " +
+                            "FROM space_mission WHERE mission_id IN (" +
+                            "SELECT mission_id FROM mission_astronaut_recordings WHERE astronaut_id = ?)"
+            );
+            ps.setLong(1,astronautId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                SpaceMissionsInPortfolioDto mission = new SpaceMissionsInPortfolioDto();
+                mission.setId(rs.getLong("mission_id"));
+                mission.setMissionName(rs.getString("mission_name"));
+                mission.setImage(rs.getBytes("mission_image"));
+                mission.setCompanyName(rs.getString("creator_name"));
+                mission.setStatus(rs.getString("perform_status"));
+                mission.setStartDate(rs.getDate("create_date"));
+                mission.setEndDate(rs.getDate("perform_date"));
+                list.add(mission);
+            }
+
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return list;
     }
 }

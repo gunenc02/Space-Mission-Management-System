@@ -3,14 +3,24 @@ import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import { SpaceMission } from "../../data-types/entities";
 import { getSpaceMissions } from "../../calling/spaceMissionCaller";
+import CreateSpaceMission from "../modals/CreateSpaceMission";
+import "../../styles/App.css";
+import { getExpertById } from "../../calling/expertCaller";
+import { Link } from "react-router-dom";
 
 export default function SpaceMissions() {
   const [spaceMissions, setSpaceMissions] = useState<SpaceMission[]>([]);
+  const [createMissionOpen, setCreateMissionOpen] = useState(false);
+
+  const handleCreateMissionClick = () => {
+    setCreateMissionOpen(!createMissionOpen);
+  };
 
   // Fetch astronauts from the server
   useEffect(() => {
     getSpaceMissions({ token: "" }).then((data) => {
       setSpaceMissions(data);
+      getExpertById(1, { token: "" });
     });
   }, []);
 
@@ -18,13 +28,23 @@ export default function SpaceMissions() {
     <div className="outer">
       <Header />
       <Navbar />
-      <div className="list-container">
+      {localStorage.getItem("userRole") === "COMPANY" && (
+        <button className="top-button" onClick={handleCreateMissionClick}>
+          Create Space Mission
+        </button>
+      )}
+
+      <div className="smm-list-container">
         {spaceMissions.map((spaceMission: SpaceMission) => (
-          <div className="list-item" key={spaceMission.id}>
-            <div className="list-image-box">
+          <Link
+            to={"/space-mission/" + spaceMission.id}
+            className="smm-list-item"
+            key={spaceMission.id}
+          >
+            <div className="smm-list-image-box">
               <img src={spaceMission.image} />
             </div>
-            <div className="list-information-box">
+            <div className="smm-list-information-box">
               <p>Name: {spaceMission.missionName}</p>
               <p>Objective: {spaceMission.objective}</p>
               <p>Budget: {spaceMission.budget}</p>
@@ -37,8 +57,16 @@ export default function SpaceMissions() {
                 {new Date(spaceMission.performDate).toLocaleDateString()}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
+      </div>
+      <div>
+        {createMissionOpen && (
+          <CreateSpaceMission
+            companyId={Number(localStorage.getItem("userId"))}
+            onClose={handleCreateMissionClick}
+          />
+        )}
       </div>
     </div>
   );

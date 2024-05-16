@@ -1,4 +1,6 @@
+/* Modal.css */
 .modal-overlay {
+  display: flex;
   justify-content: center;
   align-items: center;
   position: fixed;
@@ -7,9 +9,6 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   z-index: 1000;
 }
 
@@ -18,78 +17,80 @@
   border: 2px solid rgb(21, 104, 134);
   border-radius: 20px;
   width: 35%;
-  height: fit-content;
-  padding-bottom: 20px;
+  padding: 20px;
   text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-.modal-input-container {
-  align-self: center;
-  display: flex;
-  flex-direction: column;
-  height: fit-content;
-  width: 100%;
-  margin-bottom: 5px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modal-title {
   color: black;
   font-size: 1.8rem;
   font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.modal-input {
-  width: 65%;
-  align-self: center;
-  height: 22px;
-}
-
-.modal-text-area {
-  width: 65%;
-  align-self: center;
-  height: 70px;
-}
-
-.modal-label {
-  width: 65%;
-  color: black;
-  align-self: center;
-  text-align: left;
-}
-
-.modal-radio-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-warning-text {
-  color: black;
-  font-size: 1.2rem;
   margin-bottom: 20px;
 }
 
-.modal-button {
-  margin-top: 25px;
-  margin-left: 10px;
-  margin-right: 10px;
+.modal-label {
+  width: 100%;
+  color: black;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
 .filter-mix-max-container {
-  align-self: center;
   display: flex;
-  flex-direction: row;
-  height: fit-content;
-  width: 100%;
-  margin-bottom: 5px;
-  margin-top: 5px;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 .filter-min-max-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  width: 40%;
+}
+
+.modal-button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.modal-button {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.modal-button.bg-red-500:hover {
+  background-color: #c53030;
+}
+
+.modal-button.bg-blue-500:hover {
+  background-color: #2b6cb0;
 }

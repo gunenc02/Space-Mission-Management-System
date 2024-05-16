@@ -2,9 +2,12 @@ package tr.edu.bilkent.spacemission.controller;
 
 import org.springframework.web.bind.annotation.*;
 import tr.edu.bilkent.spacemission.dto.AstronautDto;
+import tr.edu.bilkent.spacemission.dto.HealthRecordDto;
 import tr.edu.bilkent.spacemission.entity.Astronaut;
 import tr.edu.bilkent.spacemission.service.AstronautService;
 import tr.edu.bilkent.spacemission.service.SpaceMissionService;
+import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
+
 
 import java.util.List;
 
@@ -47,9 +50,20 @@ public class AstronautController {
         astronautService.leaveMission(missionId, astronautId);
     }
 
+
     @GetMapping("/getAllAstronautByAgency/{agencyId}")
-    public List<AstronautDto> getApprovedAstronauts(@PathVariable long agencyId){
+    public List<AstronautDto> getApprovedAstronauts(@PathVariable long agencyId) {
         return astronautService.getApprovedAstronauts(agencyId);
+    }
+
+    @GetMapping("/getMissions/{id}")
+    public List<SpaceMissionDto> getMissions(@PathVariable long id){
+        return astronautService.getMissions(id);
+    }
+
+    @GetMapping("/getHealthRecords/{id}")
+    public List<HealthRecordDto> getHealthRecords(@PathVariable long id){
+        return astronautService.getHealthRecords(id);
     }
 
     private Astronaut convertDtoToEntity(AstronautDto astronautDto) {

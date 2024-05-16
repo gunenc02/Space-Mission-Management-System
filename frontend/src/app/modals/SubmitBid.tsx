@@ -2,7 +2,7 @@
 import { SubmitBidProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 
-export default function CreateSpaceMission(props: SubmitBidProps) {
+export default function SubmitBid(props: SubmitBidProps) {
   return (
     <div className="modal-overlay">
       <div className="modal-outer">

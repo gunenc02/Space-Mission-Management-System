@@ -2,8 +2,11 @@ package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import tr.edu.bilkent.spacemission.dto.AstronautDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
+import tr.edu.bilkent.spacemission.dto.HealthRecordDto;
+import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
 import tr.edu.bilkent.spacemission.entity.Astronaut;
 import tr.edu.bilkent.spacemission.repository.AstronautRepository;
 
@@ -37,8 +40,17 @@ public class AstronautService {
     public void leaveMission(long missionId, long astronautId) {
         astronautRepository.leaveMission(missionId, astronautId);
     }
-
     public List<AstronautDto> getApprovedAstronauts(long agencyId){
         return astronautRepository.getApprovedAstronauts(agencyId);
+
+    public List<SpaceMissionDto> getMissions(long id){
+        return astronautRepository.getMissions(id);
+    }
+
+    public List<HealthRecordDto> getHealthRecords(long id){
+        return astronautRepository.getHealthRecords(id);
     }
 }
+
+    public List<HealthRecordDto> getHealthRecords(long id) {
+    }

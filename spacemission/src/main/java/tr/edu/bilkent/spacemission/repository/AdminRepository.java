@@ -20,7 +20,7 @@ public class AdminRepository {
 
     public void confirmAgency(long id){
         //directly attempt to update the approve_status of the Agency with given id without checking if it exists
-        String query = "UPDATE agency SET is_approved = true WHERE agency_id = ?";
+        String query = "UPDATE agency SET is_approved = 1 WHERE agency_id = ?";
         this.jdbcTemplate.update(query, id);
     }
 }

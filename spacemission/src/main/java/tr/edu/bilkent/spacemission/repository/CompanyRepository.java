@@ -96,6 +96,24 @@ public class CompanyRepository {
         );
     }
 
+    //Fire the astronaut from the mission they are involved with this company
+    //Do this only for performer id matches
+    public void fireAstronaut(long id, long astronautId){
+        String query = "WITH performer_company_missions(mission_id) AS (SELECT mission_id FROM space_mission WHERE performer_id = ?) " +
+                        "DELETE FROM mission_astronaut_recordings AS mas WHERE mas.mission_id IN (SELECT * FROM performer_company_missions) " +
+                        "AND mas.astronaut_id = ?; ";
+        try{
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, String.valueOf(id));
+            ps.setString(2, String.valueOf(astronautId));
+            ps.executeQuery();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
     public void offerJob(long astronautId) {
     }
     /**
@@ -122,5 +140,23 @@ public class CompanyRepository {
             result = affectedRows > 0; //we expect affectedRows to be exactly 1 however
         }
         return result;
+    }
+
+    public String getCompanyName(long companyId) {
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT c.company_name FROM company c WHERE company_id = ?");
+            ps.setLong(1,companyId);
+            ResultSet rs = ps.executeQuery();
+            String tmp = "";
+            if(rs.next()){
+                tmp = rs.getString("company_name");
+            }
+            System.out.println("do");
+            return tmp;
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return "";
     }
 }

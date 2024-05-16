@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import "../../styles/App.css";
 import { Company } from "../../data-types/entities";
 import { getCompanies } from "../../calling/companyCaller";
+import { Link } from "react-router-dom";
 
 export default function Companies() {
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -18,18 +19,22 @@ export default function Companies() {
     <div className="outer">
       <Header />
       <Navbar />
-      <div className="list-container">
+      <div className="smm-list-container">
         {companies.map((company: Company) => (
-          <div className="list-item" key={company.id}>
-            <div className="list-image-box">
-              <img src={company.logo}/>
+          <Link
+            to={"/company/" + company.userId}
+            className="smm-list-item"
+            key={company.userId}
+          >
+            <div className="smm-list-image-box">
+              <img src={company.logo} />
             </div>
-            <div className="list-information-box">
+            <div className="smm-list-information-box">
               <p>Name: {company.name}</p>
               <p>Country: {company.country}</p>
               <p>Budget: {company.money}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

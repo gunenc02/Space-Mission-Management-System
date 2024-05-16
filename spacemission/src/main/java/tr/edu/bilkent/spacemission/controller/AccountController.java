@@ -121,8 +121,8 @@ public class AccountController {
     }
 
     @PostMapping("/login")
-    public UserDto login(@RequestParam String usermail, @RequestParam String password, HttpServletResponse http){
-        UserDto dto = accountService.getLoggedUser(usermail, password);
+    public UserDto login(@RequestBody Login body, HttpServletResponse http){
+        UserDto dto = accountService.getLoggedUser(body.getUsername(), body.getPassword());
 
         Cookie idCookie = new Cookie("user_id", (Long.toString(dto.getUserId())));
         idCookie.setPath("/");

@@ -19,17 +19,17 @@ export default function Astronauts() {
     <div className="outer">
       <Header />
       <Navbar />
-      <div className="list-container">
+      <div className="smm-list-container">
         {astronauts.map((astronaut: Astronaut) => (
           <Link
             to={"/astronaut/" + astronaut.id}
-            className="list-item"
+            className="smm-list-item"
             key={astronaut.id}
           >
-            <div className="list-image-box">
+            <div className="smm-list-image-box">
               <img src={astronaut.image} />
             </div>
-            <div className="list-information-box">
+            <div className="smm-list-information-box">
               <p>Name: {astronaut.name}</p>
               <p>Country: {astronaut.country}</p>
               <p>
