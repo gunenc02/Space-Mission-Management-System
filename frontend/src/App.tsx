@@ -17,6 +17,7 @@ import OfferedBids from "./app/pages/OfferedBids.tsx";
 import AgencyProfile from "./app/profiles/AgencyProfile.tsx";
 import SpaceMissionDetails from "./app/profiles/SpaceMissionDetails.tsx";
 import PlatformDetails from "./app/profiles/PlatformDetails.tsx";
+import Settings from "./app/pages/Settings.tsx";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/test" element={<Login />} />
           <Route path="/received-bids" element={<ReceivedBids />} />
           <Route path="/offered-bids" element={<OfferedBids />} />
+          <Route path="/settings" element = {<Settings />} />
         </Routes>
       </BrowserRouter>
     </div>
