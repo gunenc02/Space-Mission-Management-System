@@ -27,7 +27,7 @@ export default function LoginPage() {
       const response = await loginUser(email, password);
       if (response.success) {
         console.log("Login successful", response.data);
-        navigate("/agencies"); // Navigate to the Agencies page on success
+        navigate("/space-missions"); // Navigate to the Space Missions page on success
       } else {
         throw new Error(response.message);
       }

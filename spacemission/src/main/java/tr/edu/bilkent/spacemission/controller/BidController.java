@@ -54,6 +54,10 @@ public class BidController {
     @PostMapping("/offer")
     public void offerBid(@RequestBody BidDto bidDto) {
         Bid bid = convertDtoToEntity(bidDto);
+        bid.setOfferDate(new java.sql.Date(System.currentTimeMillis()));
+        bid.setStatus("pending");
+        // Set the deadline to 7 days after the offer date
+        bid.setDeadline(new java.sql.Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7));
         bidService.offerBid(bid);
     }
 

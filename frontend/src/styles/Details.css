@@ -50,12 +50,20 @@
   margin-bottom: 20px;
 }
 
-.details-title {
+.mission-details-title {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 10px;
   margin-top: 10px;
   margin-left: 240px;
+  width: 100%;
+}
+
+.details-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-top: 10px;
   width: 100%;
 }
 
