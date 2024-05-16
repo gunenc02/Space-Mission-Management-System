@@ -29,15 +29,26 @@ public class AgencyRepository {
      * @return Agency object
      */
     public Agency getAgencyProfile(long agencyId) {
-        String query = "SELECT * FROM agency WHERE agency_id = ?;";
-        return jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
-            Agency agency = new Agency();
-            agency.setId(rs.getLong("agency_id"));
-            agency.setName(rs.getString("agency_name"));
-            agency.setLogo(rs.getBytes("agency_logo"));
-            agency.setApproved(rs.getBoolean("is_approved"));
-            return agency;
-        }, agencyId);
+        Agency agency = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT a.*, u.* FROM agency a JOIN " +
+                                                                    "user u ON a.agency_id = u.user_id WHERE agency_id = ? ");
+            ps.setLong(1, agencyId);
+
+            ResultSet rs = ps.executeQuery();
+            agency = new Agency();
+            if (rs.next()) {
+                agency.setId(rs.getLong("agency_id"));
+                agency.setMail(rs.getString("u.user_mail"));
+                agency.setName(rs.getString("agency_name"));
+                agency.setLogo(rs.getBytes("agency_logo"));
+                agency.setApproved(rs.getBoolean("is_approved"));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return agency;
     }
 
     /**
