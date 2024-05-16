@@ -30,7 +30,7 @@ export interface CreateMissionProps {
 
 export interface SubmitBidProps {
   fromCompanyId: number;
-  toCompanyId: number;
+  toCompanyId: number | undefined;
   onClose: () => void;
 }
 

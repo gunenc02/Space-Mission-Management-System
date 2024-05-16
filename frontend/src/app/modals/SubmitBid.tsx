@@ -24,20 +24,22 @@ export default function SubmitBid(props: SubmitBidProps) {
           <textarea className="modal-text-area" id="notes"></textarea>
         </div>
 
-        <button
-          onClick={props.onClose}
-          style={{ backgroundColor: "red", color: "white" }}
-          className="modal-button"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={props.onClose}
-          style={{ backgroundColor: "green", color: "white" }}
-          className="modal-button"
-        >
-          Submit
-        </button>
+        <div className="modal-button-container">
+          <button
+            onClick={props.onClose}
+            style={{ backgroundColor: "red", color: "white" }}
+            className="modal-button"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={props.onClose}
+            style={{ backgroundColor: "green", color: "white" }}
+            className="modal-button"
+          >
+            Submit
+          </button>
+        </div>
       </div>
     </div>
   );

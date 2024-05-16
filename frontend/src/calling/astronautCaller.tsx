@@ -78,3 +78,31 @@ export function joinCompany(
       throw err;
     });
 }
+
+export function getAstronautsByMissionId(missionId: number) {
+  const sentUrl =
+    "http://localhost:8080/astronaut/getAstronautsByMissionId/" + missionId;
+
+  return fetch(sentUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(
+          `Failed to fetch astronauts of mission: ${response.statusText}`
+        );
+      }
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      throw err;
+    });
+}
