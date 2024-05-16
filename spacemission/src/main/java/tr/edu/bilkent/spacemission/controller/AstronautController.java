@@ -9,6 +9,7 @@ import tr.edu.bilkent.spacemission.service.SpaceMissionService;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -48,6 +49,15 @@ public class AstronautController {
     @DeleteMapping("/leaveMission/{missionId}/{astronautId}")
     public void leaveMission(@PathVariable long missionId, @PathVariable long astronautId){
         astronautService.leaveMission(missionId, astronautId);
+    }
+
+    @GetMapping("/getAstronautsByMissionId/{missionId}")
+    public List<AstronautDto> getAstronautsByMissionId(@PathVariable long missionId) {
+        ArrayList<AstronautDto> astronautDtos = new ArrayList<>();
+        for (Astronaut astronaut : astronautService.getAstronautsByMissionId(missionId)) {
+            astronautDtos.add(convertEntityToDto(astronaut));
+        }
+        return astronautDtos;
     }
 
 

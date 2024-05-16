@@ -229,4 +229,37 @@ public class AstronautRepository {
         }
         return records;
     }
+
+    /**
+     * This method returns the list of astronauts that are associated with the given mission
+     * @param missionId Id of the mission
+     */
+    public List<Astronaut> getAstronautsByMissionId (long missionId) {
+        ArrayList<Astronaut> astronauts = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT ast.* " +
+                            "FROM astronaut ast " +
+                            "JOIN mission_astronaut_recordings mar ON ast.astronaut_id = mar.astronaut_id " +
+                            "WHERE mar.mission_id = ?"
+            );
+            ps.setLong(1, missionId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Astronaut astronaut = new Astronaut();
+                astronaut.setId(rs.getLong("astronaut_id"));
+                astronaut.setName(rs.getString("astronaut_name"));
+                astronaut.setImage(rs.getBytes("astronaut_image"));
+                astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
+                astronaut.setOnDuty(rs.getBoolean("on_duty"));
+                astronaut.setCountry(rs.getString("country"));
+                astronaut.setSalary(rs.getDouble("salary"));
+                astronauts.add(astronaut);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return astronauts;
+    }
 }
