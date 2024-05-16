@@ -40,7 +40,7 @@ public class SpaceMissionService {
         return spaceMissionRepository.getPortfolio(companyId);
     }
 
-    public List<SpaceMissionsInCompanyPortfolioDto> getApprovedMissions(long agencyId){
+    public List<SpaceMissionsInPortfolioDto> getApprovedMissions(long agencyId){
         return spaceMissionRepository.getApprovedMissions(agencyId);
     }
 

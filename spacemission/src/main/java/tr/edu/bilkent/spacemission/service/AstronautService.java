@@ -40,8 +40,9 @@ public class AstronautService {
     public void leaveMission(long missionId, long astronautId) {
         astronautRepository.leaveMission(missionId, astronautId);
     }
-    public List<AstronautDto> getApprovedAstronauts(long agencyId){
+    public List<AstronautDto> getApprovedAstronauts(long agencyId) {
         return astronautRepository.getApprovedAstronauts(agencyId);
+    }
 
     public List<SpaceMissionDto> getMissions(long id){
         return astronautRepository.getMissions(id);
@@ -51,6 +52,3 @@ public class AstronautService {
         return astronautRepository.getHealthRecords(id);
     }
 }
-
-    public List<HealthRecordDto> getHealthRecords(long id) {
-    }

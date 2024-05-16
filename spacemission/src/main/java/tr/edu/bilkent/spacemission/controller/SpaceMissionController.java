@@ -57,7 +57,7 @@ public class SpaceMissionController {
     }
 
     @GetMapping("/getAllMissionsByAgency/{agencyId}")
-    public List<SpaceMissionsInCompanyPortfolioDto> getApprovedMissions(@PathVariable long agencyId){
+    public List<SpaceMissionsInPortfolioDto> getApprovedMissions(@PathVariable long agencyId){
         return spaceMissionService.getApprovedMissions(agencyId);
     }
 

@@ -144,8 +144,8 @@ public class SpaceMissionRepository {
      * @param agencyId ID of the agency
      */
 
-    public List<SpaceMissionsInCompanyPortfolioDto> getApprovedMissions(long agencyId) {
-        ArrayList<SpaceMissionsInCompanyPortfolioDto> missions = new ArrayList<>();
+    public List<SpaceMissionsInPortfolioDto> getApprovedMissions(long agencyId) {
+        ArrayList<SpaceMissionsInPortfolioDto> missions = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement(
                     "SELECT sm.*, a.agency_name, c.company_name " +
@@ -160,14 +160,14 @@ public class SpaceMissionRepository {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
-                SpaceMissionsInCompanyPortfolioDto mission = new SpaceMissionsInCompanyPortfolioDto();
+                SpaceMissionsInPortfolioDto mission = new SpaceMissionsInPortfolioDto();
                 mission.setId(rs.getLong("mission_id"));
                 mission.setMissionName(rs.getString("mission_name"));
                 mission.setImage(rs.getBytes("mission_image"));
                 mission.setStatus(rs.getString("perform_status"));
                 mission.setStartDate(rs.getDate("create_date"));
                 mission.setEndDate(rs.getDate("perform_date"));
-                mission.setCreatorCompanyName(rs.getString("company_name")); // Assuming you have this setter
+                mission.setCompanyName(rs.getString("company_name")); // Assuming you have this setter
                 missions.add(mission);
             }
         }
