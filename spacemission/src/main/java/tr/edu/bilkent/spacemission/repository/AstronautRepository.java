@@ -232,17 +232,17 @@ public class AstronautRepository {
      * This method returns the list of astronauts that are associated with the given mission
      * @param missionId Id of the mission
      */
-    public List<Astronaut> getAstronautsByMissionId (long missionId) {
+    public List<Astronaut> getAstronautsByMissionId(long missionId) {
         ArrayList<Astronaut> astronauts = new ArrayList<>();
-        try {
-            PreparedStatement ps = connection.prepareStatement(
-                    "SELECT ast.* " +
-                            "FROM astronaut ast " +
-                            "JOIN mission_astronaut_recordings mar ON ast.astronaut_id = mar.astronaut_id " +
-                            "WHERE mar.mission_id = ?"
-            );
+        String query = "SELECT ast.* " +
+                "FROM astronaut ast " +
+                "JOIN mission_astronaut_recordings mar ON ast.astronaut_id = mar.astronaut_id " +
+                "WHERE mar.mission_id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setLong(1, missionId);
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 Astronaut astronaut = new Astronaut();
                 astronaut.setId(rs.getLong("astronaut_id"));
@@ -254,8 +254,7 @@ public class AstronautRepository {
                 astronaut.setSalary(rs.getDouble("salary"));
                 astronauts.add(astronaut);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return astronauts;
