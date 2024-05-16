@@ -4,25 +4,25 @@ import "../../styles/Modal.css";
 
 export default function FireAstronaut(props: FireAstronautProps) {
   const handleFire = function () {
-    const deleteUrl = "http://localhost:8080/fireAstronaut";
-    const performerId = "??????????companyId"; // company id we must retrieve via login
-    const requestBody = {
-      id: performerId,
-      astronautId: props.astronautId,
-    };
+    const deleteUrl =
+      "http://localhost:8080/company/fireAstronaut/" +
+      localStorage.getItem("userId") +
+      "/" +
+      props.astronautId;
 
+    console.log("deleteUrl: ", deleteUrl);
     fetch(deleteUrl, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestBody),
     })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network respone was not ok");
         } else {
           //delete successful close the modal
+          alert("Astronaut fired successfully");
           props.onClose();
         }
       })
@@ -35,7 +35,6 @@ export default function FireAstronaut(props: FireAstronautProps) {
       });
   };
 
-  //FIX BACKEND FIRST TO IMPLEMENT FETCH OF THIS
   return (
     <div className="modal-overlay">
       <div className="modal-outer">

@@ -1,134 +1,175 @@
 import { useParams } from "react-router-dom";
 import CreateHealthRecord from "../modals/CreateHealthRecord";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HealthRecordDetails from "../modals/HealthRecordDetails";
 import FireAstronaut from "../modals/FireAstronaut";
 
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
-
-
+import {
+  Astronaut,
+  HealthRecord,
+  SpaceMission,
+} from "../../data-types/entities";
+import { getAstronautProfile } from "../../calling/astronautCaller";
 
 export default function AstronautProfile() {
-    /*const spaceMissions = [{ id: 1, name: "YAKBE-2024, SpaceY" }];
+  const [astronaut, setAstronaut] = useState<Astronaut>(null);
+  const [spaceMissions, setSpaceMissions] = useState<SpaceMission[]>([]);
+  const [healthRecords, setHealthRecords] = useState<HealthRecord[]>([]);
 
-    const healthRecords = [{ id: 1, date: "25.03.2024", doctor: "Dr. OZ" }];*/
-    const [spaceMissions, setSpaceMissions] = useState([]);
-    const [healthRecords, setHealthRecords] = useState([]);
+  const { id } = useParams();
+  const [createHealthRecordOpen, setCreateHealthRecordOpen] =
+    useState<boolean>(false);
+  const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);
+  const [healthRecordDetailsOpen, setHealthRecordDetailsOpen] =
+    useState<boolean>(false);
 
+  const handleCreateHealthRecordClick = () => {
+    setCreateHealthRecordOpen(!createHealthRecordOpen);
+  };
 
+  const handleFireAstronautClick = () => {
+    setFireAstronautOpen(!fireAstronautOpen);
+  };
 
-    const { id } = useParams();
-    const [createHealthRecordOpen, setCreateHealthRecordOpen] =
-        useState<boolean>(false);
-    const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);
-    const [healthRecordDetailsOpen, setHealthRecordDetailsOpen] =
-        useState<boolean>(false);
+  const handleHealthRecordDetailsClick = () => {
+    setHealthRecordDetailsOpen(!healthRecordDetailsOpen);
+  };
 
-    const handleCreateHealthRecordClick = () => {
-        setCreateHealthRecordOpen(!createHealthRecordOpen);
+  const fetchMissions = function () {
+    const url =
+      "http://localhost:8080/spaceMission/getSpaceMissionsByAstronautId/" + id;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setSpaceMissions(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  const fetchHealthRecords = function () {
+    const sentUrl = "http://localhost:8080/astronaut/getHealthRecords/" + id;
+
+    fetch(sentUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error(
+            `Failed to fetch health records: ${response.statusText}`
+          );
+        }
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        throw err;
+      });
+  };
+
+  useEffect(() => {
+    const fetchAstronaut = async () => {
+      setAstronaut(await getAstronautProfile(Number(id), { token: null }));
     };
 
-    const handleFireAstronautClick = () => {
-        setFireAstronautOpen(!fireAstronautOpen);
-    };
+    fetchMissions();
+    fetchHealthRecords();
+    fetchAstronaut();
+  }, []);
 
-    const handleHealthRecordDetailsClick = () => {
-        setHealthRecordDetailsOpen(!healthRecordDetailsOpen);
-    };
+  return (
+    <div className="outer">
+      <Header />
+      <Navbar />
+      <div className="button-bar">
+        {localStorage.getItem("userRole") === "EXPERT" && (
+          <button
+            className="top-button"
+            onClick={handleCreateHealthRecordClick}
+          >
+            Create Health Record
+          </button>
+        )}
 
-    const fetchMissions = function(){
-        const url = "http://localhost:8080/astronaut/getMissions/" + id;
-
-        fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setSpaceMissions(data);
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-    }
-    const fetchHealthRecords = function(){
-
-    }
-    return (
-        <div className="outer">
-            <Header />
-            <Navbar />
-            <div className="button-bar">
-                {localStorage.getItem("userRole") === "EXPERT" && (
-                    <button
-                        className="top-button"
-                        onClick={handleCreateHealthRecordClick}
-                    >
-                        Create Health Record
-                    </button>
-                )}
-
-                {localStorage.getItem("userRole") === "COMPANY" && ( // When you get astronaut from backend, add && userId === astronaut.companyId
-                    <button className="top-button" onClick={handleFireAstronautClick}>
-                        Fire Astronaut
-                    </button>
-                )}
-            </div>
-            <div className="profile-container">
-                <div className="profile-header">
-                    <div className="profile-image">
-                        <img
-                            src="astronaut-image.png"
-                            alt="Astronaut"
-                            style={{ width: "150px", height: "150px" }}
-                        />
-                    </div>
-                    <div className="profile-info">
-                        <h1>Bahadır Günenç</h1>
-                        <p>Country: Türkiye</p>
-                        <p>Date of Birth: 01.01.1700</p>
-                        <p>Status: On Mission</p>
-                    </div>
+        {localStorage.getItem("userRole") === "COMPANY" && ( // When you get astronaut from backend, add && userId === astronaut.companyId
+          <button className="top-button" onClick={handleFireAstronautClick}>
+            Fire Astronaut
+          </button>
+        )}
+      </div>
+      <div className="profile-container">
+        <div className="profile-header">
+          <div className="profile-image">
+            <img
+              src="astronaut-image.png"
+              alt="Astronaut"
+              style={{ width: "150px", height: "150px" }}
+            />
+          </div>
+          <div className="profile-info">
+            <h1>{astronaut?.name}</h1>
+            <p>Country: {astronaut?.country}</p>
+            <p>Date of Birth: {astronaut?.dateOfBirth.toString()}</p>
+            <p>
+              Status:{" "}
+              {astronaut?.onDuty === true
+                ? "On mission"
+                : "Available for mission"}
+            </p>
+          </div>
+        </div>
+        <div className="profile-details">
+          <div className="missions-section">
+            <h2>Space Missions</h2>
+            {spaceMissions.map((mission) => (
+              <Link
+                to={"/space-mission/" + mission.id}
+                key={mission.id}
+                className="mission-entry"
+              >
+                {mission.missionName}
+              </Link>
+            ))}
+          </div>
+          <div className="health-section">
+            <h2>Health Records</h2>
+            {healthRecords.map((record) => (
+              <div className="health-record-container">
+                <div key={record.id} className="health-record">
+                  {record.date.toString()}
                 </div>
-                <div className="profile-details">
-                    <div className="missions-section">
-                        <h2>Space Missions</h2>
-                        {spaceMissions.map((mission) => (
-                            <Link to="/missions" key={mission.id} className="mission-entry">
-                                {mission.name}
-                            </Link>
-                        ))}
-                    </div>
-                    <div className="health-section">
-                        <h2>Health Records</h2>
-                        {healthRecords.map((record) => (
-                            <div className="health-record-container">
-                                <div key={record.id} className="health-record">
-                                    {record.date}, {record.doctor}
-                                </div>
-                                <button
-                                    className="health-record-details-button"
-                                    onClick={handleHealthRecordDetailsClick}
-                                >
-                                    Details
-                                </button>
-                                <div>
-                                    {healthRecordDetailsOpen && (
-                                        <HealthRecordDetails
-                                            healthRecordId={record.id}
-                                            onClose={handleHealthRecordDetailsClick}
-                                        />
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                <button
+                  className="health-record-details-button"
+                  onClick={handleHealthRecordDetailsClick}
+                >
+                  Details
+                </button>
+                <div>
+                  {healthRecordDetailsOpen && (
+                    <HealthRecordDetails
+                      healthRecordId={record.id}
+                      onClose={handleHealthRecordDetailsClick}
+                    />
+                  )}
                 </div>
-                <style>{`
+              </div>
+            ))}
+          </div>
+        </div>
+        <style>{`
                     .profile-container {
                         display: flex;
                         flex-direction: column;
@@ -207,23 +248,23 @@ export default function AstronautProfile() {
                         width: 12vw;
                     }
                 `}</style>
-            </div>
-            <div>
-                {createHealthRecordOpen && (
-                    <CreateHealthRecord
-                        astronautId={Number(id)}
-                        onClose={handleCreateHealthRecordClick}
-                    />
-                )}
-            </div>
-            <div>
-                {fireAstronautOpen && (
-                    <FireAstronaut
-                        astronautId={Number(id)}
-                        onClose={handleFireAstronautClick}
-                    />
-                )}
-            </div>
-        </div>
-    );
+      </div>
+      <div>
+        {createHealthRecordOpen && (
+          <CreateHealthRecord
+            astronautId={Number(id)}
+            onClose={handleCreateHealthRecordClick}
+          />
+        )}
+      </div>
+      <div>
+        {fireAstronautOpen && (
+          <FireAstronaut
+            astronautId={Number(id)}
+            onClose={handleFireAstronautClick}
+          />
+        )}
+      </div>
+    </div>
+  );
 }
