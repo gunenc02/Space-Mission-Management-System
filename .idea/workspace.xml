@@ -6,12 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/profiles/AstronautProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profiles/AstronautProfile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/SpaceMissionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/SpaceMissionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/SpaceMissionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/SpaceMissionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/SpaceMissionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/SpaceMissionService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,10 +27,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -43,24 +42,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.SpaceMissionManagement.executor": "Run",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/mac/Desktop/Bilkent3_2/CS 353/cs353_project/Space-Mission-Management-System/frontend/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.SpaceMissionManagement.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/mac/Desktop/Bilkent3_2/CS 353/cs353_project/Space-Mission-Management-System/frontend/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="SpaceMissionManagement" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="spacemission" />
