@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_05_2024_17_23__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_05_2024_17_23__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_05_2024_11_16__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_05_2024_11_16__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_05_2024_11_17__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_05_2024_11_17__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AccountRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/profiles/AstronautProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profiles/AstronautProfile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +44,7 @@
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.SpaceMissionManagement.executor": "Debug",
+    "Spring Boot.SpaceMissionManagement.executor": "Run",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
@@ -109,7 +108,7 @@
       <workItem from="1715701660435" duration="5019000" />
       <workItem from="1715752359911" duration="3197000" />
       <workItem from="1715796898697" duration="2210000" />
-      <workItem from="1715839505217" duration="3342000" />
+      <workItem from="1715839505217" duration="9553000" />
     </task>
     <task id="LOCAL-00001" summary="Add some missing endpoints">
       <option name="closed" value="true" />

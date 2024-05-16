@@ -8,10 +8,16 @@ import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 
-export default function AstronautProfile() {
-  const spaceMissions = [{ id: 1, name: "YAKBE-2024, SpaceY" }];
 
-  const healthRecords = [{ id: 1, date: "25.03.2024", doctor: "Dr. OZ" }];
+
+export default function AstronautProfile() {
+  /*const spaceMissions = [{ id: 1, name: "YAKBE-2024, SpaceY" }];
+
+  const healthRecords = [{ id: 1, date: "25.03.2024", doctor: "Dr. OZ" }];*/
+  const [spaceMissions, setSpaceMissions] = useState([]);
+  const [healthRecords, setHealthRecords] = useState([]);
+
+  
 
   const { id } = useParams();
   const [createHealthRecordOpen, setCreateHealthRecordOpen] =
@@ -32,6 +38,26 @@ export default function AstronautProfile() {
     setHealthRecordDetailsOpen(!healthRecordDetailsOpen);
   };
 
+  const fetchMissions = function(){
+    const url = "http://localhost:8080/astronaut/getMissions/" + id;
+    
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(response => response.json())
+      .then((data) => {
+        setSpaceMissions(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+  const fetchHealthRecords = function(){
+    
+  }  
   return (
     <div className="outer">
       <Header />
