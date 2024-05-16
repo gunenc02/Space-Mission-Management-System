@@ -33,6 +33,7 @@ export default function CreateSpaceMission(props: CreateMissionProps) {
       }));
     }
   };
+
   const createHandler = function () {
     const postUrl = `http://localhost:8080/spaceMission/create`;
 

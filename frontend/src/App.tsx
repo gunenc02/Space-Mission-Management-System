@@ -16,6 +16,7 @@ import Login from "./app/Login.tsx";
 import OfferedBids from "./app/pages/OfferedBids.tsx";
 import AgencyProfile from "./app/profiles/AgencyProfile.tsx";
 import SpaceMissionDetails from "./app/profiles/SpaceMissionDetails.tsx";
+import PlatformDetails from "./app/profiles/PlatformDetails.tsx";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/agency/:id" element={<AgencyProfile />}></Route>
           <Route path="/expert/:id" element={<ExpertProfile />} />
           <Route path="/space-mission/:id" element={<SpaceMissionDetails />} />
+          <Route path="/platform/:id" element={<PlatformDetails />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/test" element={<Login />} />

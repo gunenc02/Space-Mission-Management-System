@@ -11,6 +11,9 @@ import {
 } from "../../data-types/entities";
 import SubmitBid from "../modals/SubmitBid";
 import { getAstronautsByMissionId } from "../../calling/astronautCaller";
+import { get } from "http";
+import { getCompanyProfile } from "../../calling/companyCaller";
+import { getPlatformById } from "../../calling/platformCaller";
 
 export default function SpaceMissionDetails() {
   const { id } = useParams();
@@ -48,6 +51,13 @@ export default function SpaceMissionDetails() {
       .then(async (data) => {
         setSpaceMission(data);
         setAstronauts(await getAstronautsByMissionId(data.id));
+        setCreatorCompany(
+          await getCompanyProfile(data.creatorId, { token: null })
+        );
+        setPerformerCompany(
+          await getCompanyProfile(data.performerId, { token: null })
+        );
+        setPlatform(await getPlatformById(data.platformId, { token: null }));
       })
       .catch((err) => {
         console.error("Error:", err);
@@ -61,7 +71,9 @@ export default function SpaceMissionDetails() {
       <Navbar />
       <div className="details-outer">
         <div className="details-top-div">
-          <div className="details-title">{spaceMission?.missionName}</div>
+          <div className="mission-details-title">
+            {spaceMission?.missionName}
+          </div>
           <button className="details-button" onClick={handleSubmitBidClick}>
             Submit Bid
           </button>
@@ -90,9 +102,17 @@ export default function SpaceMissionDetails() {
             alt="Mission Image"
           />
           <div className="details-info-box">
-            <div className="details-info-item"> Creator Company:</div>
-            <div className="details-info-item"> Performer Company:</div>
-            <div className="details-info-item"> Platform:</div>
+            <div className="details-info-item">
+              Creator Company: {creatorCompany?.name}
+            </div>
+            <div className="details-info-item">
+              Performer Company:
+              {performerCompany?.name == null ? "N/A" : performerCompany?.name}
+            </div>
+            <div className="details-info-item">
+              Platform:
+              {platform?.platformName == null ? "N/A" : platform?.platformName}
+            </div>
             <div className="details-info-item">
               Budget: {spaceMission?.budget}
             </div>
@@ -103,6 +123,7 @@ export default function SpaceMissionDetails() {
         <SubmitBid
           fromCompanyId={Number(localStorage.getItem("userId"))}
           toCompanyId={spaceMission?.creatorId}
+          missionId={Number(id)}
           onClose={handleSubmitBidClick}
         />
       )}

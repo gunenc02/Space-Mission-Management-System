@@ -31,6 +31,7 @@ export interface CreateMissionProps {
 export interface SubmitBidProps {
   fromCompanyId: number;
   toCompanyId: number | undefined;
+  missionId: number | undefined;
   onClose: () => void;
 }
 

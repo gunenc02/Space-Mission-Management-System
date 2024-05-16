@@ -52,7 +52,7 @@ export function offerJob(
 
 export function getCompanyProfile(
   id: number,
-  user: { token: string }
+  user: { token: string | null }
 ): Promise<any> {
   const sentUrl = `http://localhost:8080/company/profile/${id}`;
 
@@ -79,32 +79,32 @@ export function getCompanyProfile(
 }
 
 export function getPerformedSpaceMissionsOfCompany(
-    id:number,
-    user:{token:string}
-): Promise<any>{
-  const sentUrl = `http://localhost:8080/spaceMission/getAllMissionsByCompany/${id}`
+  id: number,
+  user: { token: string }
+): Promise<any> {
+  const sentUrl = `http://localhost:8080/spaceMission/getAllMissionsByCompany/${id}`;
 
   return fetch(sentUrl, {
-    method:'GET',
-    headers:{
-      "contentType": "application/json",
+    method: "GET",
+    headers: {
+      contentType: "application/json",
       authorization: `Bearer ${user.token}`,
     },
   })
-    .then((response)=>{
-      if(response.status === 200){
-        return response.json()
+    .then((response) => {
+      if (response.status === 200) {
+        return response.json();
       } else {
         throw new Error(
-            `Failed to fetch company profile: ${response.statusText}`
+          `Failed to fetch company profile: ${response.statusText}`
         );
       }
     })
-      .then((data) => {
-        return data;
-      })
-      .catch((err) =>{
-        console.log("Error")
-        throw(err)
-      });
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => {
+      console.log("Error");
+      throw err;
+    });
 }

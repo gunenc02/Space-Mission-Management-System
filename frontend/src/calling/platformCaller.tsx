@@ -26,7 +26,7 @@ export function getPlatforms(user: { token: string }): Promise<any[]> {
 
 export function getPlatformById(
   id: number,
-  user: { token: string }
+  user: { token: string | null }
 ): Promise<any> {
   const sentUrl = `http://localhost:8080/platform/${id}`;
 
