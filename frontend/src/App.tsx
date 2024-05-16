@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import LoginPage from "./pages/commonPages/LoginPage/LoginPage.tsx";
 import RegisterPage from "./pages/commonPages/RegisterPage/RegisterPage.tsx";
@@ -7,7 +7,7 @@ import SpaceMissions from "./app/pages/SpaceMissions";
 import Astronauts from "./app/pages/Astronauts";
 import Agencies from "./app/pages/Agencies";
 import Companies from "./app/pages/Companies";
-import Platform from "./app/pages/Platform";
+import Platform from "./app/pages/Platforms";
 import AstronautProfile from "./app/profiles/AstronautProfile";
 import CompanyProfile from "./app/profiles/CompanyProfile.tsx";
 import ExpertProfile from "./app/profiles/ExpertProfile.tsx";
@@ -21,7 +21,7 @@ function App() {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<SpaceMissions />} />
+          <Route path="/" element={<Navigate to={"/login"} replace />} />
           <Route path="/space-missions" element={<SpaceMissions />} />
           <Route path="/astronauts" element={<Astronauts />} />
           <Route path="/companies" element={<Companies />} />
@@ -32,9 +32,9 @@ function App() {
           <Route path="/agency/:id" element={<AgencyProfile />}></Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/bid/receivedList/:id" element={<ReceivedBids />} />
           <Route path="/test" element={<Login />} />
-          <Route path="/bid/offeredList/:id" element={<OfferedBids />} />
+          <Route path="/received-bids" element={<ReceivedBids />} />
+          <Route path="/offered-bids" element={<OfferedBids />} />
           <Route path="/expert/:id" element={<ExpertProfile />} />
         </Routes>
       </BrowserRouter>

@@ -3,6 +3,7 @@
   min-height: 100vh;
   height: fit-content;
   background-image: linear-gradient(to right, #b6fbff, #83a4d4);
+  overflow-y: scroll;
 }
 
 .smm-list-container {
@@ -20,7 +21,7 @@
   margin: 10px;
   display: flex;
   flex-direction: row;
-  border: 2px solid #83a4d4;
+  border: 2px solid #000000;
   border-radius: 25px;
 }
 
@@ -39,6 +40,7 @@
   line-height: 1.2;
   margin-top: 20px;
   line-height: 1.5;
+  color: black;
 }
 
 .top-button {

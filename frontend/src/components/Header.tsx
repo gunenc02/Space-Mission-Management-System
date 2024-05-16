@@ -18,11 +18,25 @@ export default function Header() {
 
           {isDropdownOpen && (
             <div className="header-profile-dropdown">
-              <Link to="/myprofile" className="header-profile-dropdown-link">
-                View Profile
+              <Link
+                to={
+                  "/" +
+                  localStorage.getItem("userRole")?.toLowerCase() +
+                  "/" +
+                  localStorage.getItem("userId")
+                }
+                className="header-profile-dropdown-link"
+              >
+                Profile
               </Link>
-              <Link to="/bid" className="header-profile-dropdown-link">
-                Bids
+              <Link
+                to="/received-bids"
+                className="header-profile-dropdown-link"
+              >
+                Received Bids
+              </Link>
+              <Link to="/offered-bids" className="header-profile-dropdown-link">
+                Offered Bids
               </Link>
               <Link to="/settings" className="header-profile-dropdown-link">
                 Settings

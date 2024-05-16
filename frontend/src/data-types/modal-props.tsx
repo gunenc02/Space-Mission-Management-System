@@ -38,6 +38,11 @@ export interface SubmitBidErrorProps {
   onClose: () => void;
 }
 
+export interface AddPlatformProps {
+  companyId: number;
+  onClose: () => void;
+}
+
 export interface FilterProps {
   onClose: () => void;
   onFilter: (filters: FilterValues) => void;

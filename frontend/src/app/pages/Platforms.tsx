@@ -6,11 +6,13 @@ import { getPlatforms } from "../../calling/platformCaller";
 import { Link } from "react-router-dom";
 import PlatformsFilter from "../filters/PlatformsFilter";
 import { FilterValues } from "../../data-types/modal-props";
+import AddPlatform from "../modals/AddPlatform";
 
 export default function Platforms() {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [filteredPlatforms, setFilteredPlatforms] = useState<Platform[]>([]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isAddPlatformOpen, setIsAddPlatformOpen] = useState(false);
 
   useEffect(() => {
     getPlatforms({ token: "" }).then((data) => {
@@ -62,7 +64,10 @@ export default function Platforms() {
               </svg>
               Filter
             </button>
-            <button className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition">
+            <button
+              className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition"
+              onClick={() => setIsAddPlatformOpen(true)}
+            >
               <svg
                 className="w-5 h-5 mr-2"
                 fill="none"
@@ -96,7 +101,9 @@ export default function Platforms() {
                 />
               </div>
               <div className="p-4 text-center md:text-left md:flex-1">
-                <p className="text-xl font-bold mb-2">{platform.platformName}</p>
+                <p className="text-xl font-bold mb-2">
+                  {platform.platformName}
+                </p>
                 <p>Production Year: {platform.productionYear}</p>
                 <p>Cost per Launch: {platform.costPerLaunch}</p>
               </div>
@@ -108,6 +115,12 @@ export default function Platforms() {
         <PlatformsFilter
           onClose={() => setIsFilterModalOpen(false)}
           onFilter={handleFilter}
+        />
+      )}
+      {isAddPlatformOpen && (
+        <AddPlatform
+          onClose={() => setIsAddPlatformOpen(false)}
+          companyId={Number(localStorage.getItem("userId"))}
         />
       )}
     </div>

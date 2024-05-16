@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { CreateMissionProps } from "../../data-types/modal-props";
+import { AddPlatformProps } from "../../data-types/modal-props";
 import "../../styles/Modal.css";
 
-export default function CreateSpaceMission(props: CreateMissionProps) {
+export default function AddPlatform(props: AddPlatformProps) {
   const [formData, setFormData] = useState({
-    missionName: "",
-    budget: "",
-    objective: "",
+    platformName: "",
+    productionYear: null,
+    costPerLaunch: null,
     image: "",
   });
 
@@ -33,16 +33,16 @@ export default function CreateSpaceMission(props: CreateMissionProps) {
       }));
     }
   };
+
   const createHandler = function () {
-    const postUrl = `http://localhost:8080/spaceMission/create`;
+    const postUrl = `http://localhost:8080/platform/create`;
 
     //!!! CHECK HERE WHEN DEBUGGING MIGHT BE PROBLEMATIC REQUEST BODY !!!
     const requestBody = {
-      missionName: formData.missionName,
-      budget: formData.budget,
-      objective: formData.objective,
+      platformName: formData.platformName,
+      productionYear: formData.productionYear,
+      costPerLaunch: formData.costPerLaunch,
       image: formData.image,
-      creatorId: props.companyId,
     };
 
     fetch(postUrl, {
@@ -70,47 +70,48 @@ export default function CreateSpaceMission(props: CreateMissionProps) {
   return (
     <div className="modal-overlay">
       <div className="modal-outer">
-        <p className="modal-title">Create Space Mission</p>
+        <p className="modal-title">Add Platform</p>
 
         <div className="modal-input-container">
-          <label className="modal-label" htmlFor="missionName">
-            Mission Name
+          <label className="modal-label" htmlFor="platformName">
+            Platform Name
           </label>
 
           <input
             className="modal-input"
-            value={formData.missionName}
+            value={formData.platformName}
             onChange={updateForm}
             type="text"
-            id="missionName"
+            id="platformName"
           ></input>
         </div>
 
         <div className="modal-input-container">
-          <label className="modal-label" htmlFor="budget">
-            Budget
+          <label className="modal-label" htmlFor="productionYear">
+            Production Year
           </label>
 
           <input
             className="modal-input"
-            value={formData.budget}
+            value={formData.productionYear}
             onChange={updateForm}
             type="number"
-            id="budget"
+            id="productionYear"
           ></input>
         </div>
 
         <div className="modal-input-container">
-          <label className="modal-label" htmlFor="objective">
-            Mission Objective
+          <label className="modal-label" htmlFor="costPerLaunch">
+            Cost per Launch
           </label>
 
-          <textarea
-            className="modal-text-area"
-            id="objective"
-            name="objective"
+          <input
+            className="modal-input"
+            value={formData.costPerLaunch}
             onChange={updateForm}
-          ></textarea>
+            type="number"
+            id="costPerLaunch"
+          ></input>
         </div>
 
         <div className="modal-input-container">
@@ -142,7 +143,7 @@ export default function CreateSpaceMission(props: CreateMissionProps) {
             style={{ backgroundColor: "green", color: "white" }}
             className="modal-button"
           >
-            Create
+            Add
           </button>
         </div>
       </div>

@@ -39,6 +39,7 @@
   font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 .modal-label {
@@ -48,7 +49,25 @@
   margin-bottom: 5px;
 }
 
+.modal-input-container {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 .modal-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.modal-text-area {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
