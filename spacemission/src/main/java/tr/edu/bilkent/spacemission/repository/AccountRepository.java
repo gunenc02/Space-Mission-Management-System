@@ -20,7 +20,7 @@ public class AccountRepository {
         this.connection = dataSource.getConnection();
     }
     public void saveAdmin(AdminRegisterDto ardto) {
-        try{
+        try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
@@ -32,19 +32,19 @@ public class AccountRepository {
             if (rs.next()) {
                 long userId = rs.getLong(1);
 
-                // Now insert into the astronaut table
+                // Now insert into the admin table
                 PreparedStatement psAdmin = connection.prepareStatement(
                         "INSERT INTO admin (admin_id, admin_name) VALUES (?, ?)");
                 psAdmin.setLong(1, userId);
                 psAdmin.setString(2, ardto.getUsername());
                 psAdmin.executeUpdate();
             }
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
     }
     public void saveAgency(AgencyRegisterDto ardto) {
-        try{
+        try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
@@ -56,22 +56,21 @@ public class AccountRepository {
             if (rs.next()) {
                 long userId = rs.getLong(1);
 
-                // Now insert into the astronaut table
+                // Now insert into the agency table
                 PreparedStatement psAgency = connection.prepareStatement(
-                        "");
+                        "INSERT INTO agency (agency_id, agency_name) VALUES (?, ?)");
                 psAgency.setLong(1, userId);
                 psAgency.setString(2, ardto.getUsername());
                 psAgency.executeUpdate();
             }
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-
     }
 
     public void saveAstronaut(AstronautRegisterDto ardto) {
-        try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password) VALUES (?,?,?);",
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
             ps.setString(2, ardto.getPassword());
@@ -83,23 +82,22 @@ public class AccountRepository {
                 long userId = rs.getLong(1);
 
                 // Now insert into the astronaut table
-                PreparedStatement psCompany = connection.prepareStatement(
-                        "INSERT INTO astronaut (astronaut_id, astronaut_name, astronaut_agency_id, country, date_of_birth) VALUES (?, ?, ?, ?, ?);");
-                psCompany.setLong(1, userId);
-                psCompany.setString(2, ardto.getName());
-                psCompany.setLong(3, ardto.getAgencyId());
-                psCompany.setString(4, ardto.getCountry());
-                psCompany.setDate(5, ardto.getDateOfBirth());
-                psCompany.executeUpdate();
+                PreparedStatement psAstronaut = connection.prepareStatement(
+                        "INSERT INTO astronaut (astronaut_id, astronaut_name, ?, country, date_of_birth) VALUES (?, ?, ?, ?, ?);");
+                psAstronaut.setLong(1, userId);
+                psAstronaut.setString(2, ardto.getName());
+                psAstronaut.setLong(3, ardto.getAgencyId());
+                psAstronaut.setString(4, ardto.getCountry());
+                psAstronaut.setDate(5, ardto.getDateOfBirth());
+                psAstronaut.executeUpdate();
             }
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-
     }
 
     public void saveCompany(CompanyRegisterDto crdto) {
-        try{
+        try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, crdto.getEmail());
@@ -111,20 +109,18 @@ public class AccountRepository {
             if (rs.next()) {
                 long userId = rs.getLong(1);
 
-                // Now insert into the astronaut table
+                // Now insert into the company table
                 PreparedStatement psCompany = connection.prepareStatement(
-                        "INSERT INTO company (company_id, company_name, company_agency_id, money, country) VALUES (?, ?, ?, ?, ?);");
+                        "INSERT INTO company (company_id, company_name, company_logo, worker_count, country, money, is_approved) VALUES (?, ?, NULL, 0, ?, ?, FALSE);");
                 psCompany.setLong(1, userId);
                 psCompany.setString(2, crdto.getUsername());
-                psCompany.setLong(3, crdto.getAgencyId());
+                psCompany.setString(3, crdto.getCountry());
                 psCompany.setDouble(4, crdto.getMoney());
-                psCompany.setString(5, crdto.getCountry());
                 psCompany.executeUpdate();
             }
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-
     }
 
     public void approveAgency(long agencyId) {

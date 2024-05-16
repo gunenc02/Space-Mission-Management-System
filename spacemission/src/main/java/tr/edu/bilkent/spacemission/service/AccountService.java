@@ -1,4 +1,6 @@
 package tr.edu.bilkent.spacemission.service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import jakarta.servlet.http.Cookie;
 import org.springframework.stereotype.Service;
@@ -14,18 +16,22 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
+    @Transactional
     public void registerAdmin(AdminRegisterDto ardto) {
         accountRepository.saveAdmin(ardto);
     }
 
+    @Transactional
     public void registerAgency(AgencyRegisterDto ardto){
         accountRepository.saveAgency(ardto);
     }
 
+    @Transactional
     public void registerAstronaut(AstronautRegisterDto ardto) {
         accountRepository.saveAstronaut(ardto);
     }
 
+    @Transactional
     public void registerCompany(CompanyRegisterDto crdto) {
         accountRepository.saveCompany(crdto);
     }
