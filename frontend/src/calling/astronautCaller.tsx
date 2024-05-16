@@ -1,6 +1,6 @@
 export function getAstronautProfile(
   id: number,
-  user: { token: string }
+  user: { token: string | null }
 ): Promise<any> {
   const sentUrl = `http://localhost:8080/astronaut/profile/${id}`;
 
