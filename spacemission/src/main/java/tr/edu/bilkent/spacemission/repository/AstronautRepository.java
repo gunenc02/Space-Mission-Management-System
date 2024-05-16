@@ -152,43 +152,41 @@ public class AstronautRepository {
      * @param id of the astronaut
      * @return list of all missions the astronaut is associated with including ongoing and completed missions
      */
-    public List<SpaceMissionDto> getMissions(long id){
-        ArrayList<SpaceMissionDto> missions = new ArrayList<>();
+     public List<SpaceMissionDto> getMissions(long id){
+         ArrayList<SpaceMissionDto> missions = new ArrayList<>();
 
-        String query = "WITH astronaut_missions(mission_id) " +
-                        "AS (SELECT mission_id FROM mission_astronaut_recordings WHERE astronaut_id = ?) " +
-                        "SELECT * FROM space_mission " +
-                        "WHERE mission_id IN astronaut_missions " +
-                        "ORDER BY performed_status ASC, DATE DESC;";
-        try {
-            PreparedStatement ps = connection.prepareStatement(query);
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
+         String query = "SELECT sm.* " +
+                 "FROM space_mission sm " +
+                 "JOIN mission_astronaut_recordings mar ON sm.mission_id = mar.mission_id " +
+                 "WHERE mar.astronaut_id = ? " +
+                 "ORDER BY sm.perform_status ASC, sm.create_date DESC;";
+         try {
+             PreparedStatement ps = connection.prepareStatement(query);
+             ps.setLong(1, id);
+             ResultSet rs = ps.executeQuery();
 
+             while (rs.next()) {
+                 SpaceMissionDto spaceMission = new SpaceMissionDto();
 
-            while(rs.next()){
-                SpaceMissionDto spaceMission = new SpaceMissionDto();
+                 spaceMission.setId(rs.getLong("mission_id"));
+                 spaceMission.setMissionName(rs.getString("mission_name"));
+                 spaceMission.setImage(rs.getBytes("mission_image"));
+                 spaceMission.setObjective(rs.getString("objective"));
+                 spaceMission.setBudget(rs.getDouble("budget"));
+                 spaceMission.setCreateDate(rs.getDate("create_date"));
+                 spaceMission.setPerformDate(rs.getDate("perform_date"));
+                 spaceMission.setPlatformId(rs.getInt("platform_id"));
+                 spaceMission.setCreatorId(rs.getInt("creator_id"));
+                 spaceMission.setPerformerId(rs.getInt("performer_id"));
+                 spaceMission.setPerformStatus(rs.getString("perform_status"));
 
-                spaceMission.setId(rs.getLong("mission_id"));
-                spaceMission.setMissionName(rs.getString("mission_name"));
-                spaceMission.setImage(rs.getBytes("mission_image"));
-                spaceMission.setObjective(rs.getString("objective"));
-                spaceMission.setBudget(rs.getDouble("budget"));
-                spaceMission.setCreateDate(rs.getDate("create_date"));
-                spaceMission.setPerformDate(rs.getDate("perform_date"));
-                spaceMission.setPlatformId(rs.getInt("platform_id"));
-                spaceMission.setCreatorId(rs.getInt("creator_id"));
-                spaceMission.setPerformerId(rs.getInt("performer_id"));
-                spaceMission.setPerformStatus(rs.getString("perform_status"));
-
-                missions.add(spaceMission);
-            }
-        }
-        catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-        return missions;
-    }
+                 missions.add(spaceMission);
+             }
+         } catch (SQLException e) {
+             System.out.println(e.getMessage());
+         }
+         return missions;
+     }
 
     /**
      *
@@ -232,17 +230,17 @@ public class AstronautRepository {
      * This method returns the list of astronauts that are associated with the given mission
      * @param missionId Id of the mission
      */
-    public List<Astronaut> getAstronautsByMissionId (long missionId) {
+    public List<Astronaut> getAstronautsByMissionId(long missionId) {
         ArrayList<Astronaut> astronauts = new ArrayList<>();
-        try {
-            PreparedStatement ps = connection.prepareStatement(
-                    "SELECT ast.* " +
-                            "FROM astronaut ast " +
-                            "JOIN mission_astronaut_recordings mar ON ast.astronaut_id = mar.astronaut_id " +
-                            "WHERE mar.mission_id = ?"
-            );
+        String query = "SELECT ast.* " +
+                "FROM astronaut ast " +
+                "JOIN mission_astronaut_recordings mar ON ast.astronaut_id = mar.astronaut_id " +
+                "WHERE mar.mission_id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setLong(1, missionId);
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 Astronaut astronaut = new Astronaut();
                 astronaut.setId(rs.getLong("astronaut_id"));
@@ -254,8 +252,7 @@ public class AstronautRepository {
                 astronaut.setSalary(rs.getDouble("salary"));
                 astronauts.add(astronaut);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return astronauts;
