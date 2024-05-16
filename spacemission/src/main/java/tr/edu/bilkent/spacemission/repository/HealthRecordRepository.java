@@ -42,7 +42,7 @@ public class HealthRecordRepository {
                 healthRecord.setWeight(rs.getDouble("weight"));
                 healthRecord.setHeight(rs.getDouble("height"));
                 healthRecord.setHeartRate(rs.getDouble("heart_rate"));
-                healthRecord.setBloodPressure(rs.getDouble("blood_pressure"));
+                healthRecord.setBloodPressure(rs.getString("blood_pressure"));
                 healthRecord.setVaccinations(rs.getString("vaccinations").split(","));
                 healthRecord.setNotes(rs.getString("notes"));
             }
@@ -67,7 +67,7 @@ public class HealthRecordRepository {
             ps.setDouble(5, healthRecord.getWeight());
             ps.setDouble(6, healthRecord.getHeight());
             ps.setDouble(7, healthRecord.getHeartRate());
-            ps.setDouble(8, healthRecord.getBloodPressure());
+            ps.setString(8, healthRecord.getBloodPressure());
             ps.setString(9, String.join(",", healthRecord.getVaccinations()));
             ps.setString(10, healthRecord.getNotes());
             ps.executeUpdate();
