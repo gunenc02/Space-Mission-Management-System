@@ -60,7 +60,7 @@ public class AccountRepository {
                 PreparedStatement psAgency = connection.prepareStatement(
                         "INSERT INTO agency (agency_id, agency_name) VALUES (?, ?)");
                 psAgency.setLong(1, userId);
-                psAgency.setString(2, ardto.getUsername());
+                psAgency.setString(2, ardto.getAgencyName());
                 psAgency.executeUpdate();
             }
         } catch (SQLException ex) {
@@ -70,6 +70,7 @@ public class AccountRepository {
 
     public void saveAstronaut(AstronautRegisterDto ardto) {
         try {
+            // Insert into the user table
             PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, ardto.getEmail());
@@ -83,10 +84,10 @@ public class AccountRepository {
 
                 // Now insert into the astronaut table
                 PreparedStatement psAstronaut = connection.prepareStatement(
-                        "INSERT INTO astronaut (astronaut_id, astronaut_name, ?, country, date_of_birth) VALUES (?, ?, ?, ?, ?);");
+                        "INSERT INTO astronaut (astronaut_id, astronaut_name, astronaut_image, country, date_of_birth) VALUES (?, ?, ?, ?, ?);");
                 psAstronaut.setLong(1, userId);
                 psAstronaut.setString(2, ardto.getName());
-                psAstronaut.setLong(3, ardto.getAgencyId());
+                psAstronaut.setNull(3, java.sql.Types.BLOB); // Set astronaut_image to NULL
                 psAstronaut.setString(4, ardto.getCountry());
                 psAstronaut.setDate(5, ardto.getDateOfBirth());
                 psAstronaut.executeUpdate();
@@ -98,11 +99,12 @@ public class AccountRepository {
 
     public void saveCompany(CompanyRegisterDto crdto) {
         try {
+            // Insert into the user table
             PreparedStatement ps = connection.prepareStatement("INSERT INTO user(user_mail, user_password, user_role) VALUES (?,?,?);",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, crdto.getEmail());
             ps.setString(2, crdto.getPassword());
-            ps.setString(3,"COMPANY");
+            ps.setString(3, "COMPANY");
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
@@ -113,7 +115,7 @@ public class AccountRepository {
                 PreparedStatement psCompany = connection.prepareStatement(
                         "INSERT INTO company (company_id, company_name, company_logo, worker_count, country, money, is_approved) VALUES (?, ?, NULL, 0, ?, ?, FALSE);");
                 psCompany.setLong(1, userId);
-                psCompany.setString(2, crdto.getUsername());
+                psCompany.setString(2, crdto.getCompanyName());
                 psCompany.setString(3, crdto.getCountry());
                 psCompany.setDouble(4, crdto.getMoney());
                 psCompany.executeUpdate();

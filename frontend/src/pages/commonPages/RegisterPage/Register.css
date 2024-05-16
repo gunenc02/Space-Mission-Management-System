@@ -1,128 +1,122 @@
-/* ... (existing CSS styles) ... */
+/* General Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f7f6;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+.title-container {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.main-header {
+  font-size: 2.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 100%;
+  max-width: 800px;
+}
 
 .registration-container {
-  box-shadow: 0 5px 15px rgba(6, 44, 67, 0.5);
-  padding: 40px;
-  border-radius: 15px;
-  background: linear-gradient(to bottom, #054569, #5591a9);
-  display: block; /* Remove flexbox */
-  width: 100%; /* Maintain full width */
-  max-width: 800px; /* Limit maximum width for responsiveness */
+  width: 100%;
 }
 
 .user-type-tabs {
-  display: flex; /* Enable flexbox for horizontal arrangement */
-  justify-content: space-around; /* Distribute space evenly between tabs */
-  margin-bottom: 20px; /* Add spacing below the tabs */
-  width: 100%; /* Maintain full width for tabs */
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 .user-type-tabs li {
-  display: flex; /* Enable flexbox for centering content */
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px; /* Add padding for spacing */
-  border: 1px solid #ced7e0; /* Add a subtle border */
-  border-radius: 6px; /* Apply rounded corners */
-  cursor: pointer; /* Indicate clickable elements */
-  transition: background-color 0.3s ease; /* Smooth transition for background color change */
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .user-type-tabs li:hover {
-  background-color: #054569; /* Change background color on hover */
+  background-color: #f1f1f1;
 }
 
 .user-type-tabs li.active {
-  background-color: #062c43; /* Highlight the active tab */
-  color: #ced7e0; /* Change text color for contrast */
+  background-color: #007bff;
+  color: #fff;
 }
 
-.registration-form {
-  display: grid; /* Introduce grid layout */
-  grid-template-columns: 1fr 1fr; /* Define two equal-width columns */
-  width: 100%; /* Maintain full width for the form */
-  justify-content: center; /* Center the button horizontally */
-}
-
-.left-form {
-  grid-column: 1; /* Place elements in the first column */
-  margin-right: 100px;
-}
-
-.right-form {
-  grid-column: 2; /* Place elements in the second column */
-  margin-left: 100px; /* Add spacing between columns */
-}
-
-.input-group {
-  display: flex; /* Enable flexbox for horizontal arrangement */
-  flex-direction: column; /* Stack labels and inputs vertically */
-  margin-bottom: 15px; /* Add spacing between groups */
-}
-
-.registration-form label {
-  margin-bottom: 5px; /* Add spacing between label and input */
-  font-weight: bold; /* Emphasize labels */
-}
-
-.registration-form input {
-  height: 35px; /* Set input height */
-  padding: 5px 10px; /* Add padding for input content */
-  border: 1px solid #ced7e0; /* Add a subtle border */
-  border-radius: 4px; /* Apply rounded corners for inputs */
-  font-size: 14px; /* Adjust font size as needed */
-}
-
-.registration-form button {
-  width: 100%; /* Make the button full width */
-  height: 40px; /* Set button height */
-  padding: 10px 20px; /* Add padding for button content */
-  background-color: #062c43; /* Set button background color */
-  color: #ced7e0; /* Set button text color */
-  border: none; /* Remove default button border */
-  border-radius: 6px; /* Apply rounded corners for the button */
-  cursor: pointer; /* Indicate clickable element */
-  transition: background-color 0.3s ease; /* Smooth transition for background color change */
-  margin-top: 20px; /* Add spacing above the button */
-}
-
-.registration-form button:hover {
-  background-color: #054569; /* Change button background color on hover */
-}
-
-.form-fields-one {
-  justify-content: left;
-  display: flex;
-  background-color: #1a1a1a;
-}
-
-.form-fields-two {
-  justify-content: right;
-  display: flex;
-}
-
-.left-form,
-.right-form {
-  /* Existing styles... */
-  display: flex; /* Added flexbox for vertical arrangement */
-  flex-direction: column; /* Stack elements vertically */
-  align-items: flex-start; /* Align content to the left within each column */
+.form-container {
+  width: 100%;
 }
 
 .form-fields {
-  display: flex; /* Added flexbox for horizontal arrangement */
-  flex-wrap: wrap; /* Wrap content to multiple lines if necessary */
-
-  justify-content: center;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-.registration-form input[type="file"] {
-  background-color: #f8f9fa; /* Light background for input */
-  border-color: #ced7e0; /* Consistent border color */
-  color: #333; /* Text color for the file path */
+.left-form, .right-form {
+  flex: 1;
+  padding: 10px;
 }
 
-/* Adjustments for file input hover state */
-.registration-form input[type="file"]:hover {
-  border-color: #054569; /* Darken border on hover */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.input-group input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.input-group input[type="file"] {
+  padding: 3px;
+}
+
+.login-submit {
+  width: 100%;
+  padding: 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease;
+}
+
+.login-submit:hover {
+  background-color: #0056b3;
 }

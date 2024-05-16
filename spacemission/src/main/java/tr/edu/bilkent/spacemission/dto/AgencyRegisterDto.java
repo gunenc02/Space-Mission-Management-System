@@ -8,11 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AgencyRegisterDto {
-    String username;
+    String agencyName;
     String email;
-
     String password;
-    String country;
-
-
 }

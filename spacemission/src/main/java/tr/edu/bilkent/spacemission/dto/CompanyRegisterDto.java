@@ -11,7 +11,7 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyRegisterDto {
-    String username;
+    String companyName;
     String email;
     String password;
     double money;
