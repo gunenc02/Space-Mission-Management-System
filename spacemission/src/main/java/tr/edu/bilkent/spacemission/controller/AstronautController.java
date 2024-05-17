@@ -98,4 +98,14 @@ public class AstronautController {
         astronautDto.setSalary(astronaut.getSalary());
         return astronautDto;
     }
+
+    @GetMapping("/filter")
+    public List<AstronautDto> filterAstronauts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) Boolean onDuty) {
+        return astronautService.filterAstronauts(name, country, onDuty);
+    }
+
+
 }

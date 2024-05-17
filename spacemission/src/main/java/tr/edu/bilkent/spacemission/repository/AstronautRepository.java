@@ -257,4 +257,34 @@ public class AstronautRepository {
         }
         return astronauts;
     }
+
+    public List<AstronautDto> filterAstronauts(String name, String country, Boolean onDuty) {
+        String query = "SELECT * FROM astronaut WHERE 1=1";
+        List<Object> params = new ArrayList<>();
+
+        if (name != null) {
+            query += " AND astronaut_name LIKE ?";
+            params.add("%" + name + "%");
+        }
+        if (country != null) {
+            query += " AND country LIKE ?";
+            params.add("%" + country + "%");
+        }
+        if (onDuty != null) {
+            query += " AND on_duty = ?";
+            params.add(onDuty);
+        }
+
+        return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
+            AstronautDto astronaut = new AstronautDto();
+            astronaut.setName(rs.getString("astronaut_name"));
+            astronaut.setCountry(rs.getString("country"));
+            astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
+            astronaut.setOnDuty(rs.getBoolean("on_duty"));
+            astronaut.setImage(rs.getBytes("astronaut_image"));
+            return astronaut;
+        });
+    }
+
+
 }

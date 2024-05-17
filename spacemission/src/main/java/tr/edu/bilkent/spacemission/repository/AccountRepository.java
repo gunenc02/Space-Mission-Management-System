@@ -320,7 +320,7 @@ public class AccountRepository {
                     agency.setUserId(tmp.getId());
                     agency.setUserRole(tmp.getUserRole());
                     agency.setUserMail(tmp.getMail());
-                    agency.setName(rs2.getString("admin_name"));
+                    agency.setName(rs2.getString("agency_name"));
                     agency.setLogo(rs2.getBytes("agency_logo"));
                     agency.setApproved(rs2.getBoolean("is_approved"));
                 }
@@ -412,4 +412,7 @@ public class AccountRepository {
 
         return null;
     }
+
+
+
 }

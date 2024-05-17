@@ -49,6 +49,10 @@ public class AstronautService {
         return astronautRepository.getApprovedAstronauts(agencyId);
     }
 
+    public List<AstronautDto> filterAstronauts(String name, String country, Boolean onDuty) {
+        return astronautRepository.filterAstronauts(name, country, onDuty);
+    }
+
     public List<SpaceMissionDto> getMissions(long id){
         return astronautRepository.getMissions(id);
     }
