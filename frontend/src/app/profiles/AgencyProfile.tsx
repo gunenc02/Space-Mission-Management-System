@@ -73,7 +73,7 @@ export default function AgencyProfile() {
 
         <div className="profile-container">
           <div className="button-bar">
-            {localStorage.getItem("userRole") === "ADMIN" && (
+            {localStorage.getItem("userRole") === "ADMIN" &&(
                 <button className="top-button" onClick={handleApproveAgencyClick}>
                   Approve Agency
                 </button>

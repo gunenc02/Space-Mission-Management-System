@@ -21,26 +21,20 @@ export function getBid(id: number, user: { token: string }): Promise<any> {
     });
 }
 
-export function getReceivedBids(
-  userId: number,
-  user: { token: string }
-): Promise<any[]> {
-  const sentUrl = `http://localhost:8080/bid/receivedList/${userId}`;
+export function getReceivedBids(companyId: number): Promise<any[]> {
+  const sentUrl = `http://localhost:8080/bid/receivedList/${companyId}`;
 
   return fetch(sentUrl, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${user.token}`,
     },
   })
     .then((response) => {
-      if (response.status === 200) {
+      if (response.ok) {
         return response.json();
       } else {
-        throw new Error(
-          `Failed to fetch received bids: ${response.statusText}`
-        );
+        throw new Error(`Failed to fetch bids: ${response.statusText}`);
       }
     })
     .catch((err) => {
