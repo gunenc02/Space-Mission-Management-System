@@ -18,7 +18,10 @@ export default function Platforms() {
     getPlatforms({ token: "" }).then((data) => {
       setPlatforms(data);
       setFilteredPlatforms(data);
-      console.log(data);
+      console.log("DEBUG Platforms.tsx the data is " + data[0].image); 
+      setTimeout( () => {
+        console.log("And the first platform's image holds " + platforms[2].platformName);
+      }, 1000);
     });
   }, []);
 
@@ -36,6 +39,7 @@ export default function Platforms() {
     setIsFilterModalOpen(false);
   };
 
+  
   return (
       <div className="outer flex flex-col items-center bg-blue-100 min-h-screen">
         <Header className="sticky top-0 z-50" />

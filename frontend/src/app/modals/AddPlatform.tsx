@@ -21,12 +21,24 @@ export default function AddPlatform(props: AddPlatformProps) {
     const { id, value } = e.target;
     console.log(id + "," + value);
     if (id === "image") {
-      const imgValue = e.target.files[0].toString(); //Might be problematic better check it out
+      //const imgValue = e.target.files[0].toString(); 
+      const imgFile = e.target.files[0];
+
+      let base64String = "";
+      const fileReader = new FileReader();
+      if(imgFile !== null){
+        
+        fileReader.onloadend = () => {
+          base64String = fileReader.result.split(',')[1]; // Remove the data URL prefix
+        }
+      }
+      fileReader.readAsDataURL(imgFile);
       setFormData((prevState) => ({
         ...prevState, //preserve the unchanged attributes of prevState
-        [id]: imgValue,
+        [id]: base64String,
       }));
-    } else {
+    } 
+    else {
       setFormData((prevState) => ({
         ...prevState, //preserve the unchanged attributes of prevState
         [id]: value,
@@ -121,7 +133,6 @@ export default function AddPlatform(props: AddPlatformProps) {
 
           <input
             type="file"
-            value={formData.image}
             onChange={updateForm}
             id="image"
             name="image"
