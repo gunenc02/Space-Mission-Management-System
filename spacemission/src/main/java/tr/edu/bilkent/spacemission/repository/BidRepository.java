@@ -141,6 +141,9 @@ public class BidRepository {
         // Get the bid
         Bid bid = getBid(id);
 
+        System.out.println("Bid details: " + bid);
+
+
         // Insert the transaction
         String transactionQuery = "INSERT INTO transaction (fromcompany_id, tocompany_id, transaction_amount) VALUES (?, ?, ?);";
         jdbcTemplate.update(transactionQuery, bid.getReceiverId(), bid.getOffererId(), bid.getPrice());

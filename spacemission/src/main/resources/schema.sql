@@ -116,13 +116,15 @@ CREATE TABLE IF NOT EXISTS mission_astronaut_recordings (
 ) ^;
 
 CREATE TABLE IF NOT EXISTS transaction (
-     transaction_id INT PRIMARY KEY,
+     transaction_id INT AUTO_INCREMENT PRIMARY KEY,
      fromcompany_id INT NOT NULL,
      tocompany_id INT NOT NULL,
      transaction_amount DOUBLE NOT NULL,
      FOREIGN KEY(fromcompany_id) REFERENCES company(company_id),
      FOREIGN KEY(tocompany_id) REFERENCES company(company_id)
 ) ^;
+
+
 
 CREATE TABLE IF NOT EXISTS agency_approve_astronaut (
      id INT AUTO_INCREMENT PRIMARY KEY,
