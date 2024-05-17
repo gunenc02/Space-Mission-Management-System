@@ -31,21 +31,22 @@ public class AgencyRepository {
     public Agency getAgencyProfile(long agencyId) {
         Agency agency = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT a.*, u.* FROM agency a JOIN " +
-                                                                    "user u ON a.agency_id = u.user_id WHERE agency_id = ? ");
+            PreparedStatement ps = connection.prepareStatement("SELECT a.*, u.user_mail FROM agency a JOIN " +
+                    "user u ON a.agency_id = u.user_id WHERE a.agency_id = ?");
             ps.setLong(1, agencyId);
 
             ResultSet rs = ps.executeQuery();
-            agency = new Agency();
             if (rs.next()) {
+                agency = new Agency();
                 agency.setId(rs.getLong("agency_id"));
-                agency.setMail(rs.getString("u.user_mail"));
+                agency.setMail(rs.getString("user_mail")); // Correct column alias usage
                 agency.setName(rs.getString("agency_name"));
                 agency.setLogo(rs.getBytes("agency_logo"));
                 agency.setApproved(rs.getBoolean("is_approved"));
             }
-        }
-        catch (SQLException e) {
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return agency;

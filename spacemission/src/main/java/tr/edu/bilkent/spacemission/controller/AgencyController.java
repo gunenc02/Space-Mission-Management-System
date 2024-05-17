@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/agency")
 @Lazy //Lazy annotation creates the controller only when first requested. This broke a cyclic bean dependency
-// I do not know where it came from
+// I do not know where it came from :D LOL
 public class AgencyController {
     private final AgencyService agencyService;
 
