@@ -6,6 +6,8 @@ import tr.edu.bilkent.spacemission.dto.ExpertRegisterDto;
 import tr.edu.bilkent.spacemission.dto.HealthRecordsInExpertPortfolio;
 import tr.edu.bilkent.spacemission.entity.Expert;
 import tr.edu.bilkent.spacemission.service.ExpertService;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -36,6 +38,16 @@ public class ExpertController {
     @GetMapping("/getHealthRecordsByExpertId/{expertId}")
     public List<HealthRecordsInExpertPortfolio> getHealthRecordsByExpertId(@PathVariable long expertId){
         return expertService.getExpertPortfolio(expertId);
+    }
+
+    @GetMapping("getByCompany/{companyId}")
+    public List<ExpertDto> getExpertsByCompany (@PathVariable long companyId) {
+        ArrayList<Expert> experts = expertService.getExpertsByCompany(companyId);
+        ArrayList<ExpertDto> expertDtos = new ArrayList<ExpertDto>();
+        for (Expert expert : experts) {
+            expertDtos.add(convertEntityToDto(expert));
+        }
+        return expertDtos;
     }
 
     private ExpertDto convertEntityToDto(Expert expert) {

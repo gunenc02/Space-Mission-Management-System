@@ -60,7 +60,6 @@ public class AstronautController {
         return astronautDtos;
     }
 
-
     @GetMapping("/getAllAstronautByAgency/{agencyId}")
     public List<AstronautDto> getApprovedAstronauts(@PathVariable long agencyId) {
         return astronautService.getApprovedAstronauts(agencyId);

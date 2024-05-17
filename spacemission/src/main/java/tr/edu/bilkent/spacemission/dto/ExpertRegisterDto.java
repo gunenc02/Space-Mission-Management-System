@@ -11,4 +11,5 @@ public class ExpertRegisterDto {
     private String name;
     private String mail;
     private String password;
+    private long companyId;
 }

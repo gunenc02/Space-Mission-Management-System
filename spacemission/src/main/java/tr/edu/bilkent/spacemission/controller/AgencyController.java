@@ -51,6 +51,7 @@ public class AgencyController {
         AgencyDto agencyDto = new AgencyDto();
         agencyDto.setUserId(agency.getId());
         //agencyDto.setPassword(agency.getPassword());
+        agencyDto.setUserMail(agency.getMail());
         agencyDto.setName(agency.getName());
         agencyDto.setLogo(agency.getLogo());
         agencyDto.setApproved(agency.isApproved());
