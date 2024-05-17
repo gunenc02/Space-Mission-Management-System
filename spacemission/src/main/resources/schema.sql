@@ -169,6 +169,16 @@ CREATE OR REPLACE VIEW platform_availability AS
 SELECT platform.platform_id, (SELECT COUNT(*) FROM space_mission WHERE platform_id = platform.platform_id)
 FROM platform ^;
 
+CREATE OR REPLACE VIEW company_astronaut_matching AS
+SELECT company_id, astronaut_id
+FROM company JOIN space_mission AS sm ON ((company.company_id = sm.creator_id OR company.company_id = sm.performer_id)
+    AND sm.perform_status = 'pending') JOIN mission_astronaut_recordings mar on (sm.mission_id = mar.mission_id ) ^;
+
+CREATE OR REPLACE VIEW company_astronaut_count AS
+SELECT company_id, COUNT(astronaut_id) AS astronaut_count
+FROM company JOIN space_mission AS sm ON ((company.company_id = sm.creator_id OR company.company_id = sm.performer_id)
+    AND sm.perform_status = 'pending') JOIN mission_astronaut_recordings mar on (sm.mission_id = mar.mission_id )
+GROUP BY company_id ^;
 
 DROP TRIGGER IF EXISTS release_astronaut ^;
 CREATE TRIGGER release_astronaut
