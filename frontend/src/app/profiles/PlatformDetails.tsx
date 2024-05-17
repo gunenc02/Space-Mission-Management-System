@@ -19,40 +19,88 @@ export default function PlatformDetails() {
   }, []);
 
   return (
-    <div className="outer">
-      <Header />
-      <Navbar />
-      <div className="details-outer">
-        <div className="details-top-div">
-          <div className="details-title">{platform?.platformName}</div>
-        </div>
-      </div>
-      <div className="details-column-container">
-        <div className="details-left-column">
-          <div className="details-info-box">
-            <div className="details-info-item">
-              {" "}
-              Platform Name: {platform?.platformName}
+      <div className="outer">
+        <Header />
+        <Navbar />
+        <div className="profile-container">
+          <div className="profile-header">
+            <div className="profile-image">
+              <img
+                  src={`data:image/jpeg;base64,${platform?.image}`}
+                  alt={`${platform?.platformName} Image`}
+                  style={{ width: "150px", height: "150px" }}
+              />
             </div>
-            <div className="details-info-item">
-              {" "}
-              Production Year: {platform?.productionYear}{" "}
+            <div className="profile-info">
+              <h1>{platform?.platformName}</h1>
             </div>
-            <div className="details-info-item">
-              {" "}
-              Cost per Launch: {platform?.costPerLaunch}
+          </div>
+
+          <div className="profile-details">
+            <div className="details-section scroll-container">
+              <div className="details-info-box">
+                <div className="details-info-item">Platform Name: {platform?.platformName}</div>
+                <div className="details-info-item">Production Year: {platform?.productionYear}</div>
+                <div className="details-info-item">Cost per Launch: {platform?.costPerLaunch}</div>
+              </div>
             </div>
-            <div className="details-info-item"></div>
           </div>
         </div>
-        <div className="details-right-column">
-          <img
-            className="details-image"
-            src={`data:image/jpeg;base64,${platform?.image}`}
-            alt="Platform Image"
-          />
-        </div>
+
+        <style>{`
+      .outer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .profile-container {
+        width: 100%;
+        max-width: 800px;
+        padding: 20px;
+        margin: auto;
+      }
+      .profile-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .profile-image img {
+        width: auto;
+        height: 150px;
+      }
+      .profile-info {
+        margin-left: 20px;
+      }
+      .profile-details {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .details-section {
+        flex: 1;
+        padding: 10px;
+        margin: 5px;
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        overflow-y: auto;
+        max-height: 400px;
+      }
+      .details-info-box {
+        margin-bottom: 10px;
+        background: white;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+      .details-info-item {
+        padding: 5px 0;
+      }
+      .scroll-container {
+        overflow-y: auto;
+        max-height: 300px;
+      }
+    `}</style>
       </div>
-    </div>
   );
+
 }
