@@ -108,3 +108,33 @@ export function getPerformedSpaceMissionsOfCompany(
       throw err;
     });
 }
+export function filterCompanies(filters: { country?: string; minBudget?: number; maxBudget?: number }): Promise<any[]> {
+  const query = new URLSearchParams(filters as any).toString();
+  const sentUrl = `http://localhost:8080/company/filterCompanies?${query}`;
+
+  console.log("Request URL:", sentUrl);
+
+  return fetch(sentUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      console.log("Response status:", response.status);
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`Failed to fetch companies: ${response.statusText}`);
+      }
+    })
+    .then((data) => {
+      console.log("Filtered Companies:", data);
+      return data;
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      throw err;
+    });
+}
+

@@ -59,4 +59,7 @@ export interface FilterValues {
   minSalary?: number;
   maxSalary?: number;
   onMission?: boolean;
+  minBudget?: number;
+  maxBudget?: number;
+  onDuty?: boolean;
 }

@@ -163,7 +163,7 @@ public class CompanyRepository {
         String query = "SELECT * FROM company WHERE 1=1";
 
         List<Object> params = new ArrayList<>();
-        if (country != null) {
+        if (country != null && !country.isEmpty()) {
             query += " AND country LIKE ?";
             params.add("%" + country + "%");
         }
@@ -176,6 +176,7 @@ public class CompanyRepository {
             params.add(maxBudget);
         }
 
+        System.out.println("Executing query: " + query);
         return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
             CompanyDto company = new CompanyDto();
             company.setName(rs.getString("company_name"));
