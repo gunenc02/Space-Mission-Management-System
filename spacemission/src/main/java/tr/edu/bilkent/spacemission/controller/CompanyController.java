@@ -44,6 +44,10 @@ public class CompanyController {
     public void fireAstronaut(@PathVariable long id, @PathVariable long astronautId){
         companyService.fireAstronaut(id, astronautId);
     }
+    @GetMapping("{id}/hasAstronaut/{astronautId}")
+    public boolean companyHasAstronaut(@PathVariable long id, @PathVariable long astronautId){
+        return companyService.companyHasAstronaut(id, astronautId);
+    }
 
     private Company convertDtoToEntity(CompanyDto companyDto) {
         Company company = new Company();

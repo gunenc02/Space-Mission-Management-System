@@ -44,4 +44,8 @@ public class CompanyService {
     public String getCompanyName(long companyId) {
         return companyRepository.getCompanyName(companyId);
     }
+
+    public boolean companyHasAstronaut(long id, long astronautId) {
+        return companyRepository.companyHasAstronaut(id, astronautId);
+    }
 }

@@ -158,4 +158,23 @@ public class CompanyRepository {
         }
         return "";
     }
+
+    public boolean companyHasAstronaut(long id, long astronautId) {
+        boolean found = false;
+        String query = "SELECT * FROM company_astronaut_matching WHERE company_id = ? AND astronaut_id = ?;";
+        try{
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, id);
+            ps.setLong(2, astronautId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                //entry found set the result to true
+                found = true;
+            }
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return found;
+    }
 }
