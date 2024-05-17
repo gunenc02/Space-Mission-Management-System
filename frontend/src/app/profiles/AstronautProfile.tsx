@@ -104,7 +104,7 @@ export default function AstronautProfile() {
           </button>
         )}
 
-        {localStorage.getItem("userRole") === "COMPANY" && ( // When you get astronaut from backend, add && userId === astronaut.companyId
+        {localStorage.getItem("userRole") === "COMPANY" && (
           <button className="top-button" onClick={handleFireAstronautClick}>
             Fire Astronaut
           </button>

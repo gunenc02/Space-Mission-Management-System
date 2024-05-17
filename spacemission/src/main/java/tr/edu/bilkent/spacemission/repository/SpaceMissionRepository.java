@@ -111,23 +111,18 @@ public class SpaceMissionRepository {
 
     public List<SpaceMissionsInPortfolioDto> getPortfolio(long companyId){
         ArrayList<SpaceMissionsInPortfolioDto> missions = new ArrayList<>();
-        try{
-            PreparedStatement ps = connection.prepareStatement(
-                    "SELECT space_mission.*," +
-                            "(SELECT company_name FROM  company WHERE company_id = space_mission.creator_id) AS creator_name " +
-                            "FROM space_mission WHERE performer_id = ?"
-            );
-            ps.setLong(1,companyId);
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+        try {
+            PreparedStatement ps2 = connection.prepareStatement("SELECT sm.* FROM space_mission sm, company c WHERE (c.company_id = sm.creator_id OR c.company_id = sm.performer_id) AND c.company_id = ?");
+            ps2.setLong(1, companyId);
+            ResultSet rs2 = ps2.executeQuery();
+            while(rs2.next()){
                 SpaceMissionsInPortfolioDto mission = new SpaceMissionsInPortfolioDto();
-                mission.setId(rs.getLong("mission_id"));
-                mission.setMissionName(rs.getString("mission_name"));
-                mission.setImage(rs.getBytes("mission_image"));
-                mission.setCompanyName(rs.getString("creator_name"));
-                mission.setStatus(rs.getString("perform_status"));
-                mission.setStartDate(rs.getDate("create_date"));
-                mission.setEndDate(rs.getDate("perform_date"));
+                mission.setId(rs2.getLong("mission_id"));
+                mission.setMissionName(rs2.getString("mission_name"));
+                mission.setImage(rs2.getBytes("mission_image"));
+                mission.setStatus(rs2.getString("perform_status"));
+                mission.setStartDate(rs2.getDate("create_date"));
+                mission.setEndDate(rs2.getDate("perform_date"));
                 missions.add(mission);
             }
         }

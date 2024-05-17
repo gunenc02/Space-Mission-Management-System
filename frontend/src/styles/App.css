@@ -3,7 +3,6 @@
   min-height: 100vh;
   height: fit-content;
   background-image: linear-gradient(to right, #b6fbff, #83a4d4);
-  overflow-y: scroll;
 }
 
 .smm-list-container {
@@ -12,6 +11,8 @@
   justify-content: center;
   align-items: center;
   padding: 10px;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
 }
 
 .smm-list-item {

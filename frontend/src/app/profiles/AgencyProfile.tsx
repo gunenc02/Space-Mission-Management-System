@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import Header from "../../components/Header.tsx";
 import Navbar from "../../components/Navbar.tsx";
-import { Agency, Astronaut, SpaceMissionForListing } from "../../data-types/entities.tsx";
+import {
+  Agency,
+  Astronaut,
+  SpaceMissionForListing,
+} from "../../data-types/entities.tsx";
 import { useParams } from "react-router-dom";
 import {
   getAgencyProfile,
@@ -12,19 +16,21 @@ import {
 export default function AgencyProfile() {
   const { id } = useParams<{ id?: string }>();
   const [agencyInfo, setAgencyInfo] = useState<Agency | null>(null);
-  const [spaceMissions, setSpaceMissions] = useState<SpaceMissionForListing[] | null>(null);
+  const [spaceMissions, setSpaceMissions] = useState<
+    SpaceMissionForListing[] | null
+  >(null);
   const [astronauts, setAstronauts] = useState<Astronaut[] | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!id) {
-      setError("Company ID is missing");
+      setError("Agency ID is missing");
       return;
     }
 
     const numericAgencyId = parseInt(id, 10);
     if (isNaN(numericAgencyId)) {
-      setError("Invalid Company ID");
+      setError("Invalid Agency ID");
       return;
     }
 
@@ -32,33 +38,61 @@ export default function AgencyProfile() {
     const user = { token };
 
     getAgencyProfile(numericAgencyId, user)
-        .then((data) => {
-          setAgencyInfo(data);
-          return getApprovedSpaceMissionOfAgency(numericAgencyId, user);
-        })
-        .then((missions) => {
-          const parsedMissions = missions.map((mission) => ({
-            ...mission,
-            startDate: new Date(mission.startDate),
-            endDate: new Date(mission.endDate),
-          }));
-          setSpaceMissions(parsedMissions);
+      .then((data) => {
+        setAgencyInfo(data);
+        console.log(data);
+        return getApprovedSpaceMissionOfAgency(numericAgencyId, user);
+      })
+      .then((missions) => {
+        const parsedMissions = missions.map((mission) => ({
+          ...mission,
+          startDate: new Date(mission.startDate),
+          endDate: new Date(mission.endDate),
+        }));
+        setSpaceMissions(parsedMissions);
 
-          setError(""); // Clear any previous errors
-        })
-        .catch((err) => {
-          setError(err.message);
-          setAgencyInfo(null);
-          setSpaceMissions(null);
-          console.error("API error:", err);
-        });
+        setError(""); // Clear any previous errors
+      })
+      .catch((err) => {
+        setError(err.message);
+        setAgencyInfo(null);
+        setSpaceMissions(null);
+        console.error("API error:", err);
+      });
   }, [id]);
+
+  useEffect(() => {
+    const sentUrl =
+      "http://localhost:8080/astronaut/getAllAstronautByAgency/" + id;
+
+    fetch(sentUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(`Failed to fetch astronauts: ${response.statusText}`);
+        }
+      })
+      .then((data) => {
+        setAstronauts(data);
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        throw err;
+      });
+  });
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
   if (!agencyInfo) {
+    console.log(agencyInfo);
     return <div>Loading...</div>;
   }
 
@@ -67,73 +101,90 @@ export default function AgencyProfile() {
   };
 
   return (
-      <div className="outer">
-        <Header />
-        <Navbar />
+    <div className="outer">
+      <Header />
+      <Navbar />
 
-        <div className="profile-container">
-          <div className="button-bar">
-            {localStorage.getItem("userRole") === "ADMIN" &&(
-                <button className="top-button" onClick={handleApproveAgencyClick}>
-                  Approve Agency
-                </button>
-            )}
+      <div className="profile-container">
+        <div className="button-bar">
+          {localStorage.getItem("userRole") === "ADMIN" && (
+            <button className="top-button" onClick={handleApproveAgencyClick}>
+              Approve Agency
+            </button>
+          )}
+        </div>
+
+        <div className="profile-header">
+          <div className="profile-image">
+            <img
+              src={agencyInfo.logo}
+              alt={`${agencyInfo.name} logo`}
+              style={{ width: "150px" }}
+            />
           </div>
-
-          <div className="profile-header">
-            <div className="profile-image">
-              <img src={agencyInfo.logo} alt={`${agencyInfo.name} logo`} style={{ width: "150px" }} />
-            </div>
-            <div className="profile-info">
-              <h1>{agencyInfo.name}</h1>
-              <p>Email: {agencyInfo.mail}</p>
-              <p>Is Approved: {agencyInfo.isApproved}</p>
-            </div>
-          </div>
-
-          <div className="profile-details">
-            <div className="missions-section">
-              <h2>Space Missions</h2>
-              {spaceMissions ? (
-                  <ul>
-                    {spaceMissions.map((mission) => (
-                        <li key={mission.id}>
-                          <h3>{mission.missionName}</h3>
-                          <p>Created by: {mission.companyName}</p>
-                          <p>Status: {mission.status}</p>
-                          <p>Start Date: {mission.startDate.toLocaleDateString()}</p>
-                          <p>End Date: {mission.endDate.toLocaleDateString()}</p>
-                          <img src={mission.image} alt={mission.missionName} style={{ width: "100px" }} />
-                        </li>
-                    ))}
-                  </ul>
-              ) : (
-                  <div>Loading space missions...</div>
-              )}
-            </div>
-            <div className="astronauts-section">
-              <h2>Approved Astronauts</h2>
-              {astronauts ? (
-                  <ul>
-                    {astronauts.map((astronaut) => (
-                        <li key={astronaut.id}>
-                          <img src={astronaut.image} alt={astronaut.name} style={{ width: "100px", height: "100px" }} />
-                          <h3>{astronaut.name}</h3>
-                          <p>Date of Birth: {new Date(astronaut.dateOfBirth).toLocaleDateString()}</p>
-                          <p>Country: {astronaut.country}</p>
-                          <p>On Duty: {astronaut.onDuty ? "Yes" : "No"}</p>
-                          <p>Salary: ${astronaut.salary.toLocaleString()}</p>
-                        </li>
-                    ))}
-                  </ul>
-              ) : (
-                  <div>Loading astronauts...</div>
-              )}
-            </div>
+          <div className="profile-info">
+            <h1>{agencyInfo.name}</h1>
+            <p>Email: {agencyInfo.userMail}</p>
+            <p>
+              Is Approved: {agencyInfo.isApproved ? "Approved" : "Not Approved"}
+            </p>
           </div>
         </div>
 
-        <style>{`
+        <div className="profile-details">
+          <div className="missions-section">
+            <h2>Space Missions</h2>
+            {spaceMissions ? (
+              <ul>
+                {spaceMissions.map((mission) => (
+                  <li key={mission.id} className="profile-list-item">
+                    <h3>{mission.missionName}</h3>
+                    <p>Created by: {mission.companyName}</p>
+                    <p>Status: {mission.status}</p>
+                    <p>Start Date: {mission.startDate.toLocaleDateString()}</p>
+                    <p>End Date: {mission.endDate.toLocaleDateString()}</p>
+                    <img
+                      src={mission.image}
+                      alt={mission.missionName}
+                      style={{ width: "100px" }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div>Loading space missions...</div>
+            )}
+          </div>
+          <div className="astronauts-section">
+            <h2>Approved Astronauts</h2>
+            {astronauts ? (
+              <ul>
+                {astronauts.map((astronaut) => (
+                  <li key={astronaut.userId} className="profile-list-item">
+                    <img
+                      src={astronaut.image}
+                      alt={astronaut.name}
+                      style={{ width: "100px", height: "100px" }}
+                    />
+                    <h3>{astronaut.name}</h3>
+                    <p>
+                      Date of Birth:{" "}
+                      {new Date(astronaut.dateOfBirth).toLocaleDateString()}
+                    </p>
+                    <p>Country: {astronaut.country}</p>
+                    <p>On Duty: {astronaut.onDuty ? "Yes" : "No"}</p>
+                    <p>Salary: ${astronaut.salary.toLocaleString()}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div>Loading astronauts...</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <style>{`
         .profile-container {
           display: flex;
           flex-direction: column;
@@ -171,7 +222,7 @@ export default function AgencyProfile() {
           list-style: none;
           padding: 0;
         }
-        li {
+        profile-list-item {
           margin-bottom: 10px;
           background: white;
           padding: 10px;
@@ -192,6 +243,6 @@ export default function AgencyProfile() {
           background-color: #0056b3;
         }
       `}</style>
-      </div>
+    </div>
   );
 }

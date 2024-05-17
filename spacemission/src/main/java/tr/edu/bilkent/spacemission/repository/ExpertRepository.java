@@ -75,9 +75,10 @@ public class ExpertRepository {
                 userId = rs.getLong("user_id");
             }
 
-            PreparedStatement ps3 = connection.prepareStatement("INSERT INTO expert (expert_id, expert_name) VALUES (?, ?)");
+            PreparedStatement ps3 = connection.prepareStatement("INSERT INTO expert (expert_id, expert_name, expert_company) VALUES (?, ?, ?)");
             ps3.setLong(1, userId);
             ps3.setString(2, expert.getName());
+            ps3.setLong(3, expert.getCompanyId());
             ps3.executeUpdate();
         }
         catch (SQLException e) {
@@ -114,6 +115,31 @@ public class ExpertRepository {
                 list.add(record);
             }
 
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return list;
+    }
+
+    /**
+     *  Returns the list of experts associated with the company with companyId
+     * @param companyId
+     * @return
+     */
+    public ArrayList<Expert> getExpertsByCompany(long companyId) {
+        ArrayList<Expert> list = new ArrayList<>();
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM expert WHERE expert_company = ?");
+            ps.setLong(1, companyId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Expert expert = new Expert();
+                expert.setId(rs.getLong("expert_id"));
+                expert.setName(rs.getString("expert_name"));
+                expert.setCompanyId(companyId);
+                list.add(expert);
+            }
         }
         catch(Exception ex){
             System.out.println(ex.getMessage());

@@ -46,6 +46,8 @@ export default function RegisterExpert(props: RegisterExpertProps) {
             throw new Error("Network response was not ok");
           } else {
             //close the modal, the health record has been registered
+            alert("Expert was registered");
+            window.location.reload();
             props.onClose();
           }
         })

@@ -21,9 +21,9 @@ export default function Agencies() {
       <div className="smm-list-container">
         {agencies.map((agency: Agency) => (
           <Link
-            to={"/agency/" + agency.id}
+            to={"/agency/" + agency.userId}
             className="smm-list-item"
-            key={agency.id}
+            key={agency.userId}
           >
             <div className="smm-list-image-box">
               <img src={agency.logo} />
