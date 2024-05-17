@@ -104,7 +104,6 @@ export default function AgencyProfile() {
     <div className="outer">
       <Header />
       <Navbar />
-
       <div className="profile-container">
         <div className="button-bar">
           {localStorage.getItem("userRole") === "ADMIN" && (
@@ -132,7 +131,7 @@ export default function AgencyProfile() {
         </div>
 
         <div className="profile-details">
-          <div className="missions-section">
+          <div className="missions-section scroll-container">
             <h2>Space Missions</h2>
             {spaceMissions ? (
               <ul>
@@ -144,7 +143,7 @@ export default function AgencyProfile() {
                     <p>Start Date: {mission.startDate.toLocaleDateString()}</p>
                     <p>End Date: {mission.endDate.toLocaleDateString()}</p>
                     <img
-                      src={`data:image/jpeg;base64,${mission.image}`}
+                      src={mission.image}
                       alt={mission.missionName}
                       style={{ width: "100px" }}
                     />
@@ -155,15 +154,15 @@ export default function AgencyProfile() {
               <div>Loading space missions...</div>
             )}
           </div>
-          <div className="astronauts-section">
+          <div className="astronauts-section scroll-container">
             <h2>Approved Astronauts</h2>
             {astronauts ? (
               <ul>
                 {astronauts.map((astronaut) => (
                   <li key={astronaut.userId} className="profile-list-item">
                     <img
-                      src={`data:image/jpeg;base64,${astronaut.image}`}
-                      alt={"Astronaut Image"}
+                      src={astronaut.image}
+                      alt={astronaut.name}
                       style={{ width: "100px", height: "100px" }}
                     />
                     <h3>{astronaut.name}</h3>
@@ -185,64 +184,74 @@ export default function AgencyProfile() {
       </div>
 
       <style>{`
-        .profile-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 20px;
-          max-width: 960px;
-          margin: auto;
-        }
-        .profile-header {
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
-          margin-bottom: 20px;
-        }
-        .profile-image img {
-          width: auto;
-          height: 150px;
-        }
-        .profile-info {
-          margin-left: 20px;
-        }
-        .profile-details {
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
-        }
-        .missions-section, .astronauts-section {
-          flex: 1;
-          padding: 10px;
-          margin: 5px;
-          background: #f0f0f0;
-          border: 1px solid #ccc;
-        }
-        ul {
-          list-style: none;
-          padding: 0;
-        }
-        profile-list-item {
-          margin-bottom: 10px;
-          background: white;
-          padding: 10px;
-          border: 1px solid #ddd;
-        }
-        .top-button {
-          padding: 8px 16px;
-          margin: 0 10px;
-          background-color: #007bff;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          width: fit-content;
-          align-self: flex-end;
-        }
-        .top-button:hover {
-          background-color: #0056b3;
-        }
-      `}</style>
+      .outer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .profile-container {
+        width: 100%;
+        max-width: 800px;
+        padding: 20px;
+        margin: auto;
+      }
+      .profile-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .profile-image img {
+        width: auto;
+        height: 150px;
+      }
+      .profile-info {
+        margin-left: 20px;
+      }
+      .profile-details {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .missions-section, .astronauts-section {
+        flex: 1 1 50%;
+        padding: 10px;
+        margin: 5px;
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        overflow-y: auto;
+        max-height: 400px;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      .profile-list-item {
+        margin-bottom: 10px;
+        background: white;
+        padding: 10px;
+        border: 1
+        border: 1px solid #ddd;
+      }
+      .top-button {
+        padding: 8px 16px;
+        margin: 0 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: fit-content;
+        align-self: flex-end;
+      }
+      .top-button:hover {
+        background-color: #0056b3;
+      }
+      .scroll-container {
+        overflow-y: auto;  // Ensures vertical scrollability
+        max-height: 300px; // Restricting height to enforce scrolling
+      }
+   `}</style>
     </div>
   );
 }

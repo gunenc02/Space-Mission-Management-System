@@ -24,6 +24,7 @@ export default function SpaceMissionDetails() {
   );
   const [platform, setPlatform] = useState<Platform | null>(null);
   const [submitBidOpen, setSubmitBidOpen] = useState(false);
+  const [missionImage, setMissionImage] = useState("");
 
   const handleSubmitBidClick = () => {
     setSubmitBidOpen(!submitBidOpen);
@@ -68,64 +69,137 @@ export default function SpaceMissionDetails() {
     <div className="outer">
       <Header />
       <Navbar />
-      <div className="details-outer">
-        <div className="details-top-div">
-          <div className="mission-details-title">
-            {spaceMission?.missionName}
+
+      <div className="profile-container">
+        <div className="button-bar">
+          {localStorage.getItem("userRole") === "COMPANY" && (
+            <button className="details-button" onClick={handleSubmitBidClick}>
+              Submit Bid
+            </button>
+          )}
+        </div>
+
+        <div className="profile-header">
+          <div className="profile-image">
+            <img
+              src={missionImage}
+              alt="Mission Image"
+              style={{ width: "150px" }}
+            />
           </div>
-          <button className="details-button" onClick={handleSubmitBidClick}>
-            Submit Bid
-          </button>
+          <div className="profile-info">
+            <h1>{spaceMission?.missionName}</h1>
+            <p>Performer Company: {performerCompany?.name || "N/A"}</p>
+            <p>Creator Company: {creatorCompany?.name}</p>
+            <p>Budget: {spaceMission?.budget}</p>
+            <p>Platform: {platform?.platformName || "N/A"}</p>
+          </div>
+        </div>
+
+        <div className="profile-details">
+          <div className="astronauts-section scroll-container">
+            <h2>Objective</h2>
+            <p>{spaceMission?.objective}</p>
+          </div>
+
+          <div className="astronauts-section scroll-container">
+            <h2>Approved Astronauts</h2>
+            {astronauts ? (
+              <ul>
+                {astronauts.map((astronaut) => (
+                  <li key={astronaut.userId} className="profile-list-item">
+                    <img
+                      src={astronaut.image}
+                      alt={astronaut.name}
+                      style={{ width: "100px", height: "100px" }}
+                    />
+                    <h3>{astronaut.name}</h3>
+                    <p>
+                      Date of Birth:{" "}
+                      {new Date(astronaut.dateOfBirth).toLocaleDateString()}
+                    </p>
+                    <p>Country: {astronaut.country}</p>
+                    <p>On Duty: {astronaut.onDuty ? "Yes" : "No"}</p>
+                    <p>Salary: ${astronaut.salary.toLocaleString()}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div>Loading astronauts...</div>
+            )}
+          </div>
         </div>
       </div>
-      <div className="details-column-container">
-        <div className="details-left-column">
-          <div className="details-long-text">{spaceMission?.objective}</div>
-          <div className="details-scroll-list">
-            Astronauts
-            {astronauts.map((astronaut) => (
-              <div key={astronaut.id} className="details-list-item">
-                Name: {astronaut.name}
-                <br />
-                Country: {astronaut.country}
-                <br />
-                Date of Birth: {astronaut.dateOfBirth.toString()}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="details-right-column">
-          <img
-            className="details-image"
-            src={`data:image/jpeg;base64,${spaceMission?.image}`}
-            alt="Mission Image"
-          />
-          <div className="details-info-box">
-            <div className="details-info-item">
-              Creator Company: {creatorCompany?.name}
-            </div>
-            <div className="details-info-item">
-              Performer Company:
-              {performerCompany?.name == null ? "N/A" : performerCompany?.name}
-            </div>
-            <div className="details-info-item">
-              Platform:
-              {platform?.platformName == null ? "N/A" : platform?.platformName}
-            </div>
-            <div className="details-info-item">
-              Budget: {spaceMission?.budget}
-            </div>
-          </div>
-        </div>
-      </div>
-      {submitBidOpen && (
-        <SubmitBid
-          fromCompanyId={Number(localStorage.getItem("userId"))}
-          toCompanyId={spaceMission?.creatorId}
-          missionId={Number(id)}
-          onClose={handleSubmitBidClick}
-        />
-      )}
+
+      <style>{`
+      .outer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .profile-container {
+        width: 100%;
+        max-width: 800px;
+        padding: 20px;
+        margin: auto;
+      }
+      .profile-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .profile-image img {
+        width: auto;
+        height: 150px;
+      }
+      .profile-info {
+        margin-left: 20px;
+      }
+      .profile-details {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .astronauts-section {
+        flex: 1 1 50%;
+        padding: 10px;
+        margin: 5px;
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        overflow-y: auto;
+        max-height: 400px;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      .profile-list-item {
+        margin-bottom: 10px;
+        background: white;
+        padding: 10px;
+        border: 1
+        border: 1px solid #ddd;
+      }
+      .top-button {
+        padding: 8px 16px;
+        margin: 0 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: fit-content;
+        align-self: flex-end;
+      }
+      .top-button:hover {
+        background-color: #0056b3;
+      }
+      .scroll-container {
+        overflow-y: auto;  // Ensures vertical scrollability
+        max-height: 300px; // Restricting height to enforce scrolling
+      }
+   `}</style>
     </div>
   );
 }

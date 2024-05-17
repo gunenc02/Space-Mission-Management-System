@@ -66,10 +66,10 @@ public class AccountController {
 
     // THIS METHOD IS FOR CHANGING THE PROFILE
     @PutMapping("/alterUser/{userId}")
-    public void alterUser(@PathVariable long userId, @RequestParam Optional<String> pmail, @RequestParam Optional<String> ppassword) {
-        String mail = pmail.orElse(null);
-        String password = ppassword.orElse(null);
-        accountService.alterUser(userId, mail, password);
+    public void alterUser(@PathVariable long userId, @RequestBody Login login) {
+        String mail = login.getUsername();
+        String pass = login.getPassword();
+        accountService.alterUser(userId, mail, pass);
     }
 
     @PutMapping("/alterAgency/{agencyId}")
