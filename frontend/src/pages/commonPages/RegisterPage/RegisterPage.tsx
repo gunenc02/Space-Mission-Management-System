@@ -41,7 +41,7 @@ const RegistrationPage: React.FC = () => {
       dateOfBirth: "",
       money: "",
       image: "",
-      logo: "";
+      logo: "",
     });
   };
 
