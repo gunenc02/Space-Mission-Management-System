@@ -49,8 +49,14 @@ export interface FilterProps {
   onFilter: (filters: FilterValues) => void;
 }
 export interface FilterValues {
+  country?: string;
   minYear?: number;
   maxYear?: number;
   minCost?: number;
   maxCost?: number;
+  minAge?: number;
+  maxAge?: number;
+  minSalary?: number;
+  maxSalary?: number;
+  onMission?: boolean;
 }
