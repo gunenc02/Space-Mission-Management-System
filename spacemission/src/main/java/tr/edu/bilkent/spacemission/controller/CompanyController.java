@@ -1,6 +1,8 @@
 package tr.edu.bilkent.spacemission.controller;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.entity.Company;
@@ -67,10 +69,17 @@ public class CompanyController {
     }
 
     @GetMapping("/filterCompanies")
-    public List<CompanyDto> filterCompanies(
+    public ResponseEntity<List<CompanyDto>> filterCompanies(
             @RequestParam(required = false) String country,
             @RequestParam(required = false) Double minBudget,
             @RequestParam(required = false) Double maxBudget) {
-        return companyService.filterCompanies(country, minBudget, maxBudget);
+        try {
+            List<CompanyDto> companies = companyService.filterCompanies(country, minBudget, maxBudget);
+            return ResponseEntity.ok(companies);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+}
 }
