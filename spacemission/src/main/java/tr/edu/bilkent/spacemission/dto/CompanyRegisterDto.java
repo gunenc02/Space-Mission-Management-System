@@ -17,4 +17,5 @@ public class CompanyRegisterDto {
     double money;
     String country;
     long agencyId;
+    private byte[] image;
 }
