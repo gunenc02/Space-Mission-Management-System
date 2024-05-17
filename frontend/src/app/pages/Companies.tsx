@@ -27,7 +27,7 @@ export default function Companies() {
             key={company.userId}
           >
             <div className="smm-list-image-box">
-              <img src={company.logo} />
+              <img src={`data:image/jpeg;base64,${company.logo}`} />
             </div>
             <div className="smm-list-information-box">
               <p>Name: {company.name}</p>

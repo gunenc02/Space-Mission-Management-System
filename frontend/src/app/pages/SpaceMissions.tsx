@@ -42,7 +42,7 @@ export default function SpaceMissions() {
             key={spaceMission.id}
           >
             <div className="smm-list-image-box">
-              <img src={spaceMission.image} />
+              <img src={`data:image/jpeg;base64,${spaceMission.image}`} />
             </div>
             <div className="smm-list-information-box">
               <p>Name: {spaceMission.missionName}</p>

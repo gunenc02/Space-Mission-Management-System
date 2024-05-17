@@ -27,7 +27,7 @@ export default function Astronauts() {
             key={astronaut.id}
           >
             <div className="smm-list-image-box">
-              <img src={astronaut.image} />
+              <img src={`data:image/jpeg;base64,${astronaut.image}`} />
             </div>
             <div className="smm-list-information-box">
               <p>Name: {astronaut.name}</p>

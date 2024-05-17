@@ -16,16 +16,21 @@ export default function CreateSpaceMission(props: CreateMissionProps) {
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) {
-    console.log("CHR debug: updateForm invoked");
-    //this will simply update formData when a change occurs in one of our input elements
     const { id, value } = e.target;
-    console.log(id + "," + value);
+
     if (id === "image") {
-      const imgValue = e.target.files[0].toString(); //Might be problematic better check it out
-      setFormData((prevState) => ({
-        ...prevState, //preserve the unchanged attributes of prevState
-        [id]: imgValue,
-      }));
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        // Strip out the data:image/jpeg;base64, part
+        const base64Image = base64String.split(",")[1];
+        setFormData((prevState) => ({
+          ...prevState,
+          image: base64Image,
+        }));
+      };
+      reader.readAsDataURL(file);
     } else {
       setFormData((prevState) => ({
         ...prevState, //preserve the unchanged attributes of prevState
@@ -121,7 +126,6 @@ export default function CreateSpaceMission(props: CreateMissionProps) {
 
           <input
             type="file"
-            value={formData.image}
             onChange={updateForm}
             id="image"
             name="image"

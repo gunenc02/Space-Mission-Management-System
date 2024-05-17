@@ -114,8 +114,8 @@ export default function AstronautProfile() {
         <div className="profile-header">
           <div className="profile-image">
             <img
-              src="astronaut-image.png"
-              alt="Astronaut"
+              src={`data:image/jpeg;base64,${astronaut.image}`}
+              alt="Astronaut Image"
               style={{ width: "150px", height: "150px" }}
             />
           </div>

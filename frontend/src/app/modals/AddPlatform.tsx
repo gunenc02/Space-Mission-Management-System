@@ -16,29 +16,23 @@ export default function AddPlatform(props: AddPlatformProps) {
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) {
-    console.log("CHR debug: updateForm invoked");
     //this will simply update formData when a change occurs in one of our input elements
     const { id, value } = e.target;
     console.log(id + "," + value);
     if (id === "image") {
-      //const imgValue = e.target.files[0].toString(); 
-      const imgFile = e.target.files[0];
-
-      let base64String = "";
-      const fileReader = new FileReader();
-      if(imgFile !== null){
-        
-        fileReader.onloadend = () => {
-          base64String = fileReader.result.split(',')[1]; // Remove the data URL prefix
-        }
-      }
-      fileReader.readAsDataURL(imgFile);
-      setFormData((prevState) => ({
-        ...prevState, //preserve the unchanged attributes of prevState
-        [id]: base64String,
-      }));
-    } 
-    else {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        // Strip out the data:image/jpeg;base64, part
+        const base64Image = base64String.split(",")[1];
+        setFormData((prevState) => ({
+          ...prevState,
+          image: base64Image,
+        }));
+      };
+      reader.readAsDataURL(file);
+    } else {
       setFormData((prevState) => ({
         ...prevState, //preserve the unchanged attributes of prevState
         [id]: value,
@@ -49,7 +43,6 @@ export default function AddPlatform(props: AddPlatformProps) {
   const createHandler = function () {
     const postUrl = `http://localhost:8080/platform/create`;
 
-    //!!! CHECK HERE WHEN DEBUGGING MIGHT BE PROBLEMATIC REQUEST BODY !!!
     const requestBody = {
       platformName: formData.platformName,
       productionYear: formData.productionYear,

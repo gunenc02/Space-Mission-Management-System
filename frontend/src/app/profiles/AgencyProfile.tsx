@@ -144,7 +144,7 @@ export default function AgencyProfile() {
                     <p>Start Date: {mission.startDate.toLocaleDateString()}</p>
                     <p>End Date: {mission.endDate.toLocaleDateString()}</p>
                     <img
-                      src={mission.image}
+                      src={`data:image/jpeg;base64,${mission.image}`}
                       alt={mission.missionName}
                       style={{ width: "100px" }}
                     />
@@ -162,8 +162,8 @@ export default function AgencyProfile() {
                 {astronauts.map((astronaut) => (
                   <li key={astronaut.userId} className="profile-list-item">
                     <img
-                      src={astronaut.image}
-                      alt={astronaut.name}
+                      src={`data:image/jpeg;base64,${astronaut.image}`}
+                      alt={"Astronaut Image"}
                       style={{ width: "100px", height: "100px" }}
                     />
                     <h3>{astronaut.name}</h3>

@@ -29,8 +29,6 @@ export default function SpaceMissionDetails() {
     setSubmitBidOpen(!submitBidOpen);
   };
 
-  const [missionImage, setMissionImage] = useState('');
-
   useEffect(() => {
     const sentUrl = "http://localhost:8080/spaceMission/" + id;
 
@@ -59,13 +57,6 @@ export default function SpaceMissionDetails() {
           await getCompanyProfile(data.performerId, { token: null })
         );
         setPlatform(await getPlatformById(data.platformId, { token: null }));
-
-        //update the spaceMission image
-        if(spaceMission !== null){
-          const blob = new Blob([spaceMission.image])
-          const imgURL = URL.createObjectURL(blob);
-          setMissionImage(imgURL);
-        }
       })
       .catch((err) => {
         console.error("Error:", err);
@@ -106,7 +97,7 @@ export default function SpaceMissionDetails() {
         <div className="details-right-column">
           <img
             className="details-image"
-            src={missionImage}
+            src={`data:image/jpeg;base64,${spaceMission?.image}`}
             alt="Mission Image"
           />
           <div className="details-info-box">

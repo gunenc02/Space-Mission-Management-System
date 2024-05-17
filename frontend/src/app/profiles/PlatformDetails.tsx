@@ -46,7 +46,7 @@ export default function PlatformDetails() {
         <div className="details-right-column">
           <img
             className="details-image"
-            src={platform?.image}
+            src={`data:image/jpeg;base64,${platform?.image}`}
             alt="Platform Image"
           />
         </div>

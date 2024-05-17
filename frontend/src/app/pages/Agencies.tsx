@@ -26,7 +26,7 @@ export default function Agencies() {
             key={agency.userId}
           >
             <div className="smm-list-image-box">
-              <img src={agency.logo} />
+              <img src={`data:image/jpeg;base64,${agency.logo}`} />
             </div>
             <div className="smm-list-information-box">
               <p>Name: {agency.name}</p>
