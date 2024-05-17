@@ -6,6 +6,7 @@ import tr.edu.bilkent.spacemission.dto.HealthRecordsInExpertPortfolio;
 import tr.edu.bilkent.spacemission.entity.Expert;
 import tr.edu.bilkent.spacemission.repository.ExpertRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +30,10 @@ public class ExpertService {
 
     public List<HealthRecordsInExpertPortfolio> getExpertPortfolio(long expertId) {
         return expertRepository.getExpertPortfolio(expertId);
+    }
+
+    public ArrayList<Expert> getExpertsByCompany (long companyId) {
+        return expertRepository.getExpertsByCompany(companyId);
     }
 
     public String getCompanyName(long companyId) {
