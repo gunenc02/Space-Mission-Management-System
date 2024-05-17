@@ -69,6 +69,7 @@ public class AccountService {
     }
 
     public void logout(Cookie idCookie, Cookie roleCookie){
-
     }
+
+
 }

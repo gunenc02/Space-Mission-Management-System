@@ -121,19 +121,24 @@ public class AccountController {
     }
 
     @PostMapping("/login")
-    public UserDto login(@RequestBody Login body, HttpServletResponse http){
+    public UserDto login(@RequestBody Login body, HttpServletResponse http) {
         UserDto dto = accountService.getLoggedUser(body.getUsername(), body.getPassword());
 
-        Cookie idCookie = new Cookie("user_id", (Long.toString(dto.getUserId())));
+        if (dto == null) {
+            http.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+        }
+
+        Cookie idCookie = new Cookie("user_id", Long.toString(dto.getUserId()));
         idCookie.setPath("/");
-        idCookie.setMaxAge(600*600);
+        idCookie.setMaxAge(600 * 600);
         http.addCookie(idCookie);
 
         Cookie roleCookie = new Cookie("user_role", dto.getUserRole());
         roleCookie.setPath("/");
-        roleCookie.setMaxAge(600*600);
+        roleCookie.setMaxAge(600 * 600);
         http.addCookie(roleCookie);
-        return dto;
 
+        return dto;
     }
 }

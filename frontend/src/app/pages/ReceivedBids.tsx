@@ -16,6 +16,7 @@ const OfferedBids: React.FC = () => {
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     const userRole = localStorage.getItem("userRole");
+    console.log("Logged in user ID:", userId + "and role is: " + userRole + " and name is: " + localStorage.getItem("userName"));
 
     if (userRole !== "COMPANY" || !userId) {
       setError("Access denied. Only companies can view bids.");

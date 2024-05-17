@@ -1,4 +1,3 @@
-// frontend/pages/commonPages/LoginPage/LoginPage.tsx
 import React, { useState, useEffect } from "react";
 import { loginUser } from "../../../calling/userCaller";
 import "./Login.css";
@@ -27,6 +26,8 @@ export default function LoginPage() {
       const response = await loginUser(email, password);
       if (response.success) {
         console.log("Login successful", response.data);
+        localStorage.setItem("userId", response.data.userId);
+        localStorage.setItem("userRole", response.data.userRole);
         navigate("/space-missions"); // Navigate to the Space Missions page on success
       } else {
         throw new Error(response.message);
