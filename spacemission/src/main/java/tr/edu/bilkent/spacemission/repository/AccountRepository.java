@@ -60,9 +60,10 @@ public class AccountRepository {
 
                 // Now insert into the agency table
                 PreparedStatement psAgency = connection.prepareStatement(
-                        "INSERT INTO agency (agency_id, agency_name) VALUES (?, ?)");
+                        "INSERT INTO agency (agency_id, agency_name, agency_logo) VALUES (?, ?, ?)");
                 psAgency.setLong(1, userId);
                 psAgency.setString(2, ardto.getAgencyName());
+                psAgency.setBytes(3, ardto.getImage());
                 psAgency.executeUpdate();
             }
         } catch (SQLException ex) {
@@ -89,7 +90,7 @@ public class AccountRepository {
                         "INSERT INTO astronaut (astronaut_id, astronaut_name, astronaut_image, country, date_of_birth) VALUES (?, ?, ?, ?, ?);");
                 psAstronaut.setLong(1, userId);
                 psAstronaut.setString(2, ardto.getName());
-                psAstronaut.setNull(3, java.sql.Types.BLOB); // Set astronaut_image to NULL
+                psAstronaut.setBytes(3, ardto.getImage());
                 psAstronaut.setString(4, ardto.getCountry());
                 psAstronaut.setDate(5, ardto.getDateOfBirth());
                 psAstronaut.executeUpdate();
@@ -115,11 +116,12 @@ public class AccountRepository {
 
                 // Now insert into the company table
                 PreparedStatement psCompany = connection.prepareStatement(
-                        "INSERT INTO company (company_id, company_name, company_logo, worker_count, country, money, is_approved) VALUES (?, ?, NULL, 0, ?, ?, FALSE);");
+                        "INSERT INTO company (company_id, company_name, company_logo, worker_count, country, money, is_approved) VALUES (?, ?, ?, 0, ?, ?, FALSE);");
                 psCompany.setLong(1, userId);
                 psCompany.setString(2, crdto.getCompanyName());
-                psCompany.setString(3, crdto.getCountry());
-                psCompany.setDouble(4, crdto.getMoney());
+                psCompany.setBytes(3, crdto.getImage());
+                psCompany.setString(4, crdto.getCountry());
+                psCompany.setDouble(5, crdto.getMoney());
                 psCompany.executeUpdate();
             }
         } catch (SQLException ex) {

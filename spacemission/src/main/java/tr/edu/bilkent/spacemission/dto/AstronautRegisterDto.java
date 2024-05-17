@@ -13,6 +13,7 @@ public class AstronautRegisterDto {
     String email;
     String password;
     String name;
+    private byte[] image;
     Date dateOfBirth;
     String country;
     long agencyId;

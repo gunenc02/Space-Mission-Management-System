@@ -1,0 +1,498 @@
+Index: spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/CompanyController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package tr.edu.bilkent.spacemission.controller;\r\n\r\n\r\nimport org.springframework.web.bind.annotation.*;\r\nimport tr.edu.bilkent.spacemission.dto.CompanyDto;\r\nimport tr.edu.bilkent.spacemission.entity.Company;\r\nimport tr.edu.bilkent.spacemission.service.CompanyService;\r\n\r\nimport java.util.List;\r\n\r\n\r\n/*\r\nTHIS IS THE PLACE WHERE WE GET THE REQUESTS\r\nIT IS RECOMMENDED THAT DIRECTLY CALL THE SERVICE AND KEEP HERE AS SIMPLE AS POSSIBLE\r\n */\r\n@CrossOrigin\r\n@RestController\r\n@RequestMapping(\"/company\")\r\npublic class CompanyController {\r\n\r\n    private final CompanyService companyService;\r\n\r\n    public CompanyController(CompanyService companyService){\r\n\r\n        this.companyService = companyService;\r\n    }\r\n\r\n    @GetMapping(\"/list\")\r\n    public List<CompanyDto> getAllCompanies(){\r\n        return companyService.getAllCompanies();\r\n    }\r\n\r\n    @PostMapping(\"/offerJob/{astronautId}\")\r\n    public void offerJob(@PathVariable long astronautId){\r\n        companyService.offerJob(astronautId);\r\n    }\r\n\r\n    @GetMapping(\"/profile/{id}\")\r\n    public CompanyDto getCompanyProfile(@PathVariable long id){\r\n        return convertEntityToDto(companyService.getCompanyProfile(id));\r\n    }\r\n\r\n    @DeleteMapping(\"/fireAstronaut/{id}/{astronautId}\")\r\n    public void fireAstronaut(@PathVariable long id, @PathVariable long astronautId){\r\n        companyService.fireAstronaut(id, astronautId);\r\n    }\r\n\r\n    private Company convertDtoToEntity(CompanyDto companyDto) {\r\n        Company company = new Company();\r\n        company.setId(companyDto.getUserId());\r\n        company.setName(companyDto.getName());\r\n        company.setCountry(companyDto.getCountry());\r\n        company.setBudget(companyDto.getMoney());\r\n        //company.setType(companyDto.getType());\r\n        return company;\r\n    }\r\n\r\n    private CompanyDto convertEntityToDto(Company company) {\r\n        CompanyDto companyDto = new CompanyDto();\r\n        companyDto.setUserId(company.getId());\r\n        companyDto.setUserMail(company.getMail());\r\n        companyDto.setName(company.getName());\r\n        companyDto.setCountry(company.getCountry());\r\n        companyDto.setMoney(company.getBudget());\r\n        //companyDto.setType(company.getType());\r\n        return companyDto;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/CompanyController.java b/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/CompanyController.java
+--- a/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/CompanyController.java	(revision 82c0821ffdc455a0299d69b82b5ba3a1165a5d42)
++++ b/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/CompanyController.java	(date 1715970868763)
+@@ -44,6 +44,10 @@
+     public void fireAstronaut(@PathVariable long id, @PathVariable long astronautId){
+         companyService.fireAstronaut(id, astronautId);
+     }
++    @GetMapping("{id}/hasAstronaut/{astronautId}")
++    public boolean companyHasAstronaut(@PathVariable long id, @PathVariable long astronautId){
++        return companyService.companyHasAstronaut(id, astronautId);
++    }
+ 
+     private Company convertDtoToEntity(CompanyDto companyDto) {
+         Company company = new Company();
+Index: spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package tr.edu.bilkent.spacemission.repository;\r\n\r\nimport org.springframework.jdbc.core.JdbcTemplate;\r\nimport org.springframework.stereotype.Repository;\r\nimport tr.edu.bilkent.spacemission.dto.CompanyDto;\r\nimport tr.edu.bilkent.spacemission.dto.Login;\r\nimport tr.edu.bilkent.spacemission.entity.Company;\r\n\r\nimport javax.sql.DataSource;\r\nimport java.sql.Connection;\r\nimport java.sql.PreparedStatement;\r\nimport java.sql.ResultSet;\r\nimport java.sql.SQLException;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\n// THIS IS OUR REPOSITORY THIS IS WHERE OUR QUERIES TAKE PLACE\r\n// THIS IS WRONG FOR NOW BUT AFTER THE CLARIFICATIONS I AM GOING TO FIX IT\r\n// I DONT KNOW FOR NOW HOW TO IMPLEMENT THOSE QUERIES WITHOUT THE HELP OF EXTERNAL LIBRARIES (JPA,CRUD) FOR NOW\r\n@Repository\r\npublic class CompanyRepository {\r\n\r\n    private final JdbcTemplate jdbcTemplate;\r\n    private final Connection connection;\r\n\r\n    public CompanyRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) throws SQLException {\r\n        this.jdbcTemplate = jdbcTemplate;\r\n        this.connection = dataSource.getConnection();\r\n    }\r\n\r\n    public List<CompanyDto> getAllCompanies() {\r\n        ArrayList<CompanyDto> list = new ArrayList<>();\r\n        try{\r\n            PreparedStatement ps = connection.prepareStatement(\"SELECT c.*, u.* FROM company c JOIN \" +\r\n                    \" user u ON c.company_id = u.user_id;\");\r\n            ResultSet rs = ps.executeQuery();\r\n            while(rs.next()){\r\n                CompanyDto dto = new CompanyDto();\r\n                dto.setUserId(rs.getLong(\"company_id\"));\r\n                dto.setName(rs.getString(\"company_name\"));\r\n                dto.setCountry(rs.getString(\"country\"));\r\n                dto.setUserMail(rs.getString(\"user_mail\"));\r\n                dto.setUserRole(rs.getString(\"user_role\"));\r\n                dto.setLogo(rs.getBytes(\"company_logo\"));\r\n                dto.setMoney(rs.getDouble(\"money\"));\r\n                list.add(dto);\r\n            }\r\n        }\r\n        catch(Exception ex){\r\n            System.out.println(ex.getMessage());\r\n        }\r\n        return list;\r\n    }\r\n\r\n    /**\r\n     * This method returns the profile of the company with the given id\r\n     * @param id Id of the company\r\n     * @return Company object\r\n     */\r\n    public Company getCompanyProfile(long id) {\r\n        Company company = null;\r\n        try {\r\n            PreparedStatement ps = connection.prepareStatement(\"SELECT c.*, u.* FROM company c JOIN \" +\r\n                                                                    \" user u ON c.company_id = u.user_id WHERE company_id = ?\");\r\n            ps.setLong(1, id);\r\n\r\n            ResultSet rs = ps.executeQuery();\r\n            company = new Company();\r\n            if (rs.next()) {\r\n                company.setId(rs.getLong(\"company_id\"));\r\n                company.setMail(rs.getString(\"u.user_mail\"));\r\n                company.setName(rs.getString(\"company_name\"));\r\n                company.setLogo(rs.getBytes(\"company_logo\"));\r\n                company.setCountry(rs.getString(\"country\"));\r\n                company.setWorkerCount(rs.getInt(\"worker_count\"));\r\n                company.setBudget(rs.getLong(\"money\"));\r\n            }\r\n\r\n        }\r\n        catch (SQLException e) {\r\n            e.printStackTrace();\r\n        }\r\n        return company;\r\n    }\r\n\r\n    public CompanyDto getByLogInfo(Login logInfo) {\r\n        String query = \"SELECT * FROM company WHERE company_mail = ? AND company_password = ?\";\r\n        return jdbcTemplate.queryForObject(query,\r\n             (rs, rowNum) -> new CompanyDto(\r\n                     rs.getLong(\"company_id\"),\r\n                     rs.getString(\"company_name\"),\r\n                     rs.getString(\"country\"),\r\n                     rs.getBytes(\"company_logo\"),\r\n                     rs.getDouble(\"money\")\r\n             ), logInfo.getUsername(), logInfo.getPassword()\r\n        );\r\n    }\r\n\r\n    //Fire the astronaut from the mission they are involved with this company\r\n    //Do this only for performer id matches\r\n    public void fireAstronaut(long id, long astronautId){\r\n        String query = \"DELETE FROM mission_astronaut_recordings WHERE astronaut_id = ? AND mission_id IN (SELECT mission_id FROM space_mission WHERE creator_id = ?) ;\";\r\n        try{\r\n            PreparedStatement ps = connection.prepareStatement(query);\r\n            ps.setString(1, String.valueOf(astronautId));\r\n            ps.setString(2, String.valueOf(id));\r\n\r\n            ps.executeUpdate();\r\n        }\r\n        catch(Exception ex){\r\n            System.out.println(ex.getMessage());\r\n        }\r\n\r\n    }\r\n\r\n    public void offerJob(long astronautId) {\r\n    }\r\n    /**\r\n     *@param missionId id of the space mission to be performed\r\n     * returns whether the mission has been marked as performed in the database\r\n     * After successful update of perform_status to \"performed\", a SQL trigger will be executed to release\r\n     * currently deployed astronauts automatically\r\n     */\r\n    public boolean markSpaceMissionAsPerformed(long missionId){\r\n        boolean result = false;\r\n        //execute such a query that if a space mission with given attributes exists try and mark it as performed\r\n        //first check if there exists an entry in space mission performings with specified mission id and not yet performed\r\n        final String notPerformedStatus = \"pending\";\r\n        final String performedStatus = \"performed\";\r\n        String query = \"SELECT COUNT(*) FROM space_mission_performings \" +\r\n                \"WHERE space_mission_id = ? AND perform_status = ?;\";\r\n        //execute the first query and if retrieval yields something then update that entry\r\n        Integer count = jdbcTemplate.queryForObject(query, Integer.class, missionId, notPerformedStatus);\r\n        if(count != null && count > 0) {\r\n            //such a row exists, now we should modify the perform onDuty of that row\r\n            query = \"UPDATE space_mission_performings SET perform_status = ? \" +\r\n                    \"WHERE space_mission_id = ?;\";\r\n            int affectedRows = jdbcTemplate.update(query, performedStatus, missionId);\r\n            result = affectedRows > 0; //we expect affectedRows to be exactly 1 however\r\n        }\r\n        return result;\r\n    }\r\n\r\n    public String getCompanyName(long companyId) {\r\n        try{\r\n            PreparedStatement ps = connection.prepareStatement(\"SELECT c.company_name FROM company c WHERE company_id = ?\");\r\n            ps.setLong(1,companyId);\r\n            ResultSet rs = ps.executeQuery();\r\n            String tmp = \"\";\r\n            if(rs.next()){\r\n                tmp = rs.getString(\"company_name\");\r\n            }\r\n            System.out.println(\"do\");\r\n            return tmp;\r\n        }\r\n        catch(Exception ex){\r\n            System.out.println(ex.getMessage());\r\n        }\r\n        return \"\";\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java b/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java
+--- a/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java	(revision 82c0821ffdc455a0299d69b82b5ba3a1165a5d42)
++++ b/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java	(date 1715970868763)
+@@ -158,4 +158,23 @@
+         }
+         return "";
+     }
++
++    public boolean companyHasAstronaut(long id, long astronautId) {
++        boolean found = false;
++        String query = "SELECT * FROM company_astronaut_matching WHERE company_id = ? AND astronaut_id = ?;";
++        try{
++            PreparedStatement ps = connection.prepareStatement(query);
++            ps.setLong(1, id);
++            ps.setLong(2, astronautId);
++            ResultSet rs = ps.executeQuery();
++            if(rs.next()){
++                //entry found set the result to true
++                found = true;
++            }
++        }
++        catch(Exception ex){
++            System.out.println(ex.getMessage());
++        }
++        return found;
++    }
+ }
+Index: frontend/src/DataContext.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/DataContext.tsx b/frontend/src/DataContext.tsx
+new file mode 100644
+--- /dev/null	(date 1715970868748)
++++ b/frontend/src/DataContext.tsx	(date 1715970868748)
+@@ -0,0 +1,57 @@
++import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
++
++// Define the type for the data context
++interface DataContextType {
++  companyNames: { [key: number]: string };
++}
++
++// Create the context with default values
++const DataContext = createContext<DataContextType>({
++  companyNames: {},
++});
++
++// Custom hook to use the data context
++export const useDataContext = () => useContext(DataContext);
++
++// Define the type for the provider's props
++interface DataContextProviderProps {
++  children: React.ReactNode;
++}
++
++// Fetch company names
++const fetchCompanyNames = async () => {
++  try {
++    const response = await fetch('http://localhost:8080/company/list');
++    if (!response.ok) {
++      throw new Error('Failed to fetch company names');
++    }
++    const data = await response.json();
++    console.log('Fetched company data:', data); // Log fetched data
++
++    // Assuming data is an array of objects with company_id and company_name properties
++    return data.reduce((acc: { [key: number]: string }, company: { company_id: number; company_name: string }) => {
++      acc[company.company_id] = company.company_name;
++      return acc;
++    }, {});
++  } catch (error) {
++    console.error('Error fetching company names:', error);
++    return {};
++  }
++};
++
++export const DataContextProvider: React.FC<DataContextProviderProps> = ({ children }) => {
++  const [companyNames, setCompanyNames] = useState<{ [key: number]: string }>({});
++
++  useEffect(() => {
++    const loadCompanyNames = async () => {
++      const names = await fetchCompanyNames();
++      console.log('Company names after fetch:', names); // Log the processed names
++      setCompanyNames(names);
++    };
++    loadCompanyNames();
++  }, []);
++
++  const value = useMemo(() => ({ companyNames }), [companyNames]);
++
++  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
++};
+Index: spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package tr.edu.bilkent.spacemission.service;\r\n\r\nimport org.springframework.stereotype.Service;\r\nimport tr.edu.bilkent.spacemission.dto.CompanyDto;\r\nimport tr.edu.bilkent.spacemission.dto.Login;\r\nimport tr.edu.bilkent.spacemission.entity.Company;\r\nimport tr.edu.bilkent.spacemission.repository.CompanyRepository;\r\n\r\nimport java.util.List;\r\n\r\n@Service\r\npublic class CompanyService {\r\n\r\n    private final CompanyRepository companyRepository;\r\n\r\n\r\n    public CompanyService(CompanyRepository companyRepository) {\r\n        this.companyRepository = companyRepository;\r\n    }\r\n\r\n    public List<CompanyDto> getAllCompanies(){\r\n        return companyRepository.getAllCompanies();\r\n    }\r\n\r\n    public Company getCompanyProfile(long id){\r\n        return companyRepository.getCompanyProfile(id);\r\n    }\r\n\r\n    public CompanyDto isCompanyExists(Login logInfo){\r\n        return companyRepository.getByLogInfo(logInfo);\r\n    }\r\n\r\n    public void offerJob(long astronautId) {\r\n        companyRepository.offerJob(astronautId);\r\n    }\r\n\r\n    public void fireAstronaut(long id, long astronautId){companyRepository.fireAstronaut(id, astronautId);}\r\n\r\n    //returns whether the space mission is performed after attempt\r\n    public boolean markSpaceMissionAsPerformed(long missionId){\r\n        return companyRepository.markSpaceMissionAsPerformed(missionId);\r\n    }\r\n\r\n    public String getCompanyName(long companyId) {\r\n        return companyRepository.getCompanyName(companyId);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java b/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java
+--- a/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java	(revision 82c0821ffdc455a0299d69b82b5ba3a1165a5d42)
++++ b/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java	(date 1715970868763)
+@@ -44,4 +44,8 @@
+     public String getCompanyName(long companyId) {
+         return companyRepository.getCompanyName(companyId);
+     }
++
++    public boolean companyHasAstronaut(long id, long astronautId) {
++        return companyRepository.companyHasAstronaut(id, astronautId);
++    }
+ }
+Index: frontend/src/calling/bidCaller.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>export function getBid(id: number, user: { token: string }): Promise<any> {\r\n  const sentUrl = `http://localhost:8080/bid/${id}`;\r\n\r\n  return fetch(sentUrl, {\r\n    method: \"GET\",\r\n    headers: {\r\n      \"Content-Type\": \"application/json\",\r\n      Authorization: `Bearer ${user.token}`,\r\n    },\r\n  })\r\n    .then((response) => {\r\n      if (response.status === 200) {\r\n        return response.json();\r\n      } else {\r\n        throw new Error(`Failed to fetch bid: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch((err) => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n}\r\n\r\nexport function getReceivedBids(companyId: number): Promise<any[]> {\r\n  const sentUrl = `http://localhost:8080/bid/receivedList/${companyId}`;\r\n\r\n  return fetch(sentUrl, {\r\n    method: \"GET\",\r\n    headers: {\r\n      \"Content-Type\": \"application/json\",\r\n    },\r\n  })\r\n    .then((response) => {\r\n      if (response.ok) {\r\n        return response.json();\r\n      } else {\r\n        throw new Error(`Failed to fetch bids: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch((err) => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n}\r\n\r\nexport function getOfferedBids(\r\n  userId: number,\r\n  user: { token: string }\r\n): Promise<any[]> {\r\n  const sentUrl = `http://localhost:8080/bid/offeredList/${userId}`;\r\n\r\n  return fetch(sentUrl, {\r\n    method: \"GET\",\r\n    headers: {\r\n      \"Content-Type\": \"application/json\",\r\n      Authorization: `Bearer ${user.token}`,\r\n    },\r\n  })\r\n    .then((response) => {\r\n      if (response.status === 200) {\r\n        return response.json();\r\n      } else {\r\n        throw new Error(`Failed to fetch offered bids: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch((err) => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n}\r\n\r\nexport function offerBid(\r\n  bidDto: any,\r\n  user: { token: string | null }\r\n): Promise<void> {\r\n  const sentUrl = \"http://localhost:8080/bid/offer\";\r\n\r\n  return fetch(sentUrl, {\r\n    method: \"POST\",\r\n    headers: {\r\n      \"Content-Type\": \"application/json\",\r\n      Authorization: `Bearer ${user.token}`,\r\n    },\r\n    body: JSON.stringify(bidDto),\r\n  })\r\n    .then((response) => {\r\n      if (response.status === 200) {\r\n        console.log(\"Bid offered successfully\");\r\n      } else {\r\n        throw new Error(`Failed to offer bid: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch((err) => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n}\r\nexport function approveBid(id: number, user: { token: string }): Promise<void> {\r\n  const sentUrl = `http://localhost:8080/bid/approve/${id}`;\r\n\r\n  return fetch(sentUrl, {\r\n    method: \"PUT\",\r\n    headers: {\r\n      \"Content-Type\": \"application/json\",\r\n      Authorization: `Bearer ${user.token}`,\r\n    },\r\n  })\r\n    .then((response) => {\r\n      if (response.status === 200) {\r\n        console.log(\"Bid approved successfully\");\r\n      } else {\r\n        throw new Error(`Failed to approve bid: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch((err) => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n}\r\n\r\nexport function rejectBid(id: number, user: { token: string }): Promise<void> {\r\n  const sentUrl = `http://localhost:8080/bid/reject/${id}`;\r\n\r\n  return fetch(sentUrl, {\r\n    method: \"PUT\",\r\n    headers: {\r\n      \"Content-Type\": \"application/json\",\r\n      Authorization: `Bearer ${user.token}`,\r\n    },\r\n  })\r\n    .then((response) => {\r\n      if (response.status === 200) {\r\n        console.log(\"Bid rejected successfully\");\r\n      } else {\r\n        throw new Error(`Failed to reject bid: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch((err) => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n}\r\n\r\nexport function removeBid(id: number, user: { token: string }): Promise<void> {\r\n  const sentUrl = `http://localhost:8080/bid/remove/${id}`;\r\n\r\n  return fetch(sentUrl, {\r\n    method: \"DELETE\",\r\n    headers: {\r\n      \"Content-Type\": \"application/json\",\r\n      Authorization: `Bearer ${user.token}`,\r\n    },\r\n  })\r\n    .then((response) => {\r\n      if (response.status === 200) {\r\n        console.log(\"Bid removed successfully\");\r\n      } else {\r\n        throw new Error(`Failed to remove bid: ${response.statusText}`);\r\n      }\r\n    })\r\n    .catch((err) => {\r\n      console.error(\"Error:\", err);\r\n      throw err;\r\n    });\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/calling/bidCaller.tsx b/frontend/src/calling/bidCaller.tsx
+--- a/frontend/src/calling/bidCaller.tsx	(revision 82c0821ffdc455a0299d69b82b5ba3a1165a5d42)
++++ b/frontend/src/calling/bidCaller.tsx	(date 1715970868763)
+@@ -1,6 +1,7 @@
+ export function getBid(id: number, user: { token: string }): Promise<any> {
+   const sentUrl = `http://localhost:8080/bid/${id}`;
+ 
++
+   return fetch(sentUrl, {
+     method: "GET",
+     headers: {
+@@ -43,24 +44,20 @@
+     });
+ }
+ 
+-export function getOfferedBids(
+-  userId: number,
+-  user: { token: string }
+-): Promise<any[]> {
+-  const sentUrl = `http://localhost:8080/bid/offeredList/${userId}`;
++export function getOfferedBids(companyId: number): Promise<any[]> {
++  const sentUrl = `http://localhost:8080/bid/offeredList/${companyId}`;
+ 
+   return fetch(sentUrl, {
+     method: "GET",
+     headers: {
+       "Content-Type": "application/json",
+-      Authorization: `Bearer ${user.token}`,
+     },
+   })
+     .then((response) => {
+-      if (response.status === 200) {
++      if (response.ok) {
+         return response.json();
+       } else {
+-        throw new Error(`Failed to fetch offered bids: ${response.statusText}`);
++        throw new Error(`Failed to fetch bids: ${response.statusText}`);
+       }
+     })
+     .catch((err) => {
+@@ -68,7 +65,6 @@
+       throw err;
+     });
+ }
+-
+ export function offerBid(
+   bidDto: any,
+   user: { token: string | null }
+Index: spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package tr.edu.bilkent.spacemission.repository;\r\n\r\nimport org.springframework.jdbc.core.JdbcTemplate;\r\nimport org.springframework.stereotype.Repository;\r\nimport tr.edu.bilkent.spacemission.entity.Bid;\r\n\r\nimport javax.sql.DataSource;\r\nimport java.sql.Connection;\r\nimport java.sql.PreparedStatement;\r\nimport java.sql.SQLException;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\n@Repository\r\npublic class BidRepository {\r\n    private final JdbcTemplate jdbcTemplate;\r\n    private final Connection connection;\r\n\r\n    public BidRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) throws SQLException {\r\n        this.jdbcTemplate = jdbcTemplate;\r\n        this.connection = dataSource.getConnection();\r\n    }\r\n\r\n    /**\r\n     * This method returns the bid with the given id\r\n     *\r\n     * @param id Id of the bid\r\n     * @return Bid object\r\n     */\r\n    public Bid getBid(long id) {\r\n        String query = \"SELECT * FROM bid WHERE bid_id = ?;\";\r\n        return jdbcTemplate.queryForObject(query, (rs, rowNum) -> {\r\n            Bid bid = new Bid();\r\n            bid.setId(rs.getLong(\"bid_id\"));\r\n            bid.setPrice(rs.getDouble(\"price\"));\r\n            bid.setOfferDate(rs.getDate(\"offer_date\"));\r\n            bid.setDeadline(rs.getDate(\"deadline\"));\r\n            bid.setDescription(rs.getString(\"description\"));\r\n            bid.setStatus(rs.getString(\"status\"));\r\n            bid.setOffererId(rs.getLong(\"offerer_id\"));\r\n            bid.setReceiverId(rs.getLong(\"receiver_id\"));\r\n            bid.setMissionId(rs.getLong(\"mission_id\"));\r\n            return bid;\r\n        }, id);\r\n    }\r\n\r\n    /**\r\n     * This method returns all bids received by the user with the given id\r\n     *\r\n     * @param userId Id of the user\r\n     * @return List of Bid objects\r\n     */\r\n    public List<Bid> getReceivedBids(long userId) {\r\n        ArrayList<Bid> bids = new ArrayList<>();\r\n        try {\r\n            var ps = connection.prepareStatement(\"SELECT * FROM bid WHERE receiver_id = ?\");\r\n            ps.setLong(1, userId);\r\n            var rs = ps.executeQuery();\r\n            while (rs.next()) {\r\n                Bid bid = new Bid();\r\n                bid.setId(rs.getLong(\"bid_id\"));\r\n                bid.setPrice(rs.getDouble(\"price\"));\r\n                bid.setOfferDate(rs.getDate(\"offer_date\"));\r\n                bid.setDeadline(rs.getDate(\"deadline\"));\r\n                bid.setDescription(rs.getString(\"description\"));\r\n                bid.setStatus(rs.getString(\"status\"));\r\n                bid.setOffererId(rs.getLong(\"offerer_id\"));\r\n                bid.setReceiverId(rs.getLong(\"receiver_id\"));\r\n                bid.setMissionId(rs.getLong(\"mission_id\"));\r\n                bids.add(bid);\r\n            }\r\n        } catch (SQLException e) {\r\n            e.printStackTrace();\r\n        }\r\n        return bids;\r\n    }\r\n\r\n    /**\r\n     * This method returns all bids offered by the user with the given id\r\n     *\r\n     * @param userId Id of the user\r\n     * @return List of Bid objects\r\n     */\r\n    public List<Bid> getOfferedBids(long userId) {\r\n        ArrayList<Bid> bids = new ArrayList<>();\r\n        try {\r\n            var ps = connection.prepareStatement(\"SELECT * FROM bid WHERE offerer_id = ?\");\r\n            ps.setLong(1, userId);\r\n            var rs = ps.executeQuery();\r\n            while (rs.next()) {\r\n                Bid bid = new Bid();\r\n                bid.setId(rs.getLong(\"bid_id\"));\r\n                bid.setPrice(rs.getDouble(\"price\"));\r\n                bid.setOfferDate(rs.getDate(\"offer_date\"));\r\n                bid.setDeadline(rs.getDate(\"deadline\"));\r\n                bid.setDescription(rs.getString(\"description\"));\r\n                bid.setStatus(rs.getString(\"status\"));\r\n                bid.setOffererId(rs.getLong(\"offerer_id\"));\r\n                bid.setReceiverId(rs.getLong(\"receiver_id\"));\r\n                bid.setMissionId(rs.getLong(\"mission_id\"));\r\n                bids.add(bid);\r\n            }\r\n        } catch (SQLException e) {\r\n            e.printStackTrace();\r\n        }\r\n        return bids;\r\n    }\r\n\r\n    /**\r\n     * This methods creates a new bid with the status of \"pending\"\r\n     *\r\n     * @param bid Bid object\r\n     */\r\n    public void offerBid(Bid bid) {\r\n        try {\r\n            PreparedStatement ps = connection.prepareStatement(\"INSERT INTO bid (price, offer_date, deadline, description, status, offerer_id, receiver_id, mission_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)\");\r\n            ps.setDouble(1, bid.getPrice());\r\n            ps.setDate(2, bid.getOfferDate());\r\n            ps.setDate(3, bid.getDeadline());\r\n            ps.setString(4, bid.getDescription());\r\n            ps.setString(5, \"pending\");\r\n            ps.setLong(6, bid.getOffererId());\r\n            ps.setLong(7, bid.getReceiverId());\r\n            ps.setLong(8, bid.getMissionId());\r\n            ps.executeUpdate();\r\n        } catch (SQLException e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n    /**\r\n     * This method sets the status of the bid with the given id to \"approved\"\r\n     *\r\n     * @param id Id of the bid\r\n     */\r\n    public void approveBid(long id) {\r\n        // Update the status of the bid\r\n        String query = \"UPDATE bid SET status = 'approved' WHERE bid_id = ?;\";\r\n        jdbcTemplate.update(query, id);\r\n\r\n        // Get the bid\r\n        Bid bid = getBid(id);\r\n\r\n        // Insert the transaction\r\n        String transactionQuery = \"INSERT INTO transaction (fromcompany_id, tocompany_id, transaction_amount) VALUES (?, ?, ?);\";\r\n        jdbcTemplate.update(transactionQuery, bid.getReceiverId(), bid.getOffererId(), bid.getPrice());\r\n    }\r\n\r\n    /**\r\n     * This method sets the status of the bid with the given id to \"rejected\"\r\n     * @param id Id of the bid\r\n     */\r\n    public void rejectBid(long id) {\r\n        String query = \"UPDATE bid SET status = 'rejected' WHERE bid_id = ?;\";\r\n        jdbcTemplate.update(query, id);\r\n    }\r\n\r\n    /**\r\n     * This method removes the bid with the given id\r\n     * @param id Id of the bid\r\n     */\r\n    public void removeBid(long id) {\r\n        String query = \"DELETE FROM bid WHERE bid_id = ?;\";\r\n        jdbcTemplate.update(query, id);\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java b/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java
+--- a/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java	(revision 82c0821ffdc455a0299d69b82b5ba3a1165a5d42)
++++ b/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java	(date 1715970868763)
+@@ -67,6 +67,7 @@
+                 bid.setOffererId(rs.getLong("offerer_id"));
+                 bid.setReceiverId(rs.getLong("receiver_id"));
+                 bid.setMissionId(rs.getLong("mission_id"));
++
+                 bids.add(bid);
+             }
+         } catch (SQLException e) {
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f\" name=\"Changes\" comment=\"Add some missing endpoints\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AccountController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AccountController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AccountRepository.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AccountRepository.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\"><![CDATA[{\r\n  \"lastFilter\": {\r\n    \"state\": \"OPEN\",\r\n    \"assignee\": \"emirtuglu\"\r\n  }\r\n}]]></component>\r\n  <component name=\"GithubPullRequestsUISettings\"><![CDATA[{\r\n  \"selectedUrlAndAccountId\": {\r\n    \"url\": \"https://github.com/gunenc02/Space-Mission-Management-System.git\",\r\n    \"accountId\": \"b4bc43ab-31db-47b7-baee-150c196649ad\"\r\n  }\r\n}]]></component>\r\n  <component name=\"KubernetesApiPersistence\">{}</component>\r\n  <component name=\"KubernetesApiProvider\">{\r\n  &quot;isMigrated&quot;: true\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 7\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2fhJiIM1ZtQOoH2VP1Mpb2OzP3D\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,\r\n    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,\r\n    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,\r\n    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;Spring Boot.SpaceMissionManagement.executor&quot;: &quot;Run&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;ts.external.directory.path&quot;: &quot;/Users/mac/Desktop/Bilkent3_2/CS 353/cs353_project/Space-Mission-Management-System/frontend/node_modules/typescript/lib&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"SpaceMissionManagement\" type=\"SpringBootApplicationConfigurationType\" factoryName=\"Spring Boot\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"spacemission\" />\r\n      <option name=\"SPRING_BOOT_MAIN_CLASS\" value=\"tr.edu.bilkent.spacemission.SpaceMissionManagement\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"tr.edu.bilkent.spacemission.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Spring Boot.SpaceMissionManagement\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240\" />\r\n        <option value=\"bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f\" name=\"Changes\" comment=\"\" />\r\n      <created>1714247516454</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1714247516454</updated>\r\n      <workItem from=\"1714247521564\" duration=\"239000\" />\r\n      <workItem from=\"1714266444223\" duration=\"6618000\" />\r\n      <workItem from=\"1714309792567\" duration=\"4370000\" />\r\n      <workItem from=\"1714376338318\" duration=\"4238000\" />\r\n      <workItem from=\"1714383543546\" duration=\"4624000\" />\r\n      <workItem from=\"1714414207291\" duration=\"1810000\" />\r\n      <workItem from=\"1714461245117\" duration=\"6843000\" />\r\n      <workItem from=\"1714480566423\" duration=\"331000\" />\r\n      <workItem from=\"1714628517948\" duration=\"6286000\" />\r\n      <workItem from=\"1714637209620\" duration=\"259000\" />\r\n      <workItem from=\"1715233550859\" duration=\"2550000\" />\r\n      <workItem from=\"1715534440740\" duration=\"9785000\" />\r\n      <workItem from=\"1715585662697\" duration=\"12754000\" />\r\n      <workItem from=\"1715628434680\" duration=\"3533000\" />\r\n      <workItem from=\"1715701660435\" duration=\"5019000\" />\r\n      <workItem from=\"1715752359911\" duration=\"3197000\" />\r\n      <workItem from=\"1715796898697\" duration=\"2210000\" />\r\n      <workItem from=\"1715839505217\" duration=\"9553000\" />\r\n      <workItem from=\"1715933083649\" duration=\"1414000\" />\r\n      <workItem from=\"1715963391123\" duration=\"4192000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Add some missing endpoints\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1715418534760</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1715418534760</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Finalized Triggers &amp; Views&#10;&#10;Apparently this is all we need for triggers and views, however we should conduct tests later on.\" />\r\n    <MESSAGE value=\"Add some missing endpoints\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Add some missing endpoints\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 82c0821ffdc455a0299d69b82b5ba3a1165a5d42)
++++ b/.idea/workspace.xml	(date 1715970903482)
+@@ -5,10 +5,10 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
+-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/3a25638c-b8d1-4e68-9bb8-c45466df5b2a.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AccountController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AccountRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/CompanyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/CompanyController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/CompanyRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/CompanyService.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -25,18 +25,6 @@
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+-  "lastFilter": {
+-    "state": "OPEN",
+-    "assignee": "emirtuglu"
+-  }
+-}]]></component>
+-  <component name="GithubPullRequestsUISettings"><![CDATA[{
+-  "selectedUrlAndAccountId": {
+-    "url": "https://github.com/gunenc02/Space-Mission-Management-System.git",
+-    "accountId": "b4bc43ab-31db-47b7-baee-150c196649ad"
+-  }
+-}]]></component>
+   <component name="KubernetesApiPersistence">{}</component>
+   <component name="KubernetesApiProvider">{
+   &quot;isMigrated&quot;: true
+@@ -125,7 +113,6 @@
+       <workItem from="1715796898697" duration="2210000" />
+       <workItem from="1715839505217" duration="9553000" />
+       <workItem from="1715933083649" duration="1414000" />
+-      <workItem from="1715963391123" duration="4192000" />
+     </task>
+     <task id="LOCAL-00001" summary="Add some missing endpoints">
+       <option name="closed" value="true" />
+Index: frontend/src/app/pages/OfferedBids.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React from 'react';\r\nimport Navbar from \"../../components/Navbar\";\r\n\r\ninterface Bid {\r\n  id: number;\r\n  offeredCompany: string;\r\n  amount: string;\r\n  deadline: string;\r\n}\r\n\r\nconst OfferedBids: React.FC = () => {\r\n  const bids: Bid[] = [\r\n    { id: 1, offeredCompany: 'SpaceY', amount: '45,000,000$', deadline: '25.03.2024' },\r\n    { id: 2, offeredCompany: 'SpaceX', amount: '35,000,000$', deadline: '15.03.2024' },\r\n    { id: 3, offeredCompany: 'Blue Origin', amount: '40,000,000$', deadline: '15.03.2024' },\r\n    { id: 4, offeredCompany: 'Virgin Galactic', amount: '30,000,000$', deadline: '15.03.2024' },\r\n  ];\r\n\r\n  return (\r\n    <div className=\"min-h-screen bg-gray-100\">\r\n      <Navbar />\r\n      <div className=\"container mx-auto px-4\">\r\n        <h1 className=\"text-3xl font-semibold text-gray-800 my-6\">Offered Bids</h1>\r\n        <div className=\"space-y-4\">\r\n          {bids.map((bid) => (\r\n            <div key={bid.id} className=\"bg-white shadow-md rounded-md overflow-hidden cursor-pointer transition duration-300 hover:shadow-lg\">\r\n              <div className=\"p-4\">\r\n                <p className=\"text-lg font-semibold text-gray-800\">Offered Company: {bid.offeredCompany}</p>\r\n                <p className=\"text-sm text-gray-500\">Bid Amount: {bid.amount}</p>\r\n                <p className=\"text-sm text-gray-500\">Deadline: {bid.deadline}</p>\r\n              </div>\r\n            </div>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </div>\r\n  );\r\n};\r\n\r\nexport default OfferedBids;\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/pages/OfferedBids.tsx b/frontend/src/app/pages/OfferedBids.tsx
+--- a/frontend/src/app/pages/OfferedBids.tsx	(revision 82c0821ffdc455a0299d69b82b5ba3a1165a5d42)
++++ b/frontend/src/app/pages/OfferedBids.tsx	(date 1715970868748)
+@@ -1,20 +1,68 @@
+-import React from 'react';
++import React, { useEffect, useState } from "react";
+ import Navbar from "../../components/Navbar";
++import { getOfferedBids } from "../../calling/bidCaller";
++import { getCompanies } from "../../calling/companyCaller"; // Adjust the import path as needed
+ 
+ interface Bid {
+   id: number;
+-  offeredCompany: string;
+-  amount: string;
++  receiverId: number;
++  price: string;
+   deadline: string;
+ }
+ 
++interface Company {
++  userId: number;
++  name: string;
++}
++
+ const OfferedBids: React.FC = () => {
+-  const bids: Bid[] = [
+-    { id: 1, offeredCompany: 'SpaceY', amount: '45,000,000$', deadline: '25.03.2024' },
+-    { id: 2, offeredCompany: 'SpaceX', amount: '35,000,000$', deadline: '15.03.2024' },
+-    { id: 3, offeredCompany: 'Blue Origin', amount: '40,000,000$', deadline: '15.03.2024' },
+-    { id: 4, offeredCompany: 'Virgin Galactic', amount: '30,000,000$', deadline: '15.03.2024' },
+-  ];
++  const [bids, setBids] = useState<Bid[]>([]);
++  const [companies, setCompanies] = useState<Company[]>([]);
++  const [error, setError] = useState<string | null>(null);
++
++  useEffect(() => {
++    const userId = localStorage.getItem("userId");
++    const userRole = localStorage.getItem("userRole");
++    console.log("Logged in user ID:", userId + "and role is: " + userRole + " and name is: " + localStorage.getItem("userName"));
++
++    if (userRole !== "COMPANY" || !userId) {
++      setError("Access denied. Only companies can view bids.");
++      return;
++    }
++
++    const numericUserId = parseInt(userId, 10);
++    if (isNaN(numericUserId)) {
++      setError("Invalid user ID.");
++      return;
++    }
++
++    // Fetch offered bids
++    getOfferedBids(numericUserId)
++      .then((data) => {
++        console.log("Offered Bids Data:", data); // Log the fetched data
++        setBids(data);
++      })
++      .catch((err) => setError(err.message));
++
++    // Fetch companies
++    getCompanies({ token: "" }) // Adjust if you have a token management system
++      .then((data) => {
++        console.log("Companies Data:", data); // Log the fetched data
++        setCompanies(data);
++      })
++      .catch((err) => setError(err.message));
++  }, []);
++
++  if (error) {
++    return <div>Error: {error}</div>;
++  }
++
++  const getCompanyNameById = (receiver_id: number) => {
++    console.log("Receiver ID:", receiver_id);
++    const company = companies.find((company) => company.userId === receiver_id);
++    console.log("Company:", company);
++    return company ? company.name : 'Unknown';
++  };
+ 
+   return (
+     <div className="min-h-screen bg-gray-100">
+@@ -25,9 +73,11 @@
+           {bids.map((bid) => (
+             <div key={bid.id} className="bg-white shadow-md rounded-md overflow-hidden cursor-pointer transition duration-300 hover:shadow-lg">
+               <div className="p-4">
+-                <p className="text-lg font-semibold text-gray-800">Offered Company: {bid.offeredCompany}</p>
+-                <p className="text-sm text-gray-500">Bid Amount: {bid.amount}</p>
+-                <p className="text-sm text-gray-500">Deadline: {bid.deadline}</p>
++                <p className="text-lg font-semibold text-gray-800">
++                  Offered Company: {getCompanyNameById(bid.receiverId)}
++                </p>
++                <p className="text-sm text-gray-500">Bid Amount: {bid.price}</p>
++                <p className="text-sm text-gray-500">Deadline: {new Date(bid.deadline).toLocaleDateString()}</p>
+               </div>
+             </div>
+           ))}
+Index: spacemission/src/main/resources/schema.sql
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>CREATE TABLE IF NOT EXISTS user (\r\n     user_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     user_mail VARCHAR(255) NOT NULL UNIQUE,\r\n     user_password VARCHAR(255) NOT NULL,\r\n     user_role VARCHAR(255) NOT NULL\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS admin (\r\n     admin_id INT PRIMARY KEY,\r\n     admin_name VARCHAR(255) NOT NULL,\r\n     is_approved BOOLEAN NOT NULL DEFAULT FALSE,\r\n     FOREIGN KEY (admin_id) REFERENCES user(user_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS agency (\r\n     agency_id INT PRIMARY KEY,\r\n     agency_name VARCHAR(255) NOT NULL,\r\n     agency_logo BLOB,\r\n     is_approved BOOLEAN NOT NULL DEFAULT FALSE,\r\n     FOREIGN KEY (agency_id) REFERENCES user(user_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS company (\r\n     company_id INT PRIMARY KEY,\r\n     company_name VARCHAR(255) NOT NULL,\r\n     company_logo BLOB,\r\n     worker_count INT NOT NULL DEFAULT 0,\r\n     country VARCHAR(255) NOT NULL,\r\n     money DOUBLE NOT NULL,\r\n     is_approved BOOLEAN NOT NULL DEFAULT FALSE,\r\n     FOREIGN KEY (company_id) REFERENCES user(user_id)\r\n        ON DELETE CASCADE\r\n        ON UPDATE CASCADE\r\n    ) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS astronaut (\r\n     astronaut_id INT PRIMARY KEY,\r\n     astronaut_name VARCHAR(255) NOT NULL,\r\n     astronaut_image BLOB,\r\n     date_of_birth DATE NOT NULL,\r\n     on_duty BOOLEAN NOT NULL DEFAULT FALSE,\r\n     country VARCHAR(255) NOT NULL,\r\n     salary DOUBLE NOT NULL DEFAULT 0,\r\n     FOREIGN KEY (astronaut_id) REFERENCES user(user_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE\r\n\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS expert (\r\n     expert_id INT PRIMARY KEY,\r\n     expert_name VARCHAR(255) UNIQUE,\r\n     expert_company INT,\r\n     FOREIGN KEY (expert_id) REFERENCES user(user_id),\r\n     FOREIGN KEY (expert_company) REFERENCES company(company_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS health_record (\r\n     health_record_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     date DATE NOT NULL,\r\n     availibility_for_mission BOOLEAN NOT NULL,\r\n     weight DOUBLE NOT NULL,\r\n     height DOUBLE NOT NULL,\r\n     heart_rate INT NOT NULL,\r\n     blood_pressure VARCHAR(255) NOT NULL,\r\n     vaccinations TEXT NOT NULL,\r\n     astronaut_id INT NOT NULL,\r\n     expert_id INT NOT NULL,\r\n     notes TEXT,\r\n     FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE,\r\n     FOREIGN KEY(expert_id) REFERENCES expert(expert_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS platform (\r\n     platform_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     platform_name VARCHAR(255) NOT NULL,\r\n     production_year YEAR NOT NULL,\r\n     platform_image BLOB,\r\n     cost_per_launch DOUBLE NOT NULL\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS space_mission (\r\n     mission_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     mission_name VARCHAR(255) NOT NULL,\r\n     mission_image BLOB,\r\n     objective TEXT NOT NULL,\r\n     budget DOUBLE NOT NULL,\r\n     create_date DATE NOT NULL,\r\n     perform_date DATE,\r\n     platform_id INT,\r\n     creator_id INT NOT NULL,\r\n     performer_id INT,\r\n     perform_status VARCHAR(10) NOT NULL CHECK (perform_status = 'pending' OR perform_status = 'performed'),\r\n     FOREIGN KEY(platform_id) REFERENCES platform(platform_id),\r\n     FOREIGN KEY(creator_id) REFERENCES company(company_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE,\r\n     FOREIGN KEY(performer_id) REFERENCES company(company_id)\r\n         ON DELETE CASCADE\r\n         ON UPDATE CASCADE\r\n) ^;\r\n\r\n\r\nCREATE TABLE IF NOT EXISTS mission_astronaut_recordings (\r\n    mission_id INT,\r\n    astronaut_id INT,\r\n    FOREIGN KEY(mission_id) REFERENCES space_mission(mission_id),\r\n    FOREIGN KEY(astronaut_id) REFERENCES astronaut(astronaut_id),\r\n    PRIMARY KEY(mission_id, astronaut_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS transaction (\r\n     transaction_id INT PRIMARY KEY,\r\n     fromcompany_id INT NOT NULL,\r\n     tocompany_id INT NOT NULL,\r\n     transaction_amount DOUBLE NOT NULL,\r\n     FOREIGN KEY(fromcompany_id) REFERENCES company(company_id),\r\n     FOREIGN KEY(tocompany_id) REFERENCES company(company_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS agency_approve_astronaut (\r\n     id INT AUTO_INCREMENT PRIMARY KEY,\r\n     astronaut_id INT NOT NULL,\r\n     agency_id INT NOT NULL,\r\n     FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id),\r\n     FOREIGN KEY (agency_id) REFERENCES agency(agency_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS agency_approve_space_mission (\r\n     id INT AUTO_INCREMENT PRIMARY KEY,\r\n     space_mission_id INT NOT NULL,\r\n     agency_id INT NOT NULL,\r\n     FOREIGN KEY (space_mission_id) REFERENCES space_mission(mission_id),\r\n     FOREIGN KEY (agency_id) REFERENCES agency(agency_id)\r\n) ^;\r\n\r\nCREATE TABLE IF NOT EXISTS bid (\r\n     bid_id INT AUTO_INCREMENT PRIMARY KEY,\r\n     price INT NOT NULL,\r\n     offer_date DATE NOT NULL,\r\n     deadline DATE NOT NULL,\r\n     description VARCHAR(2555),\r\n     status TEXT NOT NULL CHECK (status = 'approved' OR status = 'rejected' OR status = 'pending'),\r\n     offerer_id INT NOT NULL,\r\n     receiver_id INT NOT NULL,\r\n     mission_id INT NOT NULL,\r\n     FOREIGN KEY (offerer_id) REFERENCES company(company_id),\r\n     FOREIGN KEY (receiver_id) REFERENCES company(company_id),\r\n     FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id)\r\n) ^;\r\n\r\nCREATE OR REPLACE VIEW company_mission_info AS\r\nSELECT comp.company_name,\r\n       comp.worker_count,\r\n       miss.mission_name,\r\n       miss.objective,\r\n       a.astronaut_name\r\nFROM company AS comp JOIN space_mission AS miss ON (comp.company_id = miss.creator_id)\r\n                     LEFT OUTER JOIN mission_astronaut_recordings\r\n    AS mar ON (miss.mission_id = mar.mission_id) JOIN astronaut a ON (mar.astronaut_id = a.astronaut_id) ^;\r\n\r\nCREATE OR REPLACE VIEW platform_availability AS\r\nSELECT platform.platform_id, (SELECT COUNT(*) FROM space_mission WHERE platform_id = platform.platform_id)\r\nFROM platform ^;\r\n\r\n\r\nDROP TRIGGER IF EXISTS release_astronaut ^;\r\nCREATE TRIGGER release_astronaut\r\n    AFTER UPDATE ON space_mission\r\n    FOR EACH ROW\r\nBEGIN\r\n    IF (OLD.perform_status = 'pending' AND NEW.perform_status = 'performed') THEN\r\n\r\n        UPDATE astronaut\r\n        SET on_duty = FALSE\r\n        WHERE astronaut.astronaut_id IN (SELECT astronaut_id\r\n                                         FROM mission_astronaut_recordings\r\n                                         WHERE mission_id = OLD.mission_id);\r\n    END IF;\r\nEND ^;\r\n\r\nDROP TRIGGER IF EXISTS delete_experts ^;\r\nCREATE TRIGGER delete_experts\r\n    BEFORE DELETE ON company\r\n    FOR EACH ROW\r\nBEGIN\r\n    DELETE FROM expert\r\n    WHERE expert_company = OLD.company_id;\r\nEND ^;\r\n/*\r\nDROP TRIGGER IF EXISTS check_agency_mail_insert^;\r\nCREATE TRIGGER check_agency_mail_insert\r\n    BEFORE INSERT ON agency\r\n    FOR EACH ROW\r\nBEGIN\r\n    DECLARE user_mail VARCHAR(255);\r\n    SELECT user.user_mail INTO user_mail FROM user WHERE user_id = NEW.agency_id;\r\n    IF (user_mail <> NEW.agency_mail) THEN\r\n       SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Check failed. There exists no such agency mail in the user table';\r\n    END IF;\r\nEND ^;\r\n\r\nDROP TRIGGER IF EXISTS check_company_mail_insert^;\r\nCREATE TRIGGER check_company_mail_insert\r\n    BEFORE INSERT ON company\r\n    FOR EACH ROW\r\nBEGIN\r\n    DECLARE company_mail VARCHAR(255);\r\n    SELECT company.company_mail INTO company_mail FROM company WHERE company_id = NEW.company_id;\r\n    IF(company_mail <> NEW.company_mail) THEN\r\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT  = 'Check failed. There exists no such company mail in the user table';\r\n    END IF;\r\nEND ^;\r\n\r\nDROP TRIGGER IF EXISTS check_expert_mail_insert^;\r\nCREATE TRIGGER check_expert_mail_insert\r\n    BEFORE INSERT ON expert\r\n    FOR EACH ROW\r\nBEGIN\r\n    DECLARE expert_mail VARCHAR(255);\r\n    SELECT expert.expert_mail INTO expert_mail FROM expert WHERE expert_id = NEW.expert_id;\r\n    IF(expert_mail <> NEW.expert_mail) THEN\r\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT  = 'Check failed. There exists no such expert mail in the user table';\r\n    END IF;\r\nEND ^;\r\n*/\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/spacemission/src/main/resources/schema.sql b/spacemission/src/main/resources/schema.sql
+--- a/spacemission/src/main/resources/schema.sql	(revision 82c0821ffdc455a0299d69b82b5ba3a1165a5d42)
++++ b/spacemission/src/main/resources/schema.sql	(date 1715970868763)
+@@ -169,6 +169,16 @@
+ SELECT platform.platform_id, (SELECT COUNT(*) FROM space_mission WHERE platform_id = platform.platform_id)
+ FROM platform ^;
+ 
++CREATE OR REPLACE VIEW company_astronaut_matching AS
++SELECT company_id, astronaut_id
++FROM company JOIN space_mission AS sm ON ((company.company_id = sm.creator_id OR company.company_id = sm.performer_id)
++    AND sm.perform_status = 'pending') JOIN mission_astronaut_recordings mar on (sm.mission_id = mar.mission_id ) ^;
++
++CREATE OR REPLACE VIEW company_astronaut_count AS
++SELECT company_id, COUNT(astronaut_id) AS astronaut_count
++FROM company JOIN space_mission AS sm ON ((company.company_id = sm.creator_id OR company.company_id = sm.performer_id)
++    AND sm.perform_status = 'pending') JOIN mission_astronaut_recordings mar on (sm.mission_id = mar.mission_id )
++GROUP BY company_id ^;
+ 
+ DROP TRIGGER IF EXISTS release_astronaut ^;
+ CREATE TRIGGER release_astronaut
+Index: frontend/src/app/pages/ReceivedBids.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import React, { useEffect, useState } from \"react\";\r\nimport Navbar from \"../../components/Navbar\";\r\nimport { getReceivedBids } from \"../../calling/bidCaller.tsx\";\r\n\r\ninterface Bid {\r\n  id: number;\r\n  offeredCompany: string;\r\n  amount: string;\r\n  deadline: string;\r\n}\r\n\r\nconst OfferedBids: React.FC = () => {\r\n  const [bids, setBids] = useState<Bid[]>([]);\r\n  const [error, setError] = useState<string | null>(null);\r\n\r\n  useEffect(() => {\r\n    const userId = localStorage.getItem(\"userId\");\r\n    const userRole = localStorage.getItem(\"userRole\");\r\n    console.log(\"Logged in user ID:\", userId + \"and role is: \" + userRole + \" and name is: \" + localStorage.getItem(\"userName\"));\r\n\r\n    if (userRole !== \"COMPANY\" || !userId) {\r\n      setError(\"Access denied. Only companies can view bids.\");\r\n      return;\r\n    }\r\n\r\n    const numericUserId = parseInt(userId, 10);\r\n    if (isNaN(numericUserId)) {\r\n      setError(\"Invalid user ID.\");\r\n      return;\r\n    }\r\n\r\n    getReceivedBids(numericUserId)\r\n      .then((data) => setBids(data))\r\n      .catch((err) => setError(err.message));\r\n  }, []);\r\n\r\n  if (error) {\r\n    return <div>Error: {error}</div>;\r\n  }\r\n\r\n  return (\r\n    <div className=\"min-h-screen bg-gray-100\">\r\n      <Navbar />\r\n      <div className=\"container mx-auto px-4\">\r\n        <h1 className=\"text-3xl font-semibold text-gray-800 my-6\">Offered Bids</h1>\r\n        <div className=\"space-y-4\">\r\n          {bids.map((bid) => (\r\n            <div key={bid.id} className=\"bg-white shadow-md rounded-md overflow-hidden cursor-pointer transition duration-300 hover:shadow-lg\">\r\n              <div className=\"p-4\">\r\n                <p className=\"text-lg font-semibold text-gray-800\">Offered Company: {bid.offeredCompany}</p>\r\n                <p className=\"text-sm text-gray-500\">Bid Amount: {bid.amount}</p>\r\n                <p className=\"text-sm text-gray-500\">Deadline: {new Date(bid.deadline).toLocaleDateString()}</p>\r\n              </div>\r\n            </div>\r\n          ))}\r\n        </div>\r\n      </div>\r\n    </div>\r\n  );\r\n};\r\n\r\nexport default OfferedBids;\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/app/pages/ReceivedBids.tsx b/frontend/src/app/pages/ReceivedBids.tsx
+--- a/frontend/src/app/pages/ReceivedBids.tsx	(revision 82c0821ffdc455a0299d69b82b5ba3a1165a5d42)
++++ b/frontend/src/app/pages/ReceivedBids.tsx	(date 1715970868748)
+@@ -1,22 +1,29 @@
+ import React, { useEffect, useState } from "react";
+ import Navbar from "../../components/Navbar";
+-import { getReceivedBids } from "../../calling/bidCaller.tsx";
++import { getReceivedBids } from "../../calling/bidCaller";
++import { getCompanies } from "../../calling/companyCaller";
+ 
+ interface Bid {
+   id: number;
+-  offeredCompany: string;
+-  amount: string;
++  offererId: number;
++  price: string;
+   deadline: string;
+ }
+ 
+-const OfferedBids: React.FC = () => {
++interface Company {
++  company_id: number;
++  company_name: string;
++}
++
++const ReceivedBids: React.FC = () => {
+   const [bids, setBids] = useState<Bid[]>([]);
++  const [companies, setCompanies] = useState<Company[]>([]);
+   const [error, setError] = useState<string | null>(null);
+ 
+   useEffect(() => {
+     const userId = localStorage.getItem("userId");
+     const userRole = localStorage.getItem("userRole");
+-    console.log("Logged in user ID:", userId + "and role is: " + userRole + " and name is: " + localStorage.getItem("userName"));
++    console.log("Logged in user ID:", userId + " and role is: " + userRole + " and name is: " + localStorage.getItem("userName"));
+ 
+     if (userRole !== "COMPANY" || !userId) {
+       setError("Access denied. Only companies can view bids.");
+@@ -29,8 +36,20 @@
+       return;
+     }
+ 
++    // Fetch received bids
+     getReceivedBids(numericUserId)
+-      .then((data) => setBids(data))
++      .then((data) => {
++        console.log("Received Bids Data:", data); // Log the fetched data
++        setBids(data);
++      })
++      .catch((err) => setError(err.message));
++
++    // Fetch companies
++    getCompanies({ token: "" }) // Adjust if you have a token management system
++      .then((data) => {
++        console.log("Companies Data:", data); // Log the fetched data
++        setCompanies(data);
++      })
+       .catch((err) => setError(err.message));
+   }, []);
+ 
+@@ -38,17 +57,26 @@
+     return <div>Error: {error}</div>;
+   }
+ 
++  const getCompanyNameById = (offererId: number) => {
++    console.log("Offerer ID:", offererId);
++    const company = companies.find((company) => company.company_id === offererId);
++    console.log("Company:", company);
++    return company ? company.company_name : 'Unknown';
++  };
++
+   return (
+     <div className="min-h-screen bg-gray-100">
+       <Navbar />
+       <div className="container mx-auto px-4">
+-        <h1 className="text-3xl font-semibold text-gray-800 my-6">Offered Bids</h1>
++        <h1 className="text-3xl font-semibold text-gray-800 my-6">Received Bids</h1>
+         <div className="space-y-4">
+           {bids.map((bid) => (
+             <div key={bid.id} className="bg-white shadow-md rounded-md overflow-hidden cursor-pointer transition duration-300 hover:shadow-lg">
+               <div className="p-4">
+-                <p className="text-lg font-semibold text-gray-800">Offered Company: {bid.offeredCompany}</p>
+-                <p className="text-sm text-gray-500">Bid Amount: {bid.amount}</p>
++                <p className="text-lg font-semibold text-gray-800">
++                  Offered Company: {getCompanyNameById(bid.offererId)}
++                </p>
++                <p className="text-sm text-gray-500">Bid Amount: {bid.price}</p>
+                 <p className="text-sm text-gray-500">Deadline: {new Date(bid.deadline).toLocaleDateString()}</p>
+               </div>
+             </div>
+@@ -59,4 +87,4 @@
+   );
+ };
+ 
+-export default OfferedBids;
++export default ReceivedBids;
