@@ -102,7 +102,7 @@ export default function CompanyProfile() {
         <div className="profile-header">
           <div className="profile-image">
             <img
-              src={companyInfo.logo}
+              src={`data:image/jpeg;base64,${companyInfo.logo}`}
               alt={`${companyInfo.name} logo`}
               style={{ width: "150px" }}
             />
@@ -130,7 +130,7 @@ export default function CompanyProfile() {
                       </p>
                       <p>End Date: {mission.endDate.toLocaleDateString()}</p>
                       <img
-                        src={mission.image}
+                        src={`data:image/jpeg;base64,${mission.image}`}
                         alt={mission.missionName}
                         style={{ width: "100px" }}
                       />

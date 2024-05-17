@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getExpertById, getHealthRecordsByExpertId } from "../../calling/expertCaller";
+import {
+  getExpertById,
+  getHealthRecordsByExpertId,
+} from "../../calling/expertCaller";
 import { Expert, HealthRecordForListing } from "../../data-types/entities";
 import Header from "../../components/Header.tsx";
 import Navbar from "../../components/Navbar.tsx";
@@ -9,8 +12,10 @@ import HealthRecordDetails from "../modals/HealthRecordDetails";
 export default function ExpertProfile() {
   const { id } = useParams<{ id?: string }>();
   const [expertInfo, setExpertInfo] = useState<Expert | null>(null);
-  const [healthRecords, setHealthRecords] = useState<HealthRecordForListing[] | null>(null);
-  const [error, setError] = useState('');
+  const [healthRecords, setHealthRecords] = useState<
+    HealthRecordForListing[] | null
+  >(null);
+  const [error, setError] = useState("");
   const [openRecordId, setOpenRecordId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -29,22 +34,24 @@ export default function ExpertProfile() {
     const user = { token };
 
     getExpertById(numericExpertId, user)
-      .then(data => {
+      .then((data) => {
         setExpertInfo(data);
         return getHealthRecordsByExpertId(numericExpertId, user);
       })
-      .then(recordsData => {
+      .then((recordsData) => {
         if (!Array.isArray(recordsData)) {
           throw new Error("Received data is not an array");
         }
-        const recordsWithDates = recordsData.map((record: HealthRecordForListing) => ({
-          ...record,
-          date: new Date(record.date)
-        }));
+        const recordsWithDates = recordsData.map(
+          (record: HealthRecordForListing) => ({
+            ...record,
+            date: new Date(record.date),
+          })
+        );
         setHealthRecords(recordsWithDates);
-        setError('');
+        setError("");
       })
-      .catch(err => {
+      .catch((err) => {
         setError(err.message);
         setExpertInfo(null);
         setHealthRecords(null);
@@ -71,7 +78,11 @@ export default function ExpertProfile() {
       <div className="profile-container">
         <div className="profile-header">
           <div className="profile-image">
-            <img src={expertInfo.companyLogo} alt={`${expertInfo.companyName} logo`} style={{ width: '100px' }} />
+            <img
+              src={`data:image/jpeg;base64,${expertInfo.companyLogo}`}
+              alt={`${expertInfo.companyName} logo`}
+              style={{ width: "100px" }}
+            />
           </div>
           <div className="profile-info">
             <h1>{expertInfo.name}</h1>
@@ -85,13 +96,15 @@ export default function ExpertProfile() {
             <h2>Health Records</h2>
             {healthRecords ? (
               <ul>
-                {healthRecords.map(record => (
+                {healthRecords.map((record) => (
                   <li key={record.id}>
                     <p>Date: {record.date.toLocaleDateString()}</p>
                     <p>Astronaut: {record.astronautName}</p>
                     <p>Notes: {record.notes}</p>
                     <button onClick={() => toggleRecordDetails(record.id)}>
-                      {openRecordId === record.id ? "Hide Details" : "View Details"}
+                      {openRecordId === record.id
+                        ? "Hide Details"
+                        : "View Details"}
                     </button>
                     {openRecordId === record.id && (
                       <HealthRecordDetails

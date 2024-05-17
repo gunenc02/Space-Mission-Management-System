@@ -4,13 +4,15 @@ import Navbar from "../../components/Navbar";
 import { Platform } from "../../data-types/entities";
 import "../../styles/Details.css";
 import { getPlatformById } from "../../calling/platformCaller";
+import { useParams } from "react-router-dom";
 
 export default function PlatformDetails() {
   const [platform, setPlatform] = useState<Platform | null>(null);
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
-      setPlatform(await getPlatformById(1, { token: null }));
+      setPlatform(await getPlatformById(Number(id), { token: null }));
     };
 
     fetchData();

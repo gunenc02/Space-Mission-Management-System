@@ -24,7 +24,6 @@ export default function SpaceMissionDetails() {
   );
   const [platform, setPlatform] = useState<Platform | null>(null);
   const [submitBidOpen, setSubmitBidOpen] = useState(false);
-  const [missionImage, setMissionImage] = useState("");
 
   const handleSubmitBidClick = () => {
     setSubmitBidOpen(!submitBidOpen);
@@ -82,7 +81,7 @@ export default function SpaceMissionDetails() {
         <div className="profile-header">
           <div className="profile-image">
             <img
-              src={missionImage}
+              src={`data:image/jpeg;base64,${spaceMission?.image}`}
               alt="Mission Image"
               style={{ width: "150px" }}
             />
@@ -109,7 +108,7 @@ export default function SpaceMissionDetails() {
                 {astronauts.map((astronaut) => (
                   <li key={astronaut.userId} className="profile-list-item">
                     <img
-                      src={astronaut.image}
+                      src={`data:image/jpeg;base64,${astronaut.image}`}
                       alt={astronaut.name}
                       style={{ width: "100px", height: "100px" }}
                     />

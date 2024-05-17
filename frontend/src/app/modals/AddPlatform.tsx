@@ -24,7 +24,6 @@ export default function AddPlatform(props: AddPlatformProps) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        // Strip out the data:image/jpeg;base64, part
         const base64Image = base64String.split(",")[1];
         setFormData((prevState) => ({
           ...prevState,
