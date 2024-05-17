@@ -158,4 +158,32 @@ public class CompanyRepository {
         }
         return "";
     }
+
+    public List<CompanyDto> filterCompanies(String country, Double minBudget, Double maxBudget) {
+        String query = "SELECT * FROM company WHERE 1=1";
+        List<Object> parameters = new ArrayList<>();
+
+        if (country != null && !country.isEmpty()) {
+            query += " AND country LIKE ?";
+            parameters.add("%" + country + "%");
+        }
+        if (minBudget != null) {
+            query += " AND money >= ?";
+            parameters.add(minBudget);
+        }
+        if (maxBudget != null) {
+            query += " AND money <= ?";
+            parameters.add(maxBudget);
+        }
+
+        return jdbcTemplate.query(query, parameters.toArray(), (rs, rowNum) -> {
+            CompanyDto company = new CompanyDto();
+            company.setUserId(rs.getLong("user_id"));
+            company.setName(rs.getString("company_name"));
+            company.setCountry(rs.getString("country"));
+            company.setMoney(rs.getDouble("money"));
+            company.setLogo(rs.getBytes("company_logo"));
+            return company;
+        });
+    }
 }

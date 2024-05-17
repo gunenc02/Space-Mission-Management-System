@@ -41,6 +41,10 @@ public class CompanyService {
         return companyRepository.markSpaceMissionAsPerformed(missionId);
     }
 
+    public List<CompanyDto> filterCompanies(String country, Double minBudget, Double maxBudget) {
+        return companyRepository.filterCompanies(country, minBudget, maxBudget);
+    }
+
     public String getCompanyName(long companyId) {
         return companyRepository.getCompanyName(companyId);
     }

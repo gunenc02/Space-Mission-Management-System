@@ -65,4 +65,12 @@ public class CompanyController {
         //companyDto.setType(company.getType());
         return companyDto;
     }
+
+    @GetMapping("/filterCompanies")
+    public List<CompanyDto> filterCompanies(
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) Double minBudget,
+            @RequestParam(required = false) Double maxBudget) {
+        return companyService.filterCompanies(country, minBudget, maxBudget);
+    }
 }
