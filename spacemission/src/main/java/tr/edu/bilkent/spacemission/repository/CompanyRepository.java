@@ -161,24 +161,23 @@ public class CompanyRepository {
 
     public List<CompanyDto> filterCompanies(String country, Double minBudget, Double maxBudget) {
         String query = "SELECT * FROM company WHERE 1=1";
-        List<Object> parameters = new ArrayList<>();
 
-        if (country != null && !country.isEmpty()) {
+        List<Object> params = new ArrayList<>();
+        if (country != null) {
             query += " AND country LIKE ?";
-            parameters.add("%" + country + "%");
+            params.add("%" + country + "%");
         }
         if (minBudget != null) {
             query += " AND money >= ?";
-            parameters.add(minBudget);
+            params.add(minBudget);
         }
         if (maxBudget != null) {
             query += " AND money <= ?";
-            parameters.add(maxBudget);
+            params.add(maxBudget);
         }
 
-        return jdbcTemplate.query(query, parameters.toArray(), (rs, rowNum) -> {
+        return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
             CompanyDto company = new CompanyDto();
-            company.setUserId(rs.getLong("user_id"));
             company.setName(rs.getString("company_name"));
             company.setCountry(rs.getString("country"));
             company.setMoney(rs.getDouble("money"));
