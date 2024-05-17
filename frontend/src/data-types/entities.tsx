@@ -1,5 +1,5 @@
 export interface Astronaut {
-  id: number;
+  userId: number;
   name: string;
   image: string;
   dateOfBirth: Date;
@@ -9,9 +9,9 @@ export interface Astronaut {
 }
 
 export interface Agency {
-  id: number;
+  userId: number;
   name: string;
-  mail: string;
+  userMail: string;
   logo: string;
   isApproved: boolean;
 }
@@ -71,18 +71,18 @@ export interface SpaceMissionForListing {
   image: string;
 }
 
-export interface Expert{
-  id:number,
-  userMail:string,
-  userRole:string,
-  name:string,
-  companyName:string,
-  companyLogo:string
+export interface Expert {
+  id: number;
+  userMail: string;
+  userRole: string;
+  name: string;
+  companyName: string;
+  companyLogo: string;
 }
 
 export interface HealthRecordForListing {
-  id: number,
-  date: Date,
-  astronautName: string,
-  notes: string
+  id: number;
+  date: Date;
+  astronautName: string;
+  notes: string;
 }
