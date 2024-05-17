@@ -91,50 +91,32 @@ export function offerBid(
       throw err;
     });
 }
-export function approveBid(id: number, user: { token: string }): Promise<void> {
+export function approveBid(id: number): Promise<void> {
   const sentUrl = `http://localhost:8080/bid/approve/${id}`;
-
   return fetch(sentUrl, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${user.token}`,
     },
-  })
-    .then((response) => {
-      if (response.status === 200) {
-        console.log("Bid approved successfully");
-      } else {
-        throw new Error(`Failed to approve bid: ${response.statusText}`);
-      }
-    })
-    .catch((err) => {
-      console.error("Error:", err);
-      throw err;
-    });
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(`Failed to approve bid: ${response.statusText}`);
+    }
+  });
 }
 
-export function rejectBid(id: number, user: { token: string }): Promise<void> {
+export function rejectBid(id: number): Promise<void> {
   const sentUrl = `http://localhost:8080/bid/reject/${id}`;
-
   return fetch(sentUrl, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${user.token}`,
     },
-  })
-    .then((response) => {
-      if (response.status === 200) {
-        console.log("Bid rejected successfully");
-      } else {
-        throw new Error(`Failed to reject bid: ${response.statusText}`);
-      }
-    })
-    .catch((err) => {
-      console.error("Error:", err);
-      throw err;
-    });
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(`Failed to reject bid: ${response.statusText}`);
+    }
+  });
 }
 
 export function removeBid(id: number, user: { token: string }): Promise<void> {

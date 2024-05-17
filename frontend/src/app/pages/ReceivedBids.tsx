@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import { getReceivedBids } from "../../calling/bidCaller";
+import { getReceivedBids, approveBid, rejectBid } from "../../calling/bidCaller";
 import { getCompanies } from "../../calling/companyCaller";
 
 interface Bid {
@@ -8,11 +8,12 @@ interface Bid {
   offererId: number;
   price: string;
   deadline: string;
+  status: string;
 }
 
 interface Company {
-  company_id: number;
-  company_name: string;
+  userId: number;
+  name: string;
 }
 
 const ReceivedBids: React.FC = () => {
@@ -59,9 +60,37 @@ const ReceivedBids: React.FC = () => {
 
   const getCompanyNameById = (offererId: number) => {
     console.log("Offerer ID:", offererId);
-    const company = companies.find((company) => company.company_id === offererId);
+    const company = companies.find((company) => company.userId === offererId);
     console.log("Company:", company);
-    return company ? company.company_name : 'Unknown';
+    return company ? company.name : 'Unknown';
+  };
+
+  const handleApproveBid = (id: number) => {
+    approveBid(id)
+      .then(() => {
+        // Update the status of the bid to approved
+        setBids((prevBids) =>
+          prevBids.map((bid) =>
+            bid.id === id ? { ...bid, status: "approved" } : bid
+          )
+        );
+        console.log(`Bid ${id} approved`);
+      })
+      .catch((err) => setError(err.message));
+  };
+
+  const handleRejectBid = (id: number) => {
+    rejectBid(id)
+      .then(() => {
+        // Update the status of the bid to rejected
+        setBids((prevBids) =>
+          prevBids.map((bid) =>
+            bid.id === id ? { ...bid, status: "rejected" } : bid
+          )
+        );
+        console.log(`Bid ${id} rejected`);
+      })
+      .catch((err) => setError(err.message));
   };
 
   return (
@@ -72,12 +101,29 @@ const ReceivedBids: React.FC = () => {
         <div className="space-y-4">
           {bids.map((bid) => (
             <div key={bid.id} className="bg-white shadow-md rounded-md overflow-hidden cursor-pointer transition duration-300 hover:shadow-lg">
-              <div className="p-4">
-                <p className="text-lg font-semibold text-gray-800">
-                  Offered Company: {getCompanyNameById(bid.offererId)}
-                </p>
-                <p className="text-sm text-gray-500">Bid Amount: {bid.price}</p>
-                <p className="text-sm text-gray-500">Deadline: {new Date(bid.deadline).toLocaleDateString()}</p>
+              <div className="p-4 flex justify-between items-center">
+                <div>
+                  <p className="text-lg font-semibold text-gray-800">
+                    Offerer Company: {getCompanyNameById(bid.offererId)}
+                  </p>
+                  <p className="text-sm text-gray-500">Bid Amount: {bid.price}</p>
+                  <p className="text-sm text-gray-500">Deadline: {new Date(bid.deadline).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-500">Status: {bid.status}</p>
+                </div>
+                <div className="flex space-x-4">
+                  <button
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                    onClick={() => handleApproveBid(bid.id)}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                    onClick={() => handleRejectBid(bid.id)}
+                  >
+                    Reject
+                  </button>
+                </div>
               </div>
             </div>
           ))}

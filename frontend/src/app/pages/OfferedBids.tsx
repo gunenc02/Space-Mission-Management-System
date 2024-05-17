@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import { getOfferedBids } from "../../calling/bidCaller";
-import { getCompanies } from "../../calling/companyCaller"; // Adjust the import path as needed
+import { getCompanies } from "../../calling/companyCaller";
 
 interface Bid {
   id: number;
   receiverId: number;
   price: string;
   deadline: string;
+  status: string;
 }
 
 interface Company {
@@ -23,7 +24,7 @@ const OfferedBids: React.FC = () => {
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     const userRole = localStorage.getItem("userRole");
-    console.log("Logged in user ID:", userId + "and role is: " + userRole + " and name is: " + localStorage.getItem("userName"));
+    console.log("Logged in user ID:", userId + " and role is: " + userRole + " and name is: " + localStorage.getItem("userName"));
 
     if (userRole !== "COMPANY" || !userId) {
       setError("Access denied. Only companies can view bids.");
@@ -57,9 +58,9 @@ const OfferedBids: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  const getCompanyNameById = (receiver_id: number) => {
-    console.log("Receiver ID:", receiver_id);
-    const company = companies.find((company) => company.userId === receiver_id);
+  const getCompanyNameById = (receiverId: number) => {
+    console.log("Receiver ID:", receiverId);
+    const company = companies.find((company) => company.userId === receiverId);
     console.log("Company:", company);
     return company ? company.name : 'Unknown';
   };
@@ -78,6 +79,7 @@ const OfferedBids: React.FC = () => {
                 </p>
                 <p className="text-sm text-gray-500">Bid Amount: {bid.price}</p>
                 <p className="text-sm text-gray-500">Deadline: {new Date(bid.deadline).toLocaleDateString()}</p>
+                <p className="text-sm text-gray-500">Status: {bid.status}</p>
               </div>
             </div>
           ))}
