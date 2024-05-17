@@ -33,4 +33,13 @@ public class PlatformService {
     public void deletePlatform(long id) {
         platformRepository.deletePlatform(id);
     }
+
+    public List<Platform> getFilteredPlatforms(Integer minYear, Integer maxYear, Double minCost, Double maxCost) {
+        try {
+            return platformRepository.filterPlatforms(minYear, maxYear, minCost, maxCost);
+        } catch (IllegalArgumentException e) {
+            // Handle the exception, e.g., log it or convert it to a user-friendly message
+            throw new RuntimeException("Failed to filter platforms: " + e.getMessage());
+        }
+    }
 }
