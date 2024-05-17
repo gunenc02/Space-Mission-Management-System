@@ -25,6 +25,7 @@ const RegistrationPage: React.FC = () => {
     dateOfBirth: "",
     money: "",
     image: "",
+    logo: "",
   });
 
   const history = useNavigate();
@@ -46,8 +47,8 @@ const RegistrationPage: React.FC = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (name == "image") {
+    const { id, value } = e.target;
+    if (id == "image") {
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -55,14 +56,14 @@ const RegistrationPage: React.FC = () => {
         const base64Image = base64String.split(",")[1];
         setFormData({
           ...formData,
-          [name]: value,
+          ["image"]: base64Image,
         });
       };
       reader.readAsDataURL(file);
     } else {
       setFormData({
         ...formData,
-        [name]: value,
+        [id]: value,
       });
     }
   };
@@ -96,6 +97,7 @@ const RegistrationPage: React.FC = () => {
         },
         body: JSON.stringify(formData),
       });
+      console.log(JSON.stringify(formData));
 
       if (response.ok) {
         alert("Registration successful!");
@@ -136,12 +138,13 @@ const RegistrationPage: React.FC = () => {
               />
             </div>
             <div className="input-group">
-              <label htmlFor="imageUpload">Upload Image</label>
+              <label htmlFor="image">Upload Image</label>
               <input
                 type="file"
-                id="imageUpload"
+                id="image"
                 name="image"
                 accept="image/jpeg, image/png"
+                onChange={handleInputChange}
               />
             </div>
           </>
@@ -183,12 +186,13 @@ const RegistrationPage: React.FC = () => {
               />
             </div>
             <div className="input-group">
-              <label htmlFor="imageUpload">Upload Image</label>
+              <label htmlFor="image">Upload Image</label>
               <input
                 type="file"
-                id="imageUpload"
+                id="image"
                 name="image"
                 accept="image/jpeg, image/png"
+                onChange={handleInputChange}
               />
             </div>
           </>
@@ -230,12 +234,13 @@ const RegistrationPage: React.FC = () => {
               />
             </div>
             <div className="input-group">
-              <label htmlFor="imageUpload">Upload Image</label>
+              <label htmlFor="image">Upload Image</label>
               <input
                 type="file"
-                id="imageUpload"
+                id="image"
                 name="image"
                 accept="image/jpeg, image/png"
+                onChange={handleInputChange}
               />
             </div>
           </>
