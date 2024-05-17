@@ -92,44 +92,6 @@ export default function AstronautProfile() {
     fetchAstronaut();
   }, []);
 
-  /*const isCompAstronautMatch = function(){
-    //console.log("Debug AstronautProfile::isCompAstronautMatch invoked");
-    let result = false;
-    const url = "http://localhost:8080/company/" + localStorage.getItem("userId") + "/hasAstronaut/" + id;
-
-    fetch(url, {
-      method: "GET",
-      mode: 'no-cors',
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((data) => {
-        //console.log("Debug AstronautProfile: company has astronaut data equals string is " + data == "d" + " and data is " + data);
-        console.log("zaaaa xd " + data.text());
-        result = data.text.toString() === "true";
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        throw error;
-      });
-      return result;
-    };
-    /**.then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error(`Failed to fetch astronauts: ${response.statusText}`);
-      }
-    })
-    .then((data) => {
-      return data;
-    })
-    .catch((err) => {
-      console.error("Error:", err);
-      throw err;
-    }); */
-
     useEffect(() => {
       const url = `http://localhost:8080/company/${localStorage.getItem("userId")}/hasAstronaut/${id}`;
       

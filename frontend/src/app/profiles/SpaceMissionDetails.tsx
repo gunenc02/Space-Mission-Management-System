@@ -82,9 +82,9 @@ export default function SpaceMissionDetails() {
           <div className="mission-details-title">
             {spaceMission?.missionName}
           </div>
-          <button className="details-button" onClick={handleSubmitBidClick}>
+          {localStorage.getItem("userRole") === "COMPANY" && (<button className="details-button" onClick={handleSubmitBidClick}>
             Submit Bid
-          </button>
+          </button>)}
         </div>
       </div>
       <div className="details-column-container">
