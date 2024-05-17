@@ -18,6 +18,8 @@ export default function AstronautProfile() {
   const [astronaut, setAstronaut] = useState<Astronaut>(null);
   const [spaceMissions, setSpaceMissions] = useState<SpaceMission[]>([]);
   const [healthRecords, setHealthRecords] = useState<HealthRecord[]>([]);
+  const [isCompAstronautMatch, setIsCompAstronautMatch] = useState(false);
+  
 
   const { id } = useParams();
   const [createHealthRecordOpen, setCreateHealthRecordOpen] =
@@ -90,6 +92,63 @@ export default function AstronautProfile() {
     fetchAstronaut();
   }, []);
 
+  /*const isCompAstronautMatch = function(){
+    //console.log("Debug AstronautProfile::isCompAstronautMatch invoked");
+    let result = false;
+    const url = "http://localhost:8080/company/" + localStorage.getItem("userId") + "/hasAstronaut/" + id;
+
+    fetch(url, {
+      method: "GET",
+      mode: 'no-cors',
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((data) => {
+        //console.log("Debug AstronautProfile: company has astronaut data equals string is " + data == "d" + " and data is " + data);
+        console.log("zaaaa xd " + data.text());
+        result = data.text.toString() === "true";
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        throw error;
+      });
+      return result;
+    };
+    /**.then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`Failed to fetch astronauts: ${response.statusText}`);
+      }
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      throw err;
+    }); */
+
+    useEffect(() => {
+      const url = `http://localhost:8080/company/${localStorage.getItem("userId")}/hasAstronaut/${id}`;
+      
+      fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(response => response.text())
+      .then(text => {
+        setIsCompAstronautMatch(text === "true");
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    }, [id]);
+  
+  
   return (
     <div className="outer">
       <Header />
@@ -104,7 +163,7 @@ export default function AstronautProfile() {
           </button>
         )}
 
-        {localStorage.getItem("userRole") === "COMPANY" && (
+        {localStorage.getItem("userRole") === "COMPANY" && (isCompAstronautMatch) && (
           <button className="top-button" onClick={handleFireAstronautClick}>
             Fire Astronaut
           </button>
@@ -267,4 +326,5 @@ export default function AstronautProfile() {
       </div>
     </div>
   );
+ 
 }
