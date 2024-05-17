@@ -67,6 +67,7 @@ public class BidRepository {
                 bid.setOffererId(rs.getLong("offerer_id"));
                 bid.setReceiverId(rs.getLong("receiver_id"));
                 bid.setMissionId(rs.getLong("mission_id"));
+
                 bids.add(bid);
             }
         } catch (SQLException e) {

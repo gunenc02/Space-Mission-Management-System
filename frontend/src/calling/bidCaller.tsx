@@ -1,6 +1,7 @@
 export function getBid(id: number, user: { token: string }): Promise<any> {
   const sentUrl = `http://localhost:8080/bid/${id}`;
 
+
   return fetch(sentUrl, {
     method: "GET",
     headers: {
@@ -43,24 +44,20 @@ export function getReceivedBids(companyId: number): Promise<any[]> {
     });
 }
 
-export function getOfferedBids(
-  userId: number,
-  user: { token: string }
-): Promise<any[]> {
-  const sentUrl = `http://localhost:8080/bid/offeredList/${userId}`;
+export function getOfferedBids(companyId: number): Promise<any[]> {
+  const sentUrl = `http://localhost:8080/bid/offeredList/${companyId}`;
 
   return fetch(sentUrl, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${user.token}`,
     },
   })
     .then((response) => {
-      if (response.status === 200) {
+      if (response.ok) {
         return response.json();
       } else {
-        throw new Error(`Failed to fetch offered bids: ${response.statusText}`);
+        throw new Error(`Failed to fetch bids: ${response.statusText}`);
       }
     })
     .catch((err) => {
@@ -68,7 +65,6 @@ export function getOfferedBids(
       throw err;
     });
 }
-
 export function offerBid(
   bidDto: any,
   user: { token: string | null }

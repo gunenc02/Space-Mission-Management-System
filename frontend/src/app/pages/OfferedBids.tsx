@@ -1,20 +1,68 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
+import { getOfferedBids } from "../../calling/bidCaller";
+import { getCompanies } from "../../calling/companyCaller"; // Adjust the import path as needed
 
 interface Bid {
   id: number;
-  offeredCompany: string;
-  amount: string;
+  receiverId: number;
+  price: string;
   deadline: string;
 }
 
+interface Company {
+  userId: number;
+  name: string;
+}
+
 const OfferedBids: React.FC = () => {
-  const bids: Bid[] = [
-    { id: 1, offeredCompany: 'SpaceY', amount: '45,000,000$', deadline: '25.03.2024' },
-    { id: 2, offeredCompany: 'SpaceX', amount: '35,000,000$', deadline: '15.03.2024' },
-    { id: 3, offeredCompany: 'Blue Origin', amount: '40,000,000$', deadline: '15.03.2024' },
-    { id: 4, offeredCompany: 'Virgin Galactic', amount: '30,000,000$', deadline: '15.03.2024' },
-  ];
+  const [bids, setBids] = useState<Bid[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    const userRole = localStorage.getItem("userRole");
+    console.log("Logged in user ID:", userId + "and role is: " + userRole + " and name is: " + localStorage.getItem("userName"));
+
+    if (userRole !== "COMPANY" || !userId) {
+      setError("Access denied. Only companies can view bids.");
+      return;
+    }
+
+    const numericUserId = parseInt(userId, 10);
+    if (isNaN(numericUserId)) {
+      setError("Invalid user ID.");
+      return;
+    }
+
+    // Fetch offered bids
+    getOfferedBids(numericUserId)
+      .then((data) => {
+        console.log("Offered Bids Data:", data); // Log the fetched data
+        setBids(data);
+      })
+      .catch((err) => setError(err.message));
+
+    // Fetch companies
+    getCompanies({ token: "" }) // Adjust if you have a token management system
+      .then((data) => {
+        console.log("Companies Data:", data); // Log the fetched data
+        setCompanies(data);
+      })
+      .catch((err) => setError(err.message));
+  }, []);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  const getCompanyNameById = (receiver_id: number) => {
+    console.log("Receiver ID:", receiver_id);
+    const company = companies.find((company) => company.userId === receiver_id);
+    console.log("Company:", company);
+    return company ? company.name : 'Unknown';
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -25,9 +73,11 @@ const OfferedBids: React.FC = () => {
           {bids.map((bid) => (
             <div key={bid.id} className="bg-white shadow-md rounded-md overflow-hidden cursor-pointer transition duration-300 hover:shadow-lg">
               <div className="p-4">
-                <p className="text-lg font-semibold text-gray-800">Offered Company: {bid.offeredCompany}</p>
-                <p className="text-sm text-gray-500">Bid Amount: {bid.amount}</p>
-                <p className="text-sm text-gray-500">Deadline: {bid.deadline}</p>
+                <p className="text-lg font-semibold text-gray-800">
+                  Offered Company: {getCompanyNameById(bid.receiverId)}
+                </p>
+                <p className="text-sm text-gray-500">Bid Amount: {bid.price}</p>
+                <p className="text-sm text-gray-500">Deadline: {new Date(bid.deadline).toLocaleDateString()}</p>
               </div>
             </div>
           ))}
