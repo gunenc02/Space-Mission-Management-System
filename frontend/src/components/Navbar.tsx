@@ -4,9 +4,25 @@ import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const initialValue = [false, false, false, false, false];
+  
   const [selections, setSelections] = useState(initialValue);
 
   const fullPath = window.location.href;
+  if(fullPath.match(".*space-mission.*")){
+    initialValue[0] = true;
+  }
+  else if(fullPath.match(".*astronauts.*")){
+    initialValue[1] = true;
+  }
+  else if(fullPath.match(".*compan.*")){
+    initialValue[2] = true;
+  }
+  else if(fullPath.match(".*agenc.*")){
+    initialValue[3] = true;
+  }
+  else if(fullPath.match(".*platform.*")){
+    initialValue[4] = true;
+  }
   console.log("Debug Navbar: fullPath is " + fullPath);
   
   const updateSelectionCSS = function(index){
@@ -20,7 +36,7 @@ export default function Navbar() {
     console.log("Selections updated:", selections);
     // Any logic dependent on the updated selections can go here
   }, [selections]); // This effect will run whenever selections changes
-
+  
   const linkStyle0 = {
     border: selections[0] ? '4px solid purple' : 'none',
     padding: '10px',
