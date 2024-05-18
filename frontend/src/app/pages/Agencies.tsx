@@ -33,12 +33,14 @@ export default function Agencies() {
       <div className="w-full max-w-6xl p-6 overflow-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Agencies</h2>
-          <button
-            onClick={() => setIsFilterModalOpen(true)}
-            className="px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 min-w-[150px] text-sm sm:text-base"
-          >
-            Filter
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setIsFilterModalOpen(true)}
+              className="px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 min-w-[150px] text-sm sm:text-base"
+            >
+              Filter
+            </button>
+          </div>
         </div>
         <div className="flex flex-col space-y-4">
           {filteredAgencies.map((agency: Agency) => (
