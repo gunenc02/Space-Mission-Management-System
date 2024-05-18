@@ -111,18 +111,18 @@ const ReceivedBids: React.FC = () => {
                   <p className="text-sm text-gray-500">Status: {bid.status}</p>
                 </div>
                 <div className="flex space-x-4">
-                  <button
+                  { (bid.status === "pending") && (<button
                     className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
                     onClick={() => handleApproveBid(bid.id)}
                   >
                     Approve
-                  </button>
-                  <button
+                  </button>)}
+                  { (bid.status === "pending") && (<button
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
                     onClick={() => handleRejectBid(bid.id)}
                   >
                     Reject
-                  </button>
+                  </button>)}
                 </div>
               </div>
             </div>

@@ -134,19 +134,30 @@ public class BidRepository {
      * @param id Id of the bid
      */
     public void approveBid(long id) {
-        // Update the status of the bid
-        String query = "UPDATE bid SET status = 'approved' WHERE bid_id = ?;";
-        jdbcTemplate.update(query, id);
+        try {
+            // Update the status of the bid
+            String query = "UPDATE bid SET status = 'approved' WHERE bid_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, id);
+            ps.executeUpdate();
 
-        // Get the bid
-        Bid bid = getBid(id);
+            // Get the bid
+            Bid bid = getBid(id);
 
-        System.out.println("Bid details: " + bid);
+            System.out.println("Bid details: " + bid);
 
 
-        // Insert the transaction
-        String transactionQuery = "INSERT INTO transaction (fromcompany_id, tocompany_id, transaction_amount) VALUES (?, ?, ?);";
-        jdbcTemplate.update(transactionQuery, bid.getReceiverId(), bid.getOffererId(), bid.getPrice());
+            // Insert the transaction
+            String transactionQuery = "INSERT INTO transaction (fromcompany_id, tocompany_id, transaction_amount) VALUES (?, ?, ?);";
+            PreparedStatement ps2 = connection.prepareStatement(transactionQuery);
+            ps2.setLong(1, bid.getReceiverId());
+            ps2.setLong(2, bid.getOffererId());
+            ps2.setDouble(3, bid.getPrice());
+            ps2.executeUpdate();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     /**
