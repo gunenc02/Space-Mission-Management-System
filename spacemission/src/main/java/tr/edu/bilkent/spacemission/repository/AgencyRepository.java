@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.dto.AgencyDto;
 import tr.edu.bilkent.spacemission.entity.Agency;
 
 import javax.sql.DataSource;
@@ -121,5 +122,25 @@ public class AgencyRepository {
             rowsAffected = 0;
         }
         return rowsAffected > 0;
+    }
+
+
+    public List<AgencyDto> filterAgencies(Boolean isApproved) {
+        String query = "SELECT * FROM agency WHERE 1=1";
+
+        List<Object> params = new ArrayList<>();
+        if (isApproved != null) {
+            query += " AND is_approved = ?";
+            params.add(isApproved);
+        }
+
+        return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
+            AgencyDto agency = new AgencyDto();
+            agency.setAgencyId(rs.getInt("agency_id"));
+            agency.setName(rs.getString("agency_name"));
+            agency.setApproved(rs.getBoolean("is_approved"));
+            agency.setLogo(rs.getBytes("agency_logo"));
+            return agency;
+        });
     }
 }

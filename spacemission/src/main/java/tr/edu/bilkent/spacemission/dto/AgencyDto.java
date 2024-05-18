@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AgencyDto extends UserDto{
+    private int agencyId;
     private String name;
     private byte[] logo;
     private boolean isApproved;

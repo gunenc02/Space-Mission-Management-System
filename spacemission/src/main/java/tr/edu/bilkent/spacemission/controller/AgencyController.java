@@ -1,6 +1,8 @@
 package tr.edu.bilkent.spacemission.controller;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tr.edu.bilkent.spacemission.dto.AgencyDto;
 import tr.edu.bilkent.spacemission.service.AgencyService;
@@ -66,5 +68,17 @@ public class AgencyController {
         agency.setLogo(agencyDto.getLogo());
         agency.setApproved(agencyDto.isApproved());
         return agency;
+    }
+
+    @GetMapping("/filterAgencies")
+    public ResponseEntity<List<AgencyDto>> filterAgencies(
+            @RequestParam(required = false) Boolean isApproved) {
+        try {
+            List<AgencyDto> agencies = agencyService.filterAgencies(isApproved);
+            return ResponseEntity.ok(agencies);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

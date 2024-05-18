@@ -1,6 +1,7 @@
 package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.stereotype.Service;
+import tr.edu.bilkent.spacemission.dto.AgencyDto;
 import tr.edu.bilkent.spacemission.entity.Agency;
 import tr.edu.bilkent.spacemission.repository.AgencyRepository;
 
@@ -25,5 +26,9 @@ public class AgencyService {
     }
     public boolean approveAstronaut(long agencyId, long astronautId){
         return agencyRepository.approveAstronaut(agencyId, astronautId);
+    }
+
+    public List<AgencyDto> filterAgencies (Boolean isApproved){
+        return agencyRepository.filterAgencies(isApproved);
     }
 }
