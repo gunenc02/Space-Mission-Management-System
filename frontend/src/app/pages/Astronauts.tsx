@@ -60,9 +60,9 @@ export default function Astronauts() {
         <div className="flex flex-col space-y-4">
           {filteredAstronauts.map((astronaut: Astronaut) => (
             <Link
-              to={"/astronaut/" + astronaut.id}
+              to={"/astronaut/" + astronaut.userId}
               className="flex flex-col md:flex-row items-center bg-white rounded-lg shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-lg w-full"
-              key={astronaut.id}
+              key={astronaut.userId}
             >
               <div className="w-full md:w-1/3 h-48">
                 <img

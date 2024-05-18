@@ -58,7 +58,7 @@ export default function Agencies() {
               </div>
               <div className="p-4">
                 <p className="text-xl font-bold mb-2">{agency.name}</p>
-                <p>{agency.isApproved ? "Approved" : "Not approved"}</p>
+                <p>{agency.approved ? "Approved" : "Not approved"}</p>
               </div>
             </Link>
           ))}

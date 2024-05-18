@@ -13,7 +13,7 @@ export interface Agency {
   name: string;
   userMail: string;
   logo: string;
-  isApproved: boolean;
+  approved: boolean;
 }
 
 export interface Company {
