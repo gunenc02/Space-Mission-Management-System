@@ -7,6 +7,7 @@ import tr.edu.bilkent.spacemission.entity.Bid;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -178,6 +179,12 @@ public class BidRepository {
                 ps.setLong(1, id);
                 ps.executeUpdate();
 
+                //now set the status of opponent bids to rejected (if any)
+                List<Long> opponentIds = this.getOpponentBidIds(bid);
+                for(Long offererId: opponentIds){
+                    this.rejectBid(offererId);
+                }
+
                 //System.out.println("Bid details: " + bid);
                 //update the money attributes of the related companies
                 String moneyQuery0 = "UPDATE company SET money = money - ? WHERE company_id = ?;";
@@ -223,5 +230,26 @@ public class BidRepository {
         String query = "DELETE FROM bid WHERE bid_id = ?;";
         jdbcTemplate.update(query, id);
     }
+    //Returns the bid_id attributes of the opponent bids made for the contents of the given bid
+    protected List<Long> getOpponentBidIds(Bid bid){
+        ArrayList<Long> list = new ArrayList<>();
+        try {
+            String query = "SELECT bid_id FROM bid " +
+                    "WHERE bid_id <> ? AND receiver_id = ? AND mission_id = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, bid.getId());
+            ps.setLong(2, bid.getReceiverId());
+            ps.setLong(3, bid.getMissionId());
 
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                list.add(rs.getLong(1)); //CHECK HERE MIGHT BE PROBLEMATIC IDK
+            }
+
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return list;
+    }
 }
