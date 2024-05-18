@@ -113,18 +113,42 @@ public class BidRepository {
      */
     public void offerBid(Bid bid) {
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO bid (price, offer_date, deadline, description, status, offerer_id, receiver_id, mission_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            ps.setDouble(1, bid.getPrice());
-            ps.setDate(2, bid.getOfferDate());
-            ps.setDate(3, bid.getDeadline());
-            ps.setString(4, bid.getDescription());
-            ps.setString(5, "pending");
-            ps.setLong(6, bid.getOffererId());
-            ps.setLong(7, bid.getReceiverId());
-            ps.setLong(8, bid.getMissionId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            boolean offererHasMoney = false;
+            PreparedStatement psHasMoney = connection.prepareStatement(
+                    "SELECT * FROM company WHERE company_id = ? AND money >= ?;"
+            );
+            psHasMoney.setLong(1, bid.getOffererId());
+            psHasMoney.setDouble(2, bid.getPrice());
+
+            if(psHasMoney.executeQuery().next()){
+                offererHasMoney = true;
+            }
+
+            if (offererHasMoney) {
+                //first we delete the existing entry if the offerer has already offered a bid for this mission which has pending status
+                PreparedStatement psDelete = connection.prepareStatement(
+                        "DELETE FROM bid " +
+                                "WHERE offerer_id = ? AND receiver_id = ? AND mission_id = ? AND status = 'pending';"
+                );
+                psDelete.setLong(1, bid.getOffererId());
+                psDelete.setLong(2, bid.getReceiverId());
+                psDelete.setLong(3, bid.getMissionId());
+                psDelete.executeUpdate();
+
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO bid (price, offer_date, deadline, description, status, offerer_id, receiver_id, mission_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                ps.setDouble(1, bid.getPrice());
+                ps.setDate(2, bid.getOfferDate());
+                ps.setDate(3, bid.getDeadline());
+                ps.setString(4, bid.getDescription());
+                ps.setString(5, "pending");
+                ps.setLong(6, bid.getOffererId());
+                ps.setLong(7, bid.getReceiverId());
+                ps.setLong(8, bid.getMissionId());
+                ps.executeUpdate();
+            }
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
         }
     }
 

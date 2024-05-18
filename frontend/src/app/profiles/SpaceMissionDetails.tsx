@@ -73,7 +73,8 @@ export default function SpaceMissionDetails() {
     const creatorId = creatorCompany?.userId;
     if(userId !== null && performerId !== null && creatorId !== null){
       const castedId = parseInt(userId);
-      result = localStorage.getItem("userRole") === "COMPANY" && (castedId !== performerId) && (castedId !== creatorId);
+      //ONLY DO NOT DISPLAY TO THE CURRENT PERFORMER (THE PERFORMER OWNS THE MISSION)
+      result = localStorage.getItem("userRole") === "COMPANY" && (castedId !== performerId);
       //console.log("Debug SMD: submitBidDisplay inner if invoked");
     }
     //console.log("Debug SMD submitBidDisplayValidator yields result: " + result);

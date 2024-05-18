@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/profiles/SpaceMissionDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profiles/SpaceMissionDetails.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,7 +112,7 @@
       <workItem from="1715796898697" duration="2210000" />
       <workItem from="1715839505217" duration="9553000" />
       <workItem from="1715933083649" duration="1414000" />
-      <workItem from="1716039310260" duration="5321000" />
+      <workItem from="1716039310260" duration="7768000" />
     </task>
     <task id="LOCAL-00001" summary="Add some missing endpoints">
       <option name="closed" value="true" />
