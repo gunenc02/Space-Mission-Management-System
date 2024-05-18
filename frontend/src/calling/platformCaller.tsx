@@ -129,3 +129,29 @@ export function deletePlatform(
       throw err;
     });
 }
+
+export function filterPlatforms(filters: { minYear?: number; maxYear?: number; minCost?: number; maxCost?: number }): Promise<any[]> {
+  const query = new URLSearchParams(filters as any).toString();
+  const sentUrl = `http://localhost:8080/platform/filtered?${query}`;
+
+  return fetch(sentUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`Failed to fetch platforms: ${response.statusText}`);
+      }
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      throw err;
+    });
+}
