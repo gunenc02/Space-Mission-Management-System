@@ -51,4 +51,8 @@ public class SpaceMissionService {
     public List<SpaceMissionsInPortfolioDto> getAstronautPortfolio(long astronautId) {
         return spaceMissionRepository.getMissionByAstronautId(astronautId);
     }
+
+    public List<SpaceMissionDto> filterMissions(Double minBudget, Double maxBudget, String minCreateDate, String maxCreateDate, String minPerformDate, String maxPerformDate) {
+        return spaceMissionRepository.filterSpaceMissions(minBudget, maxBudget, minCreateDate, maxCreateDate, minPerformDate, maxPerformDate);
+    }
 }

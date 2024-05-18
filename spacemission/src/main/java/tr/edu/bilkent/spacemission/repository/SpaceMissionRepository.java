@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
+
 
 @Repository
 public class SpaceMissionRepository {
@@ -265,5 +267,49 @@ public class SpaceMissionRepository {
             System.out.println(ex.getMessage());
         }
         return list;
+    }
+
+
+    public List<SpaceMissionDto> filterSpaceMissions(Double minBudget, Double maxBudget, String minCreateDate, String maxCreateDate, String minPerformDate, String maxPerformDate) {
+        String query = "SELECT * FROM space_mission WHERE 1=1";
+
+        List<Object> params = new ArrayList<>();
+        if (minBudget != null) {
+            query += " AND budget >= ?";
+            params.add(minBudget);
+        }
+        if (maxBudget != null) {
+            query += " AND budget <= ?";
+            params.add(maxBudget);
+        }
+        if (minCreateDate != null) {
+            query += " AND create_date >= ?";
+            params.add(Date.valueOf(minCreateDate));
+        }
+        if (maxCreateDate != null) {
+            query += " AND create_date <= ?";
+            params.add(Date.valueOf(maxCreateDate));
+        }
+        if (minPerformDate != null) {
+            query += " AND perform_date >= ?";
+            params.add(Date.valueOf(minPerformDate));
+        }
+        if (maxPerformDate != null) {
+            query += " AND perform_date <= ?";
+            params.add(Date.valueOf(maxPerformDate));
+        }
+
+        return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
+            SpaceMissionDto spaceMission = new SpaceMissionDto();
+            spaceMission.setId(rs.getInt("mission_id"));
+            spaceMission.setMissionName(rs.getString("mission_name"));
+            spaceMission.setObjective(rs.getString("objective"));
+            spaceMission.setBudget(rs.getDouble("budget"));
+            spaceMission.setCreateDate(rs.getDate("create_date"));
+            spaceMission.setPerformDate(rs.getDate("perform_date"));
+            spaceMission.setImage(rs.getBytes("mission_image"));
+            spaceMission.setPerformStatus(rs.getString("perform_status"));
+            return spaceMission;
+        });
     }
 }

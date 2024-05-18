@@ -1,12 +1,16 @@
 package tr.edu.bilkent.spacemission.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionsInPortfolioDto;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 import tr.edu.bilkent.spacemission.service.SpaceMissionService;
 
 import java.util.List;
+import java.sql.Date;
 
 @CrossOrigin
 @RestController
@@ -79,17 +83,23 @@ public class SpaceMissionController {
         return spaceMission;
     }
 
-    private SpaceMissionDto convertEntityToDto (SpaceMission spaceMission) {
-        SpaceMissionDto spaceMissionDto = new SpaceMissionDto();
-        spaceMissionDto.setId(spaceMission.getId());
-        spaceMissionDto.setMissionName(spaceMission.getMissionName());
-        spaceMissionDto.setImage(spaceMission.getImage());
-        spaceMissionDto.setObjective(spaceMission.getObjective());
-        spaceMissionDto.setBudget(spaceMission.getBudget());
-        spaceMissionDto.setCreateDate(spaceMission.getCreateDate());
-        spaceMissionDto.setPerformDate(spaceMission.getPerformDate());
-        spaceMissionDto.setCreatorId(spaceMission.getCreatorId());
-        return spaceMissionDto;
+    @GetMapping("/filterMissions")
+    public ResponseEntity<List<SpaceMissionDto>> filterMissions(
+            @RequestParam(required = false) Double minBudget,
+            @RequestParam(required = false) Double maxBudget,
+            @RequestParam(required = false) String minCreateDate,
+            @RequestParam(required = false) String maxCreateDate,
+            @RequestParam(required = false) String minPerformDate,
+            @RequestParam(required = false) String maxPerformDate) {
+        try {
+            List<SpaceMissionDto> missions = spaceMissionService.filterMissions(minBudget, maxBudget, minCreateDate, maxCreateDate, minPerformDate, maxPerformDate);
+            return ResponseEntity.ok(missions);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-}
+
+
+}   
