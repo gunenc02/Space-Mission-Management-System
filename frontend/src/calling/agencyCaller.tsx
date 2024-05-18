@@ -162,3 +162,29 @@ export function getApprovedAstronautsOfAgency(
         throw(err);
       });
 }
+
+export function filterAgencies(filters: { isApproved?: boolean }): Promise<any[]> {
+  const query = new URLSearchParams(filters as any).toString();
+  const sentUrl = `http://localhost:8080/agency/filterAgencies?${query}`;
+
+  return fetch(sentUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`Failed to fetch agencies: ${response.statusText}`);
+      }
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      throw err;
+    });
+}

@@ -66,4 +66,5 @@ export interface FilterValues {
   maxCreateDate? : string;
   minPerformDate?: string;
   maxPerformDate?: string;
+  isApproved?: boolean;
 }
