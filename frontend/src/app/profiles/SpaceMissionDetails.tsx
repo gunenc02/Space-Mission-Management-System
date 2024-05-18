@@ -66,6 +66,20 @@ export default function SpaceMissionDetails() {
       });
   }, [id]);
 
+  const submitBidDisplayValidator = function(){
+    let result = false;
+    const userId = localStorage.getItem("userId");
+    const performerId = performerCompany?.userId;
+    const creatorId = creatorCompany?.userId;
+    if(userId !== null && performerId !== null && creatorId !== null){
+      const castedId = parseInt(userId);
+      result = localStorage.getItem("userRole") === "COMPANY" && (castedId !== performerId) && (castedId !== creatorId);
+      //console.log("Debug SMD: submitBidDisplay inner if invoked");
+    }
+    //console.log("Debug SMD submitBidDisplayValidator yields result: " + result);
+    return result;
+  }
+
   return (
     <div className="outer">
       <Header />
@@ -75,7 +89,7 @@ export default function SpaceMissionDetails() {
           <div className="mission-details-title">
             {spaceMission?.missionName}
           </div>
-          {localStorage.getItem("userRole") === "COMPANY" && (
+          {submitBidDisplayValidator() && (
             <button className="details-button" onClick={handleSubmitBidClick}>
               Submit Bid
             </button>
