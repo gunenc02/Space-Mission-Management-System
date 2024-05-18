@@ -159,25 +159,47 @@ public class BidRepository {
      */
     public void approveBid(long id) {
         try {
-            // Update the status of the bid
-            String query = "UPDATE bid SET status = 'approved' WHERE bid_id = ?;";
-            PreparedStatement ps = connection.prepareStatement(query);
-            ps.setLong(1, id);
-            ps.executeUpdate();
+            //retrieve curr bid
+            Bid bid = this.getBid(id);
+            boolean offererHasMoney = false;
+            PreparedStatement psHasMoney = connection.prepareStatement(
+                    "SELECT * FROM company WHERE company_id = ? AND money >= ?;"
+            );
+            psHasMoney.setLong(1, bid.getOffererId());
+            psHasMoney.setDouble(2, bid.getPrice());
 
-            // Get the bid
-            Bid bid = getBid(id);
+            if(psHasMoney.executeQuery().next()){
+                offererHasMoney = true;
+            }
+            if(offererHasMoney) {
+                // Update the status of the bid
+                String query = "UPDATE bid SET status = 'approved' WHERE bid_id = ?;";
+                PreparedStatement ps = connection.prepareStatement(query);
+                ps.setLong(1, id);
+                ps.executeUpdate();
 
-            System.out.println("Bid details: " + bid);
+                //System.out.println("Bid details: " + bid);
+                //update the money attributes of the related companies
+                String moneyQuery0 = "UPDATE company SET money = money - ? WHERE company_id = ?;";
+                PreparedStatement moneyPs0 = connection.prepareStatement(moneyQuery0);
+                moneyPs0.setDouble(1, bid.getPrice());
+                moneyPs0.setLong(2, bid.getOffererId());
 
+                String moneyQuery1 = "UPDATE company SET money = money + ? WHERE company_id = ?;";
+                PreparedStatement moneyPs1 = connection.prepareStatement(moneyQuery1);
+                moneyPs0.setDouble(1, bid.getPrice());
+                moneyPs0.setLong(2, bid.getReceiverId());
 
-            // Insert the transaction
-            String transactionQuery = "INSERT INTO transaction (fromcompany_id, tocompany_id, transaction_amount) VALUES (?, ?, ?);";
-            PreparedStatement ps2 = connection.prepareStatement(transactionQuery);
-            ps2.setLong(1, bid.getReceiverId());
-            ps2.setLong(2, bid.getOffererId());
-            ps2.setDouble(3, bid.getPrice());
-            ps2.executeUpdate();
+                if(moneyPs0.executeUpdate() > 0 && moneyPs1.executeUpdate() > 0) { //insert the transaction only when manipulated row counts are larger than 0 for both queries
+                    // Insert the transaction
+                    String transactionQuery = "INSERT INTO transaction (fromcompany_id, tocompany_id, transaction_amount) VALUES (?, ?, ?);";
+                    PreparedStatement ps2 = connection.prepareStatement(transactionQuery);
+                    ps2.setLong(1, bid.getReceiverId());
+                    ps2.setLong(2, bid.getOffererId());
+                    ps2.setDouble(3, bid.getPrice());
+                    ps2.executeUpdate();
+                }
+            }
         }
         catch(Exception ex){
             System.out.println(ex.getMessage());

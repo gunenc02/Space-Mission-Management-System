@@ -195,6 +195,17 @@ BEGIN
     DELETE FROM expert
     WHERE expert_company = OLD.company_id;
 END ^;
+
+DROP TRIGGER IF EXISTS reject_unaccepted_bids ^;
+CREATE TRIGGER reject_unaccepted_bids
+    BEFORE UPDATE ON bid
+    FOR EACH ROW
+BEGIN
+        UPDATE bid SET status = 'rejected'
+        WHERE receiver_id = OLD.receiver_id AND offerer_id <> OLD.offerer_id AND mission_id = OLD.mission_id;
+END ^;
+
+
 /*
 DROP TRIGGER IF EXISTS check_agency_mail_insert^;
 CREATE TRIGGER check_agency_mail_insert

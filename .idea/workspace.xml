@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/profiles/SpaceMissionDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profiles/SpaceMissionDetails.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/resources/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/resources/schema.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +112,7 @@
       <workItem from="1715796898697" duration="2210000" />
       <workItem from="1715839505217" duration="9553000" />
       <workItem from="1715933083649" duration="1414000" />
-      <workItem from="1716039310260" duration="7768000" />
+      <workItem from="1716039310260" duration="10108000" />
     </task>
     <task id="LOCAL-00001" summary="Add some missing endpoints">
       <option name="closed" value="true" />
@@ -156,6 +156,15 @@
           </properties>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
+          <line>159</line>
+          <properties class="tr.edu.bilkent.spacemission.repository.BidRepository" method="approveBid">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java</url>
           <line>78</line>
@@ -195,6 +204,41 @@
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
           <line>312</line>
           <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
+          <line>160</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
+          <line>163</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
+          <line>162</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
+          <line>164</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
+          <line>165</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
+          <line>167</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
+          <line>168</line>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
