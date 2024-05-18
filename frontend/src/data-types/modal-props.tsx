@@ -62,4 +62,8 @@ export interface FilterValues {
   minBudget?: number;
   maxBudget?: number;
   onDuty?: boolean;
+  minCreateDate?: string;
+  maxCreateDate? : string;
+  minPerformDate?: string;
+  maxPerformDate?: string;
 }
