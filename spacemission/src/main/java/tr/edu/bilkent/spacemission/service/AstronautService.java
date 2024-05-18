@@ -52,7 +52,9 @@ public class AstronautService {
     public List<AstronautDto> filterAstronauts(String name, String country, Boolean onDuty) {
         return astronautRepository.filterAstronauts(name, country, onDuty);
     }
-
+    public List<AstronautDto> searchAstronautsByName(String matchClause){
+        return astronautRepository.searchAstronautsByName(matchClause);
+    }
     public List<SpaceMissionDto> getMissions(long id){
         return astronautRepository.getMissions(id);
     }

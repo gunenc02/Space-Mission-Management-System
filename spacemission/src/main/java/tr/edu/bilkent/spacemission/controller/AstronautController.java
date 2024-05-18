@@ -74,6 +74,10 @@ public class AstronautController {
     public List<HealthRecordDto> getHealthRecords(@PathVariable long id){
         return astronautService.getHealthRecords(id);
     }
+    @GetMapping("/searchByName/{matchClause}")
+    public List<AstronautDto> searchAstronautsByName(@PathVariable String matchClause){
+        return astronautService.searchAstronautsByName(matchClause);
+    }
 
     private Astronaut convertDtoToEntity(AstronautDto astronautDto) {
         Astronaut astronaut = new Astronaut();

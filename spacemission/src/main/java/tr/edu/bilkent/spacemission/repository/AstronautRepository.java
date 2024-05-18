@@ -287,4 +287,29 @@ public class AstronautRepository {
     }
 
 
+    public List<AstronautDto> searchAstronautsByName(String matchClause) {
+        ArrayList<AstronautDto> astronauts = new ArrayList<>();
+        String pattern = '%' + matchClause + '%';
+        String query = "SELECT * FROM astronaut WHERE astronaut_name LIKE ?;";
+        try{
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, pattern);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                AstronautDto astronaut = new AstronautDto();
+                astronaut.setUserId(rs.getInt("astronaut_id"));
+                astronaut.setName(rs.getString("astronaut_name"));
+                astronaut.setImage(rs.getBytes("astronaut_image"));
+                astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
+                astronaut.setOnDuty(rs.getBoolean("on_duty"));
+                astronaut.setCountry(rs.getString("country"));
+                astronaut.setSalary(rs.getDouble("salary"));
+                astronauts.add(astronaut);
+            }
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return astronauts;
+    }
 }
