@@ -194,8 +194,8 @@ public class BidRepository {
 
                 String moneyQuery1 = "UPDATE company SET money = money + ? WHERE company_id = ?;";
                 PreparedStatement moneyPs1 = connection.prepareStatement(moneyQuery1);
-                moneyPs0.setDouble(1, bid.getPrice());
-                moneyPs0.setLong(2, bid.getReceiverId());
+                moneyPs1.setDouble(1, bid.getPrice());
+                moneyPs1.setLong(2, bid.getReceiverId());
 
                 if(moneyPs0.executeUpdate() > 0 && moneyPs1.executeUpdate() > 0) { //insert the transaction only when manipulated row counts are larger than 0 for both queries
                     // Insert the transaction
@@ -205,6 +205,14 @@ public class BidRepository {
                     ps2.setLong(2, bid.getOffererId());
                     ps2.setDouble(3, bid.getPrice());
                     ps2.executeUpdate();
+
+                    //lastly update the corresponding mission's performer id
+                    String updatePerformerQuery =
+                            "UPDATE space_mission SET performer_id = ? WHERE space_mission_id = ?;";
+                    PreparedStatement ps3 = connection.prepareStatement(updatePerformerQuery);
+                    ps3.setLong(1, bid.getOffererId());
+                    ps3.setLong(2, bid.getMissionId());
+                    ps3.executeUpdate();
                 }
             }
         }
