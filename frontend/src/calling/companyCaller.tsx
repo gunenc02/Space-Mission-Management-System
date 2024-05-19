@@ -108,7 +108,11 @@ export function getPerformedSpaceMissionsOfCompany(
       throw err;
     });
 }
-export function filterCompanies(filters: { country?: string; minBudget?: number; maxBudget?: number }): Promise<any[]> {
+export function filterCompanies(filters: {
+  country?: string;
+  minBudget?: number;
+  maxBudget?: number;
+}): Promise<any[]> {
   const query = new URLSearchParams(filters as any).toString();
   const sentUrl = `http://localhost:8080/company/filterCompanies?${query}`;
 
@@ -137,4 +141,3 @@ export function filterCompanies(filters: { country?: string; minBudget?: number;
       throw err;
     });
 }
-

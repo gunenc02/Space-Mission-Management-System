@@ -10,13 +10,12 @@ export default function AddPlatform(props: AddPlatformProps) {
     image: "",
   });
 
-  //!!! Tag ids and attribute names must match for the updateForm to work properly
   const updateForm = function (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) {
-    //this will simply update formData when a change occurs in one of our input elements
+    // Update the form data after each change in the input fields
     const { id, value } = e.target;
     console.log(id + "," + value);
     if (id === "image") {
@@ -33,13 +32,35 @@ export default function AddPlatform(props: AddPlatformProps) {
       reader.readAsDataURL(file);
     } else {
       setFormData((prevState) => ({
-        ...prevState, //preserve the unchanged attributes of prevState
+        ...prevState, // Preserve the unchanged attributes of prevState
         [id]: value,
       }));
     }
   };
 
   const createHandler = function () {
+    // Validate inputs
+    if (
+      formData.platformName === "" ||
+      formData.productionYear === null ||
+      formData.costPerLaunch === null
+    ) {
+      alert(
+        "Platform name, production year, and cost per launch fields cannot be empty."
+      );
+      return;
+    }
+
+    if (formData.productionYear < 1900 || formData.productionYear > 2024) {
+      alert("Please enter a valid production year.");
+      return;
+    }
+
+    if (formData.costPerLaunch < 0) {
+      alert("Cost per launch cannot be negative.");
+      return;
+    }
+
     const postUrl = `http://localhost:8080/platform/create`;
 
     const requestBody = {
@@ -106,7 +127,7 @@ export default function AddPlatform(props: AddPlatformProps) {
 
         <div className="modal-input-container">
           <label className="modal-label" htmlFor="costPerLaunch">
-            Cost per Launch
+            Cost per Launch ($)
           </label>
 
           <input

@@ -21,7 +21,10 @@
 
 .modal-title {
   font-size: 1.5em;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  margin-top: 5px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .modal-input-container {
@@ -31,10 +34,16 @@
 .modal-label {
   display: block;
   margin-bottom: 5px;
-  font-weight: bold;
 }
 
 .modal-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.modal-text-area {
   width: 100%;
   padding: 8px;
   border: 1px solid #ddd;

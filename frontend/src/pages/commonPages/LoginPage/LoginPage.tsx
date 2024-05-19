@@ -34,7 +34,7 @@ export default function LoginPage() {
       }
     } catch (error: any) {
       console.error("Login failed:", error.message);
-      setError(error.message); // Display the error to the user
+      setError("Wrong email or password. Please try again."); // Display the error to the user
     }
   };
 

@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import {
+  Agency,
   Astronaut,
   HealthRecord,
   SpaceMission,
@@ -19,7 +20,6 @@ export default function AstronautProfile() {
   const [spaceMissions, setSpaceMissions] = useState<SpaceMission[]>([]);
   const [healthRecords, setHealthRecords] = useState<HealthRecord[]>([]);
   const [isCompAstronautMatch, setIsCompAstronautMatch] = useState(false);
-  
 
   const { id } = useParams();
   const [createHealthRecordOpen, setCreateHealthRecordOpen] =
@@ -27,6 +27,7 @@ export default function AstronautProfile() {
   const [fireAstronautOpen, setFireAstronautOpen] = useState<boolean>(false);
   const [healthRecordDetailsOpen, setHealthRecordDetailsOpen] =
     useState<boolean>(false);
+  const [approvingAgencies, setApprovingAgencies] = useState<Agency[]>([]);
 
   const handleCreateHealthRecordClick = () => {
     setCreateHealthRecordOpen(!createHealthRecordOpen);
@@ -82,6 +83,34 @@ export default function AstronautProfile() {
       });
   };
 
+  // Fetch approving agencies
+  useEffect(() => {
+    const sentUrl =
+      "http://localhost:8080/agency/getAgenciesApprovedAstronaut/" + id;
+
+    fetch(sentUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(`Failed to fetch astronauts: ${response.statusText}`);
+        }
+      })
+      .then((data) => {
+        setApprovingAgencies(data);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        throw err;
+      });
+  }, []);
+
   useEffect(() => {
     const fetchAstronaut = async () => {
       setAstronaut(await getAstronautProfile(Number(id), { token: null }));
@@ -92,25 +121,26 @@ export default function AstronautProfile() {
     fetchAstronaut();
   }, []);
 
-    useEffect(() => {
-      const url = `http://localhost:8080/company/${localStorage.getItem("userId")}/hasAstronaut/${id}`;
-      
-      fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then(response => response.text())
-      .then(text => {
+  useEffect(() => {
+    const url = `http://localhost:8080/company/${localStorage.getItem(
+      "userId"
+    )}/hasAstronaut/${id}`;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.text())
+      .then((text) => {
         setIsCompAstronautMatch(text === "true");
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
-    }, [id]);
-  
-  
+  }, [id]);
+
   return (
     <div className="outer">
       <Header />
@@ -125,11 +155,27 @@ export default function AstronautProfile() {
           </button>
         )}
 
-        {localStorage.getItem("userRole") === "COMPANY" && (isCompAstronautMatch) && (
-          <button className="top-button" onClick={handleFireAstronautClick}>
-            Fire Astronaut
-          </button>
-        )}
+        {localStorage.getItem("userRole") === "COMPANY" &&
+          isCompAstronautMatch && (
+            <button className="top-button" onClick={handleFireAstronautClick}>
+              Fire Astronaut
+            </button>
+          )}
+      </div>
+      <div className="approving-agencies-container">
+        <p className="approving-agencies-title">Approving Agencies</p>
+        <div className="approving-agencies-row">
+          {approvingAgencies.map((agency) => (
+            <div key={agency.userId} className="agency-entry">
+              {agency.name}
+              <img
+                className="approving-agency-logo"
+                src={`data:image/jpeg;base64,${agency?.logo}`}
+                alt={"Agency logo"}
+              />
+            </div>
+          ))}
+        </div>
       </div>
       <div className="profile-container">
         <div className="profile-header">
@@ -195,7 +241,6 @@ export default function AstronautProfile() {
                         display: flex;
                         flex-direction: column;
                         align-items: center;
-                        padding: 20px;
                         max-width: 800px;
                         margin: auto;
                     }
@@ -288,5 +333,4 @@ export default function AstronautProfile() {
       </div>
     </div>
   );
- 
 }
