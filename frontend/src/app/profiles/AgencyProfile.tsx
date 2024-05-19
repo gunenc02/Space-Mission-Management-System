@@ -6,7 +6,7 @@ import {
   Astronaut,
   SpaceMissionForListing,
 } from "../../data-types/entities.tsx";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {
   getAgencyProfile,
   getApprovedSpaceMissionOfAgency,
@@ -132,26 +132,24 @@ export default function AgencyProfile() {
 
         <div className="profile-details">
           <div className="missions-section scroll-container">
-            <h2>Space Missions</h2>
+            <h2>Approved Space Missions</h2>
             {spaceMissions ? (
-              <ul>
-                {spaceMissions.map((mission) => (
-                  <li key={mission.id} className="profile-list-item">
-                    <h3>{mission.missionName}</h3>
-                    <p>Created by: {mission.companyName}</p>
-                    <p>Status: {mission.status}</p>
-                    <p>Start Date: {mission.startDate.toLocaleDateString()}</p>
-                    <p>End Date: {mission.endDate.toLocaleDateString()}</p>
-                    <img
-                      src={`data:image/jpeg;base64,${mission.image}`}
-                      alt={mission.missionName}
-                      style={{ width: "100px" }}
-                    />
-                  </li>
-                ))}
-              </ul>
+                <ul>
+                  {spaceMissions.map((mission) => (
+                      <Link to={"/space-mission/" + mission.id} key={mission.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <li className="profile-list-item">
+                          <h3>{mission.missionName}</h3>
+                          <p>Created by: {mission.companyName}</p>
+                          <p>Status: {mission.status}</p>
+                          <p>Start Date: {mission.startDate.toLocaleDateString()}</p>
+                          <p>End Date: {mission.endDate.toLocaleDateString()}</p>
+                          <img src={`data:image/jpeg;base64,${mission.image}`} alt={mission.missionName} style={{ width: "100px" }} />
+                        </li>
+                      </Link>
+                  ))}
+                </ul>
             ) : (
-              <div>Loading space missions...</div>
+                <div>Loading space missions...</div>
             )}
           </div>
           <div className="astronauts-section scroll-container">
@@ -159,25 +157,20 @@ export default function AgencyProfile() {
             {astronauts ? (
               <ul>
                 {astronauts.map((astronaut) => (
-                  <li key={astronaut.userId} className="profile-list-item">
-                    <img
-                      src={`data:image/jpeg;base64,${astronaut.image}`}
-                      alt={astronaut.name}
-                      style={{ width: "100px", height: "100px" }}
-                    />
-                    <h3>{astronaut.name}</h3>
-                    <p>
-                      Date of Birth:{" "}
-                      {new Date(astronaut.dateOfBirth).toLocaleDateString()}
-                    </p>
-                    <p>Country: {astronaut.country}</p>
-                    <p>On Duty: {astronaut.onDuty ? "Yes" : "No"}</p>
-                    <p>Salary: ${astronaut.salary.toLocaleString()}</p>
-                  </li>
+                    <Link to={`/astronaut/${astronaut.userId}`} key={astronaut.userId} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <li className="profile-list-item">
+                        <img src={`data:image/jpeg;base64,${astronaut.image}`} alt={astronaut.name} style={{ width: "100px", height: "100px" }} />
+                        <h3>{astronaut.name}</h3>
+                        <p>Date of Birth: {new Date(astronaut.dateOfBirth).toLocaleDateString()}</p>
+                        <p>Country: {astronaut.country}</p>
+                        <p>On Duty: {astronaut.onDuty ? "Yes" : "No"}</p>
+                        <p>Salary: ${astronaut.salary.toLocaleString()}</p>
+                      </li>
+                    </Link>
                 ))}
               </ul>
             ) : (
-              <div>Loading astronauts...</div>
+                <div>Loading astronauts...</div>
             )}
           </div>
         </div>

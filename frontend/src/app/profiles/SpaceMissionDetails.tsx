@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import "../../styles/Details.css";
@@ -110,11 +110,13 @@ export default function SpaceMissionDetails() {
               <h2>Astronauts</h2>
               <div className="scroll-container">
                 {astronauts.map((astronaut) => (
-                    <div key={astronaut.userId} className="profile-list-item">
-                      <h3>{astronaut.name}</h3>
-                      <p>Country: {astronaut.country}</p>
-                      <p>Date of Birth: {new Date(astronaut.dateOfBirth).toLocaleDateString()}</p>
-                    </div>
+                    <Link to={`/astronaut/${astronaut.userId}`} key={astronaut.userId} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div className="profile-list-item">
+                        <h3>{astronaut.name}</h3>
+                        <p>Country: {astronaut.country}</p>
+                        <p>Date of Birth: {new Date(astronaut.dateOfBirth).toLocaleDateString()}</p>
+                      </div>
+                    </Link>
                 ))}
               </div>
             </div>

@@ -74,6 +74,7 @@ export default function CompanyProfile() {
         }
       })
       .then((data) => {
+        console.log(data);
         setExperts(data);
       })
       .catch((err) => {
@@ -118,38 +119,38 @@ export default function CompanyProfile() {
           <div className="missions-section scroll-container">
             <div className="subtitle">Space Missions</div>
             {spaceMissions ? (
-              <ul>
-                {spaceMissions.map((mission) => (
-                  <Link to={"/space-mission/" + mission.id} key={mission.id}>
-                    <div className="mission-list-item">
-                      <h2>Mission Name: {mission.missionName}</h2>
-                      <p>Created by: {mission.companyName}</p>
-                      <p>Status: {mission.status}</p>
-                      <p>
-                        Start Date: {mission.startDate.toLocaleDateString()}
-                      </p>
-                      <p>End Date: {mission.endDate.toLocaleDateString()}</p>
-                      <img
-                        src={`data:image/jpeg;base64,${mission.image}`}
-                        alt={mission.missionName}
-                        style={{ width: "100px" }}
-                      />
-                    </div>
-                  </Link>
-                ))}
-              </ul>
+                <ul>
+                  {spaceMissions.map((mission) => (
+                      <Link to={"/space-mission/" + mission.id} key={mission.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <div className="mission-list-item">
+                          <h2>Mission Name: {mission.missionName}</h2>
+                          <p>Created by: {mission.companyName}</p>
+                          <p>Status: {mission.status}</p>
+                          <p>
+                            Start Date: {mission.startDate.toLocaleDateString()}
+                          </p>
+                          <p>End Date: {mission.endDate.toLocaleDateString()}</p>
+                          <img
+                              src={`data:image/jpeg;base64,${mission.image}`}
+                              alt={mission.missionName}
+                              style={{width: "100px"}}
+                          />
+                        </div>
+                      </Link>
+                  ))}
+                </ul>
             ) : (
-              <div>Loading space missions...</div>
+                <div>Loading space missions...</div>
             )}
           </div>
           <div className="experts-section scroll-container">
             <div className="subtitle">Experts</div>
             {experts.map((expert) => (
-              <div key={expert.id}>
-                <div className="mission-list-item">
-                  <h2>Expert Name: {expert.name}</h2>
-                </div>
-              </div>
+                <Link to={"/expert/" + expert.userId} key={expert.userId} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <div className="mission-list-item">
+                    <h2>Expert Name: {expert.name}</h2>
+                  </div>
+                </Link>
             ))}
           </div>
         </div>
