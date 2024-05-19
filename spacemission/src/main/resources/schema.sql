@@ -168,7 +168,8 @@ FROM company AS comp JOIN space_mission AS miss ON (comp.company_id = miss.creat
     AS mar ON (miss.mission_id = mar.mission_id) JOIN astronaut a ON (mar.astronaut_id = a.astronaut_id) ^;
 
 CREATE OR REPLACE VIEW platform_availability AS
-SELECT platform.platform_id, (SELECT COUNT(*) FROM space_mission WHERE platform_id = platform.platform_id)
+SELECT platform.platform_id, (SELECT COUNT(*) FROM space_mission WHERE platform_id = platform.platform_id
+                                                                   AND space_mission.perform_status = 'pending')
 FROM platform ^;
 
 
