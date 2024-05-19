@@ -48,4 +48,12 @@ public class CompanyService {
     public String getCompanyName(long companyId) {
         return companyRepository.getCompanyName(companyId);
     }
+
+    public void acceptAstronautIntoMission(long astronautId, long missionId) {
+        companyRepository.acceptAstronautIntoMission(astronautId, missionId);
+    }
+
+    public void declineAstronaut(long astronautId, long missionId) {
+        companyRepository.declineAstronaut(astronautId, missionId);
+    }
 }
