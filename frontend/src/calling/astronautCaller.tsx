@@ -138,3 +138,28 @@ export function filterAstronauts(
       throw err;
     });
 }
+
+export function searchAstronautsByName(name: string): Promise<any[]> {
+  const sentUrl = `http://localhost:8080/astronaut/searchByName/${name}`;
+
+  return fetch(sentUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`Failed to fetch astronauts: ${response.statusText}`);
+      }
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      throw err;
+    });
+}

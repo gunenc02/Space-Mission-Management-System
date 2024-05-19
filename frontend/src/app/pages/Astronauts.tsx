@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import { Astronaut } from "../../data-types/entities";
-import { filterAstronauts, getAstronauts } from "../../calling/astronautCaller";
+import { filterAstronauts, getAstronauts, searchAstronautsByName } from "../../calling/astronautCaller";
 import { Link } from "react-router-dom";
 import AstronautsFilter from "../filters/AstronautsFilter";
 
@@ -10,6 +10,7 @@ export default function Astronauts() {
   const [astronauts, setAstronauts] = useState<Astronaut[]>([]);
   const [filteredAstronauts, setFilteredAstronauts] = useState<Astronaut[]>([]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Fetch astronauts from the server
   useEffect(() => {
@@ -38,6 +39,18 @@ export default function Astronauts() {
     });
   };
 
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchQuery(value);
+    if (value) {
+      searchAstronautsByName(value).then((data) => {
+        setFilteredAstronauts(data);
+      });
+    } else {
+      setFilteredAstronauts(astronauts); // Reset to full list if search query is empty
+    }
+  };
+
   return (
     <div className="outer flex flex-col items-center bg-blue-100 min-h-screen">
       <Header className="sticky top-0 z-50" />
@@ -49,6 +62,13 @@ export default function Astronauts() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Astronauts</h2>
           <div className="flex space-x-2">
+            <input
+              type="text"
+              placeholder="Search by name"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="px-4 py-2 border rounded-lg shadow-sm"
+            />
             <button
               onClick={() => setIsFilterModalOpen(true)}
               className="px-6 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 min-w-[150px] text-sm sm:text-base"
