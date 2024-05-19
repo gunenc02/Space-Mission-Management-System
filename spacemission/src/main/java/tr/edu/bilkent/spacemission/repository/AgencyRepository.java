@@ -170,6 +170,7 @@ public class AgencyRepository {
 
         return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
             AgencyDto agency = new AgencyDto();
+            agency.setUserId(rs.getLong("agency_id"));
             agency.setAgencyId(rs.getInt("agency_id"));
             agency.setName(rs.getString("agency_name"));
             agency.setApproved(rs.getBoolean("is_approved"));
