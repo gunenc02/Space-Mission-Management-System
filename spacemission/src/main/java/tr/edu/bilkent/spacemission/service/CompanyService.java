@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.stereotype.Service;
 import tr.edu.bilkent.spacemission.dto.AstronautDto;
+import tr.edu.bilkent.spacemission.dto.AstronautForRequestListingDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.Login;
 import tr.edu.bilkent.spacemission.entity.Company;
@@ -50,7 +51,7 @@ public class CompanyService {
         return companyRepository.getCompanyName(companyId);
     }
 
-    public List<AstronautDto> getJoinRequests(long companyId) {
+    public List<AstronautForRequestListingDto> getJoinRequests(long companyId) {
         return companyRepository.getJoinRequests(companyId);
     }
 

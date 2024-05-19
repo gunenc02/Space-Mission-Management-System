@@ -3,6 +3,7 @@ package tr.edu.bilkent.spacemission.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import tr.edu.bilkent.spacemission.dto.AstronautDto;
+import tr.edu.bilkent.spacemission.dto.AstronautForRequestListingDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.Login;
 import tr.edu.bilkent.spacemission.entity.Company;
@@ -200,22 +201,21 @@ public class CompanyRepository {
         });
     }
 
-    public List<AstronautDto> getJoinRequests(long companyId) {
-        List<AstronautDto>list = new ArrayList<>();
+    public List<AstronautForRequestListingDto> getJoinRequests(long companyId) {
+        List<AstronautForRequestListingDto>list = new ArrayList<>();
         try{
             PreparedStatement ps = connection.prepareStatement(
                     "SELECT a.*, " +
                             "(SELECT u.user_mail FROM user u WHERE u.user_id = a.astronaut_id) AS user_mail, " +
-                            "(SELECT u.user_role FROM user u WHERE u.user_id = a.astronaut_id) AS user_role " +
+                            "(SELECT u.user_role FROM user u WHERE u.user_id = a.astronaut_id) AS user_role, " +
+                            "amjr.mission_id, " +
+                            "(SELECT sm.mission_name FROM space_mission sm WHERE sm.mission_id = amjr.mission_id) AS mission_name " +
                             "FROM astronaut a " +
-                            "WHERE a.astronaut_id IN (" +
-                            "    SELECT amjr.astronaut_id " +
-                            "    FROM astronaut_mission_join_request amjr " +
-                            "    WHERE amjr.mission_id IN (" +
-                            "        SELECT sm.mission_id " +
-                            "        FROM space_mission sm " +
-                            "        WHERE sm.performer_id = ?" +
-                            "    )" +
+                            "JOIN astronaut_mission_join_request amjr ON a.astronaut_id = amjr.astronaut_id " +
+                            "WHERE amjr.mission_id IN (" +
+                            "    SELECT sm.mission_id " +
+                            "    FROM space_mission sm " +
+                            "    WHERE sm.performer_id = ?" +
                             ")"
             );
 
@@ -223,7 +223,7 @@ public class CompanyRepository {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                AstronautDto astronaut = new AstronautDto();
+                AstronautForRequestListingDto astronaut = new AstronautForRequestListingDto();
                 astronaut.setUserId(rs.getInt("astronaut_id"));
                 astronaut.setName(rs.getString("astronaut_name"));
                 astronaut.setImage(rs.getBytes("astronaut_image"));
@@ -233,6 +233,8 @@ public class CompanyRepository {
                 astronaut.setOnDuty(rs.getBoolean("on_duty"));
                 astronaut.setCountry(rs.getString("country"));
                 astronaut.setSalary(rs.getDouble("salary"));
+                astronaut.setMissionName(rs.getString("mission_name"));
+                astronaut.setMissionId(rs.getLong("mission_id"));
                 list.add(astronaut);
             }
 
