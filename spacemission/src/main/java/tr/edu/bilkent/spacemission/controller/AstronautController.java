@@ -126,4 +126,8 @@ public class AstronautController {
     public void deleteJoinMissionRequest(@PathVariable long id, @PathVariable long missionId){
         astronautService.deleteJoinMissionRequest(id, missionId);
     }
+    @GetMapping("/{id}/hasJoinRequest/{missionId}")
+    public boolean hasJoinRequest(@PathVariable long id, @PathVariable long missionId) {
+        return astronautService.hasJoinRequest(id, missionId);
+    }
 }

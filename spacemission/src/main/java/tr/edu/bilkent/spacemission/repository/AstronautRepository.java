@@ -345,4 +345,22 @@ public class AstronautRepository {
             System.out.println(ex.getMessage());
         }
     }
+
+    public boolean hasJoinRequest(long id, long missionId) {
+        boolean result = false;
+        try{
+            String query = "SELECT * FROM astronaut_mission_join_request " +
+                    "WHERE mission_id = ? AND astronaut_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, missionId);
+            ps.setLong(2, id);
+            ResultSet rs = ps.executeQuery();
+
+            result = rs.next(); //check if we have an entry
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return result;
+    }
 }
