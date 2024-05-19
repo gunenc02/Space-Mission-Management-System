@@ -1,4 +1,4 @@
-package tr.edu.bilkent.spacemission.entity;
+package tr.edu.bilkent.spacemission.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.sql.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Transaction {
+public class TransactionDto {
     private long id;
     private long fromCompanyId;
     private long toCompanyId;

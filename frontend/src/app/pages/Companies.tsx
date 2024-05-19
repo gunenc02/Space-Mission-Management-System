@@ -21,6 +21,7 @@ export default function Companies() {
   const handleFilter = (filters: { country?: string; minBudget?: number; maxBudget?: number }) => {
     const nonEmptyFilters = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== undefined && v !== null && v !== ''));
     filterCompanies(nonEmptyFilters).then((data) => {
+      console.log("Filtered data:", data);
       setFilteredCompanies(data);
       setIsFilterModalOpen(false); // Close the modal after filtering
     });
@@ -48,7 +49,7 @@ export default function Companies() {
         <div className="flex flex-col space-y-4">
           {filteredCompanies.map((company: Company) => (
             <Link
-              to={"/company/" + company.userId}
+              to={`/company/${company.userId}`}
               className="flex flex-col md:flex-row items-center bg-white rounded-lg shadow-md overflow-hidden hover:-translate-y-1 hover:shadow-lg w-full"
               key={company.userId}
             >
