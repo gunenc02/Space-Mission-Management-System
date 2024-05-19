@@ -2,6 +2,7 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.dto.AstronautDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.Login;
 import tr.edu.bilkent.spacemission.entity.Company;
@@ -196,5 +197,48 @@ public class CompanyRepository {
             company.setLogo(rs.getBytes("company_logo"));
             return company;
         });
+    }
+
+    public List<AstronautDto> getJoinRequests(long companyId) {
+        List<AstronautDto>list = new ArrayList<>();
+        try{
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT a.*, " +
+                            "(SELECT u.user_mail FROM user u WHERE u.user_id = a.astronaut_id) AS user_mail, " +
+                            "(SELECT u.user_role FROM user u WHERE u.user_id = a.astronaut_id) AS user_role " +
+                            "FROM astronaut a " +
+                            "WHERE a.astronaut_id IN (" +
+                            "    SELECT amjr.astronaut_id " +
+                            "    FROM astronaut_mission_join_request amjr " +
+                            "    WHERE amjr.mission_id IN (" +
+                            "        SELECT sm.mission_id " +
+                            "        FROM space_mission sm " +
+                            "        WHERE sm.performer_id = ?" +
+                            "    )" +
+                            ")"
+            );
+
+            ps.setLong(1, companyId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                AstronautDto astronaut = new AstronautDto();
+                astronaut.setUserId(rs.getInt("astronaut_id"));
+                astronaut.setName(rs.getString("astronaut_name"));
+                astronaut.setImage(rs.getBytes("astronaut_image"));
+                astronaut.setUserRole("ASTRONAUT");
+                astronaut.setUserMail(rs.getString("user_mail"));
+                astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
+                astronaut.setOnDuty(rs.getBoolean("on_duty"));
+                astronaut.setCountry(rs.getString("country"));
+                astronaut.setSalary(rs.getDouble("salary"));
+                list.add(astronaut);
+            }
+
+        }
+        catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return list;
     }
 }
