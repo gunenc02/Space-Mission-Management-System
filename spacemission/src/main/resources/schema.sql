@@ -158,6 +158,14 @@ CREATE TABLE IF NOT EXISTS bid (
      FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id)
 ) ^;
 
+CREATE TABLE IF NOT EXISTS astronaut_mission_join_request(
+    join_request_id INT AUTO_INCREMENT PRIMARY KEY,
+    mission_id INT NOT NULL,
+    astronaut_id INT NOT NULL,
+    FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id),
+    FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id)
+) ^;
+
 CREATE OR REPLACE VIEW company_mission_info AS
 SELECT comp.company_name,
        comp.worker_count,

@@ -40,9 +40,23 @@ export default function CreateSpaceMission(props: CreateMissionProps) {
   };
 
   const createHandler = function () {
+    // Validate input
+    if (
+      formData.missionName === "" ||
+      formData.budget === "" ||
+      formData.objective === ""
+    ) {
+      alert("Mission name, budget, and objective fields cannot be empty.");
+      return;
+    }
+
+    if (Number(formData.budget) < 0) {
+      alert("Budget cannot be negative.");
+      return;
+    }
+
     const postUrl = `http://localhost:8080/spaceMission/create`;
 
-    //!!! CHECK HERE WHEN DEBUGGING MIGHT BE PROBLEMATIC REQUEST BODY !!!
     const requestBody = {
       missionName: formData.missionName,
       budget: formData.budget,
@@ -134,7 +148,7 @@ export default function CreateSpaceMission(props: CreateMissionProps) {
           />
         </div>
 
-        <div className="modal-button-container ">
+        <div className="modal-button-container flex justify-end space-x-4 mt-4 ">
           <button
             onClick={props.onClose}
             style={{ backgroundColor: "red", color: "white" }}

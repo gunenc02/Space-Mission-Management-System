@@ -320,4 +320,29 @@ public class AstronautRepository {
         }
         return astronauts;
     }
+
+    public void requestJoinMission(long id, long missionId) {
+        try{
+            String query = "INSERT INTO astronaut_mission_join_request(mission_id, astronaut_id) VALUES(?, ?);";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, missionId);
+            ps.setLong(2, id);
+            ps.executeUpdate();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+    public void deleteJoinMissionRequest(long id, long missionId) {
+        try{
+            String query = "DELETE FROM astronaut_mission_join_request WHERE mission_id = ? AND astronaut_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, missionId);
+            ps.setLong(2, id);
+            ps.executeQuery();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
 }

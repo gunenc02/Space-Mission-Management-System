@@ -1,4 +1,4 @@
-import {Link, useParams} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import "../../styles/Details.css";
@@ -24,11 +24,12 @@ export default function SpaceMissionDetails() {
   );
   const [platform, setPlatform] = useState<Platform | null>(null);
   const [submitBidOpen, setSubmitBidOpen] = useState(false);
+  const [approvingAgencies, setApprovingAgencies] = useState<Company[]>([]);
 
   const handleSubmitBidClick = () => {
     setSubmitBidOpen(!submitBidOpen);
   };
-  const markPerformedHandler = function(){
+  const markPerformedHandler = function () {
     const missionId = spaceMission?.id;
     const performerId = performerCompany?.userId;
     const sentUrl = `http://localhost:8080/company/${performerId}/markPerformed/${missionId}`;
@@ -43,16 +44,16 @@ export default function SpaceMissionDetails() {
         if (response.status === 200) {
           console.log("Marked mission as performed");
         } else {
-          throw new Error(`Failed to mark space mission as performeed: ${response.statusText}`);
+          throw new Error(
+            `Failed to mark space mission as performeed: ${response.statusText}`
+          );
         }
       })
       .catch((err) => {
         console.error("Error:", err);
         throw err;
       });
-  }
-
-  const [missionImage, setMissionImage] = useState("");
+  };
 
   useEffect(() => {
     const sentUrl = "http://localhost:8080/spaceMission/" + id;
@@ -89,94 +90,145 @@ export default function SpaceMissionDetails() {
       });
   }, [id]);
 
-  const submitBidDisplayValidator = function(){
+  // Fetch approving agencies
+  useEffect(() => {
+    const sentUrl =
+      "http://localhost:8080/agency/getAgenciesApprovedMission/" + id;
+
+    fetch(sentUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(`Failed to fetch astronauts: ${response.statusText}`);
+        }
+      })
+      .then((data) => {
+        setApprovingAgencies(data);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        throw err;
+      });
+  }, []);
+
+  const submitBidDisplayValidator = function () {
     let result = false;
     const userId = localStorage.getItem("userId");
     const performerId = performerCompany?.userId;
     const creatorId = creatorCompany?.userId;
-    if(userId !== null && performerId !== null && creatorId !== null){
+    if (userId !== null && performerId !== null && creatorId !== null) {
       const castedId = parseInt(userId);
       const isPerformed = spaceMission?.performStatus === "performed"; //also do not display if its performed
       //ONLY DO NOT DISPLAY TO THE CURRENT PERFORMER (THE PERFORMER OWNS THE MISSION)
-      result = localStorage.getItem("userRole") === "COMPANY" && (castedId !== performerId) && !isPerformed;
-      //console.log("Debug SMD: submitBidDisplay inner if invoked");
+      result =
+        localStorage.getItem("userRole") === "COMPANY" &&
+        castedId !== performerId &&
+        !isPerformed;
     }
-    //console.log("Debug SMD submitBidDisplayValidator yields result: " + result);
     return result;
-  }
+  };
 
-  const markPerformedDisplayValidator = function(){
+  const markPerformedDisplayValidator = function () {
     let result = false;
     const userId = localStorage.getItem("userId");
     const performerId = performerCompany?.userId;
-    if(userId !== null && performerId !== null){
+    if (userId !== null && performerId !== null) {
       const castedId = parseInt(userId);
-      result = castedId === performerId && spaceMission?.performStatus === "pending";
+      result =
+        castedId === performerId && spaceMission?.performStatus === "pending";
     }
-    console.log("Debug SMD: markPerformedDisplayValidator yields " + result);
     return result;
-  }
+  };
   return (
-      <div className="outer">
-        <Header />
-        <Navbar />
-        <div className="profile-container">
-          <div className="profile-header">
-            <div className="profile-image">
+    <div className="outer">
+      <Header />
+      <Navbar />
+      <div className="approving-agencies-container">
+        <p className="approving-agencies-title">Approving Agencies</p>
+        <div className="approving-agencies-row">
+          {approvingAgencies.map((agency) => (
+            <div key={agency.userId} className="agency-entry">
+              {agency.name}
               <img
-                  src={missionImage || 'default_image_placeholder.png'}
-                  alt={spaceMission?.missionName || 'Mission Image'}
-                  style={{ width: "200px", height: "150px" }}
+                className="approving-agency-logo"
+                src={`data:image/jpeg;base64,${agency?.logo}`}
+                alt={"Agency logo"}
               />
             </div>
-            <div className="profile-info">
-              <h1>{spaceMission?.missionName}</h1>
-              <p>Creator Company: {creatorCompany?.name}</p>
-              <p>Performer Company: {performerCompany?.name || "N/A"}</p>
-              {submitBidDisplayValidator() && (
-                  <button onClick={handleSubmitBidClick} style={{marginTop: '10px'}}>
-                    Submit Bid
-                  </button>
-              )}
-              {markPerformedDisplayValidator() && (
-                <button onClick={markPerformedHandler}>
-                  Mark as performed
-                </button>)
-              }
-            </div>
-          </div>
-          <div className="profile-details">
-            <div className="missions-section">
-              <h2>Astronauts</h2>
-              <div className="scroll-container">
-                {astronauts.map((astronaut) => (
-                    <Link to={`/astronaut/${astronaut.userId}`} key={astronaut.userId} style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <div className="profile-list-item">
-                        <h3>{astronaut.name}</h3>
-                        <p>Country: {astronaut.country}</p>
-                        <p>Date of Birth: {new Date(astronaut.dateOfBirth).toLocaleDateString()}</p>
-                      </div>
-                    </Link>
-                ))}
-              </div>
-            </div>
-            <div className="health-section">
-              <h2>Details</h2>
-              <p>{spaceMission?.objective}</p>
-              <p>Platform: {platform?.platformName || "N/A"}</p>
-              <p>Budget: {spaceMission?.budget}</p>
-            </div>
-          </div>
-          {submitBidOpen && (
-              <SubmitBid
-                  fromCompanyId={Number(localStorage.getItem("userId"))}
-                  toCompanyId={spaceMission?.creatorId}
-                  missionId={Number(id)}
-                  onClose={handleSubmitBidClick}
-              />
-          )}
+          ))}
         </div>
-        <style>{`
+      </div>
+      <div className="profile-container">
+        {submitBidDisplayValidator() && (
+          <button onClick={handleSubmitBidClick} className="button">
+            Submit Bid
+          </button>
+        )}
+        {markPerformedDisplayValidator() && (
+          <button onClick={markPerformedHandler} className="button">
+            Mark as performed
+          </button>
+        )}
+        <div className="profile-header">
+          <div className="profile-image">
+            <img
+              src={`data:image/jpeg;base64,${spaceMission?.image}`}
+              alt={spaceMission?.missionName || "Mission Image"}
+              style={{ width: "200px", height: "150px" }}
+            />
+          </div>
+          <div className="profile-info">
+            <h1>{spaceMission?.missionName}</h1>
+            <p>Creator Company: {creatorCompany?.name}</p>
+            <p>Performer Company: {performerCompany?.name || "N/A"}</p>
+          </div>
+        </div>
+        <div className="profile-details">
+          <div className="missions-section">
+            <h2>Astronauts</h2>
+            <div className="scroll-container">
+              {astronauts.map((astronaut) => (
+                <Link
+                  to={`/astronaut/${astronaut.userId}`}
+                  key={astronaut.userId}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <div className="profile-list-item">
+                    <h3>{astronaut.name}</h3>
+                    <p>Country: {astronaut.country}</p>
+                    <p>
+                      Date of Birth:{" "}
+                      {new Date(astronaut.dateOfBirth).toLocaleDateString()}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className="health-section">
+            <h2>Details</h2>
+            <p>{spaceMission?.objective}</p>
+            <p>Platform: {platform?.platformName || "N/A"}</p>
+            <p>Budget: {spaceMission?.budget}</p>
+          </div>
+        </div>
+        {submitBidOpen && (
+          <SubmitBid
+            fromCompanyId={Number(localStorage.getItem("userId"))}
+            toCompanyId={spaceMission?.creatorId}
+            missionId={Number(id)}
+            onClose={handleSubmitBidClick}
+          />
+        )}
+      </div>
+      <style>{`
       .outer {
         display: flex;
         flex-direction: column;
@@ -189,7 +241,7 @@ export default function SpaceMissionDetails() {
         align-items: center;
         padding: 20px;
         max-width: 800px;
-        margin: auto;
+        margin-top: -20px;
       }
       .profile-header {
         display: flex;
@@ -227,8 +279,18 @@ export default function SpaceMissionDetails() {
         padding: 10px;
         border: 1px solid #ddd;
       }
+      .button {
+        padding: 8px 16px;
+        width: 200px;
+        margin: 20px;
+        margin-left: auto;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
     `}</style>
-      </div>
+    </div>
   );
-
 }

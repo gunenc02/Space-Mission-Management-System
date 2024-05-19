@@ -4,6 +4,7 @@ package tr.edu.bilkent.spacemission.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tr.edu.bilkent.spacemission.dto.AstronautDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.entity.Company;
 import tr.edu.bilkent.spacemission.service.CompanyService;
@@ -50,6 +51,14 @@ public class CompanyController {
     public void markSpaceMissionAsPerformed(@PathVariable long id, @PathVariable long missionId){
         companyService.markSpaceMissionAsPerformed(id, missionId);
     }
+    @DeleteMapping("/acceptAstronaut/{astronautId}/{missionId}")
+    public void acceptAstronautIntoMission(@PathVariable long astronautId, @PathVariable long missionId){
+        companyService.acceptAstronautIntoMission(astronautId, missionId);
+    }
+    @DeleteMapping("/declineAstronaut/{astronautId}/{missionId}")
+    public void declineAstronaut(@PathVariable long astronautId, @PathVariable long missionId){
+        companyService.declineAstronaut(astronautId, missionId);
+    }
 
     private Company convertDtoToEntity(CompanyDto companyDto) {
         Company company = new Company();
@@ -85,6 +94,12 @@ public class CompanyController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/getJoinRequest/{companyId}")
+    public ResponseEntity<List<AstronautDto>>getJoinRequest(@PathVariable long companyId){
+        List<AstronautDto> list = companyService.getJoinRequests(companyId);
+        return ResponseEntity.ok(list);
     }
 }
 

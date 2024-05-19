@@ -62,4 +62,11 @@ public class AstronautService {
     public List<HealthRecordDto> getHealthRecords(long id){
         return astronautRepository.getHealthRecords(id);
     }
+
+    public void requestJoinMission(long id, long missionId) {
+        astronautRepository.requestJoinMission(id, missionId);
+    }
+    public void deleteJoinMissionRequest(long id, long missionId){
+        astronautRepository.deleteJoinMissionRequest(id, missionId);
+    }
 }
