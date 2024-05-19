@@ -28,6 +28,14 @@ public class AgencyService {
         return agencyRepository.approveAstronaut(agencyId, astronautId);
     }
 
+    public List<Agency> getAgenciesApprovedMission(long missionId){
+        return agencyRepository.getAgenciesApprovedMission(missionId);
+    }
+
+    public List<Agency> getAgenciesApprovedAstronaut(long astronautId){
+        return agencyRepository.getAgenciesApprovedAstronaut(astronautId);
+    }
+
     public List<AgencyDto> filterAgencies (Boolean isApproved){
         return agencyRepository.filterAgencies(isApproved);
     }

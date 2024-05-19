@@ -68,6 +68,7 @@ public class CompanyController {
         companyDto.setName(company.getName());
         companyDto.setCountry(company.getCountry());
         companyDto.setMoney(company.getBudget());
+        companyDto.setLogo(company.getLogo());
         //companyDto.setType(company.getType());
         return companyDto;
     }
