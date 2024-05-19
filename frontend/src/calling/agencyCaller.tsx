@@ -20,6 +20,9 @@ export function getAgencyProfile(
         );
       }
     })
+      .then((data) => {
+        return data;
+      })
     .catch((err) => {
       console.error("Error:", err);
       throw err;

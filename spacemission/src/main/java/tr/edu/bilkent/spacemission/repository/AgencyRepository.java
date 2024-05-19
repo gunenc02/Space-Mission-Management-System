@@ -124,6 +124,40 @@ public class AgencyRepository {
         return rowsAffected > 0;
     }
 
+    /**
+     * This method returns the agencies that approved the given mission
+     * @param missionId Id of the mission
+     * @return List of agencies
+     */
+    public List<Agency> getAgenciesApprovedMission(long missionId) {
+        String query = "SELECT a.* FROM agency a JOIN agency_approve_space_mission aasm ON a.agency_id = aasm.agency_id WHERE aasm.space_mission_id = ?";
+        return jdbcTemplate.query(query, (rs, rowNum) -> {
+            Agency agency = new Agency();
+            agency.setId(rs.getLong("agency_id"));
+            agency.setName(rs.getString("agency_name"));
+            agency.setLogo(rs.getBytes("agency_logo"));
+            agency.setApproved(rs.getBoolean("is_approved"));
+            return agency;
+        }, missionId);
+    }
+
+    /**
+     * This method returns the agencies that approved the given astronaut
+     * @param astronautId Id of the astronaut
+     * @return List of agencies
+     */
+    public List<Agency> getAgenciesApprovedAstronaut(long astronautId) {
+        String query = "SELECT a.* FROM agency a JOIN agency_approve_astronaut aaa ON a.agency_id = aaa.agency_id WHERE aaa.astronaut_id = ?";
+        return jdbcTemplate.query(query, (rs, rowNum) -> {
+            Agency agency = new Agency();
+            agency.setId(rs.getLong("agency_id"));
+            agency.setName(rs.getString("agency_name"));
+            agency.setLogo(rs.getBytes("agency_logo"));
+            agency.setApproved(rs.getBoolean("is_approved"));
+            return agency;
+        }, astronautId);
+    }
+
 
     public List<AgencyDto> filterAgencies(Boolean isApproved) {
         String query = "SELECT * FROM agency WHERE 1=1";
@@ -136,6 +170,7 @@ public class AgencyRepository {
 
         return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
             AgencyDto agency = new AgencyDto();
+            agency.setUserId(rs.getLong("agency_id"));
             agency.setAgencyId(rs.getInt("agency_id"));
             agency.setName(rs.getString("agency_name"));
             agency.setApproved(rs.getBoolean("is_approved"));

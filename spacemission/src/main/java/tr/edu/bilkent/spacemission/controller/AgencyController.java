@@ -49,10 +49,31 @@ public class AgencyController {
         //ToDo
     }
 
+    @GetMapping("getAgenciesApprovedMission/{missionId}")
+    public List<AgencyDto> getAgenciesApprovedMission(@PathVariable long missionId){
+        List<Agency> agencies = agencyService.getAgenciesApprovedMission(missionId);
+        List<AgencyDto> agencyDtos = new ArrayList<>();
+        for (Agency agency : agencies){
+            agencyDtos.add(convertEntityToDto(agency));
+        }
+        return agencyDtos;
+    }
+
+    @GetMapping("getAgenciesApprovedAstronaut/{astronautId}")
+    public List<AgencyDto> getAgenciesApprovedAstronaut(@PathVariable long astronautId){
+        List<Agency> agencies = agencyService.getAgenciesApprovedAstronaut(astronautId);
+        List<AgencyDto> agencyDtos = new ArrayList<>();
+        for (Agency agency : agencies){
+            agencyDtos.add(convertEntityToDto(agency));
+        }
+        return agencyDtos;
+    }
+
     private AgencyDto convertEntityToDto(Agency agency){
         AgencyDto agencyDto = new AgencyDto();
         agencyDto.setUserId(agency.getId());
         //agencyDto.setPassword(agency.getPassword());
+        agencyDto.setAgencyId((int)agency.getId());
         agencyDto.setUserMail(agency.getMail());
         agencyDto.setName(agency.getName());
         agencyDto.setLogo(agency.getLogo());
