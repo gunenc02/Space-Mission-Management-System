@@ -121,8 +121,8 @@ public class CompanyRepository {
      * After successful update of perform_status to "performed", a SQL trigger will be executed to release
      * currently deployed astronauts automatically
      */
-    public boolean markSpaceMissionAsPerformed(long missionId){
-        boolean result = false;
+    public void markSpaceMissionAsPerformed(long id, long missionId){
+        /*boolean result = false;
         //execute such a query that if a space mission with given attributes exists try and mark it as performed
         //first check if there exists an entry in space mission performings with specified mission id and not yet performed
         final String notPerformedStatus = "pending";
@@ -138,7 +138,18 @@ public class CompanyRepository {
             int affectedRows = jdbcTemplate.update(query, performedStatus, missionId);
             result = affectedRows > 0; //we expect affectedRows to be exactly 1 however
         }
-        return result;
+        return result;*/
+        try{
+            String query = "UPDATE space_mission SET perform_status = 'performed' " +
+                            "WHERE mission_id = ? AND performer_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, missionId);
+            ps.setLong(2, id);
+            ps.executeUpdate();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     public String getCompanyName(long companyId) {

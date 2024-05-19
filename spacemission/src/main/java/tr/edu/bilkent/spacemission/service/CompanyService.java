@@ -37,8 +37,8 @@ public class CompanyService {
     public void fireAstronaut(long id, long astronautId){companyRepository.fireAstronaut(id, astronautId);}
 
     //returns whether the space mission is performed after attempt
-    public boolean markSpaceMissionAsPerformed(long missionId){
-        return companyRepository.markSpaceMissionAsPerformed(missionId);
+    public void markSpaceMissionAsPerformed(long id, long missionId){
+        companyRepository.markSpaceMissionAsPerformed(id, missionId);
     }
 
     public List<CompanyDto> filterCompanies(String country, Double minBudget, Double maxBudget) {
