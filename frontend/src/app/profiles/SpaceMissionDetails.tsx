@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Header from "../../components/Header";
 import Navbar from "../../components/Navbar";
 import "../../styles/Details.css";
@@ -28,6 +28,29 @@ export default function SpaceMissionDetails() {
   const handleSubmitBidClick = () => {
     setSubmitBidOpen(!submitBidOpen);
   };
+  const markPerformedHandler = function(){
+    const missionId = spaceMission?.id;
+    const performerId = performerCompany?.userId;
+    const sentUrl = `http://localhost:8080/company/${performerId}/markPerformed/${missionId}`;
+
+    fetch(sentUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Marked mission as performed");
+        } else {
+          throw new Error(`Failed to mark space mission as performeed: ${response.statusText}`);
+        }
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        throw err;
+      });
+  }
 
   const [missionImage, setMissionImage] = useState("");
 
@@ -73,78 +96,139 @@ export default function SpaceMissionDetails() {
     const creatorId = creatorCompany?.userId;
     if(userId !== null && performerId !== null && creatorId !== null){
       const castedId = parseInt(userId);
+      const isPerformed = spaceMission?.performStatus === "performed"; //also do not display if its performed
       //ONLY DO NOT DISPLAY TO THE CURRENT PERFORMER (THE PERFORMER OWNS THE MISSION)
-      result = localStorage.getItem("userRole") === "COMPANY" && (castedId !== performerId);
+      result = localStorage.getItem("userRole") === "COMPANY" && (castedId !== performerId) && !isPerformed;
       //console.log("Debug SMD: submitBidDisplay inner if invoked");
     }
     //console.log("Debug SMD submitBidDisplayValidator yields result: " + result);
     return result;
   }
 
+  const markPerformedDisplayValidator = function(){
+    let result = false;
+    const userId = localStorage.getItem("userId");
+    const performerId = performerCompany?.userId;
+    if(userId !== null && performerId !== null){
+      const castedId = parseInt(userId);
+      result = castedId === performerId && spaceMission?.performStatus === "pending";
+    }
+    console.log("Debug SMD: markPerformedDisplayValidator yields " + result);
+    return result;
+  }
   return (
-    <div className="outer">
-      <Header />
-      <Navbar />
-      <div className="details-outer">
-        <div className="details-top-div">
-          <div className="mission-details-title">
-            {spaceMission?.missionName}
+      <div className="outer">
+        <Header />
+        <Navbar />
+        <div className="profile-container">
+          <div className="profile-header">
+            <div className="profile-image">
+              <img
+                  src={missionImage || 'default_image_placeholder.png'}
+                  alt={spaceMission?.missionName || 'Mission Image'}
+                  style={{ width: "200px", height: "150px" }}
+              />
+            </div>
+            <div className="profile-info">
+              <h1>{spaceMission?.missionName}</h1>
+              <p>Creator Company: {creatorCompany?.name}</p>
+              <p>Performer Company: {performerCompany?.name || "N/A"}</p>
+              {submitBidDisplayValidator() && (
+                  <button onClick={handleSubmitBidClick} style={{marginTop: '10px'}}>
+                    Submit Bid
+                  </button>
+              )}
+              {markPerformedDisplayValidator() && (
+                <button onClick={markPerformedHandler}>
+                  Mark as performed
+                </button>)
+              }
+            </div>
           </div>
-          {submitBidDisplayValidator() && (
-            <button className="details-button" onClick={handleSubmitBidClick}>
-              Submit Bid
-            </button>
+          <div className="profile-details">
+            <div className="missions-section">
+              <h2>Astronauts</h2>
+              <div className="scroll-container">
+                {astronauts.map((astronaut) => (
+                    <Link to={`/astronaut/${astronaut.userId}`} key={astronaut.userId} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div className="profile-list-item">
+                        <h3>{astronaut.name}</h3>
+                        <p>Country: {astronaut.country}</p>
+                        <p>Date of Birth: {new Date(astronaut.dateOfBirth).toLocaleDateString()}</p>
+                      </div>
+                    </Link>
+                ))}
+              </div>
+            </div>
+            <div className="health-section">
+              <h2>Details</h2>
+              <p>{spaceMission?.objective}</p>
+              <p>Platform: {platform?.platformName || "N/A"}</p>
+              <p>Budget: {spaceMission?.budget}</p>
+            </div>
+          </div>
+          {submitBidOpen && (
+              <SubmitBid
+                  fromCompanyId={Number(localStorage.getItem("userId"))}
+                  toCompanyId={spaceMission?.creatorId}
+                  missionId={Number(id)}
+                  onClose={handleSubmitBidClick}
+              />
           )}
         </div>
+        <style>{`
+      .outer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        max-width: 800px;
+        margin: auto;
+      }
+      .profile-header {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      .profile-image img {
+        width: auto;
+        height: 150px;
+      }
+      .profile-info {
+        margin-left: 20px;
+      }
+      .profile-details {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .missions-section, .health-section {
+        flex: 1;
+        padding: 8px;
+        margin: 5px;
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        overflow-y: auto;
+        width: 40vw;
+      }
+      .scroll-container {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .profile-list-item {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+    `}</style>
       </div>
-      <div className="details-column-container">
-        <div className="details-left-column">
-          <div className="details-long-text">{spaceMission?.objective}</div>
-          <div className="details-scroll-list">
-            Astronauts
-            {astronauts.map((astronaut) => (
-              <div key={astronaut.id} className="details-list-item">
-                Name: {astronaut.name}
-                <br />
-                Country: {astronaut.country}
-                <br />
-                Date of Birth: {astronaut.dateOfBirth.toString()}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="details-right-column">
-          <img
-            className="details-image"
-            src={missionImage}
-            alt="Mission Image"
-          />
-          <div className="details-info-box">
-            <div className="details-info-item">
-              Creator Company: {creatorCompany?.name}
-            </div>
-            <div className="details-info-item">
-              Performer Company:
-              {performerCompany?.name == null ? "N/A" : performerCompany?.name}
-            </div>
-            <div className="details-info-item">
-              Platform:
-              {platform?.platformName == null ? "N/A" : platform?.platformName}
-            </div>
-            <div className="details-info-item">
-              Budget: {spaceMission?.budget}
-            </div>
-          </div>
-        </div>
-      </div>
-      {submitBidOpen && (
-        <SubmitBid
-          fromCompanyId={Number(localStorage.getItem("userId"))}
-          toCompanyId={spaceMission?.creatorId}
-          missionId={Number(id)}
-          onClose={handleSubmitBidClick}
-        />
-      )}
-    </div>
   );
+
 }

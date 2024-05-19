@@ -46,6 +46,10 @@ public class CompanyController {
     public void fireAstronaut(@PathVariable long id, @PathVariable long astronautId){
         companyService.fireAstronaut(id, astronautId);
     }
+    @PostMapping("/{id}/markPerformed/{missionId}")
+    public void markSpaceMissionAsPerformed(@PathVariable long id, @PathVariable long missionId){
+        companyService.markSpaceMissionAsPerformed(id, missionId);
+    }
 
     private Company convertDtoToEntity(CompanyDto companyDto) {
         Company company = new Company();
