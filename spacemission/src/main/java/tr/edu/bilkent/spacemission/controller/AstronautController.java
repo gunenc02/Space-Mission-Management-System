@@ -118,6 +118,12 @@ public class AstronautController {
             @RequestParam(required = false) Boolean onDuty) {
         return astronautService.filterAstronauts(name, country, onDuty);
     }
-
-
+    @PostMapping("/{id}/requestJoin/{missionId}")
+    public void requestJoinMission(@PathVariable long id, @PathVariable long missionId) {
+        astronautService.requestJoinMission(id, missionId);
+    }
+    @DeleteMapping("/{id}/deleteJoinRequest/{missionId}")
+    public void deleteJoinMissionRequest(@PathVariable long id, @PathVariable long missionId){
+        astronautService.deleteJoinMissionRequest(id, missionId);
+    }
 }
