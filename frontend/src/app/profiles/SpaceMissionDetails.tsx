@@ -28,6 +28,29 @@ export default function SpaceMissionDetails() {
   const handleSubmitBidClick = () => {
     setSubmitBidOpen(!submitBidOpen);
   };
+  const markPerformedHandler = function(){
+    const missionId = spaceMission?.id;
+    const performerId = performerCompany?.userId;
+    const sentUrl = `http://localhost:8080/company/${performerId}/markPerformed/${missionId}`;
+
+    fetch(sentUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Marked mission as performed");
+        } else {
+          throw new Error(`Failed to mark space mission as performeed: ${response.statusText}`);
+        }
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        throw err;
+      });
+  }
 
   const [missionImage, setMissionImage] = useState("");
 
@@ -73,14 +96,26 @@ export default function SpaceMissionDetails() {
     const creatorId = creatorCompany?.userId;
     if(userId !== null && performerId !== null && creatorId !== null){
       const castedId = parseInt(userId);
+      const isPerformed = spaceMission?.performStatus === "performed"; //also do not display if its performed
       //ONLY DO NOT DISPLAY TO THE CURRENT PERFORMER (THE PERFORMER OWNS THE MISSION)
-      result = localStorage.getItem("userRole") === "COMPANY" && (castedId !== performerId);
+      result = localStorage.getItem("userRole") === "COMPANY" && (castedId !== performerId) && !isPerformed;
       //console.log("Debug SMD: submitBidDisplay inner if invoked");
     }
     //console.log("Debug SMD submitBidDisplayValidator yields result: " + result);
     return result;
   }
 
+  const markPerformedDisplayValidator = function(){
+    let result = false;
+    const userId = localStorage.getItem("userId");
+    const performerId = performerCompany?.userId;
+    if(userId !== null && performerId !== null){
+      const castedId = parseInt(userId);
+      result = castedId === performerId && spaceMission?.performStatus === "pending";
+    }
+    console.log("Debug SMD: markPerformedDisplayValidator yields " + result);
+    return result;
+  }
   return (
       <div className="outer">
         <Header />
@@ -103,6 +138,11 @@ export default function SpaceMissionDetails() {
                     Submit Bid
                   </button>
               )}
+              {markPerformedDisplayValidator() && (
+                <button onClick={markPerformedHandler}>
+                  Mark as performed
+                </button>)
+              }
             </div>
           </div>
           <div className="profile-details">
