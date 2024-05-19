@@ -80,6 +80,14 @@ export interface Expert {
   companyLogo: string;
 }
 
+export interface Transaction {
+  id: number;
+  fromCompanyId: number;
+  toCompanyId: number;
+  transactionAmount: number;
+  transactionDate: Date;
+}
+
 export interface HealthRecordForListing {
   id: number;
   date: Date;

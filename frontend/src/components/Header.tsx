@@ -29,15 +29,28 @@ export default function Header() {
               >
                 Profile
               </Link>
-              <Link
-                to="/received-bids"
-                className="header-profile-dropdown-link"
-              >
-                Received Bids
-              </Link>
-              <Link to="/offered-bids" className="header-profile-dropdown-link">
-                Offered Bids
-              </Link>
+              {localStorage.getItem("userRole") === "COMPANY" && (
+                <>
+                  <Link
+                    to="/transactions"
+                    className="header-profile-dropdown-link"
+                  >
+                    Transactions
+                  </Link>
+                  <Link
+                    to="/received-bids"
+                    className="header-profile-dropdown-link"
+                  >
+                    Received Bids
+                  </Link>
+                  <Link
+                    to="/offered-bids"
+                    className="header-profile-dropdown-link"
+                  >
+                    Offered Bids
+                  </Link>
+                </>
+              )}
               <Link to="/settings" className="header-profile-dropdown-link">
                 Settings
               </Link>

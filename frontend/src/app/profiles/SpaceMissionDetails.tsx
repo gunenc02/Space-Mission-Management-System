@@ -159,7 +159,6 @@ export default function SpaceMissionDetails() {
               <img
                 className="approving-agency-logo"
                 src={`data:image/jpeg;base64,${agency?.logo}`}
-                alt={"Agency logo"}
               />
             </div>
           ))}
