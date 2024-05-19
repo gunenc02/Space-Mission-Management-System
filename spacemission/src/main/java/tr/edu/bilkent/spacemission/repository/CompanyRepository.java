@@ -191,6 +191,7 @@ public class CompanyRepository {
         System.out.println("Executing query: " + query);
         return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
             CompanyDto company = new CompanyDto();
+            company.setUserId(rs.getInt("company_id")); // Ensure userId is set correctly
             company.setName(rs.getString("company_name"));
             company.setCountry(rs.getString("country"));
             company.setMoney(rs.getDouble("money"));
