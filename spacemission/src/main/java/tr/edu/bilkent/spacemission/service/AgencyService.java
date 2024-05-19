@@ -21,11 +21,11 @@ public class AgencyService {
         return agencyRepository.getAgencies();
     }
 
-    public boolean approveMission(long agencyId, long missionId){
-        return agencyRepository.approveMission(agencyId, missionId);
+    public void approveMission(long agencyId, long missionId){
+        agencyRepository.approveMission(agencyId, missionId);
     }
-    public boolean approveAstronaut(long agencyId, long astronautId){
-        return agencyRepository.approveAstronaut(agencyId, astronautId);
+    public void approveAstronaut(long agencyId, long astronautId){
+        agencyRepository.approveAstronaut(agencyId, astronautId);
     }
 
     public List<AgencyDto> filterAgencies (Boolean isApproved){

@@ -3,12 +3,16 @@ package tr.edu.bilkent.spacemission.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tr.edu.bilkent.spacemission.SpaceMissionManagement;
+import tr.edu.bilkent.spacemission.dto.AgencyDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionsInPortfolioDto;
+import tr.edu.bilkent.spacemission.entity.Agency;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 import tr.edu.bilkent.spacemission.service.SpaceMissionService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
 
@@ -17,9 +21,11 @@ import java.sql.Date;
 @RequestMapping("/spaceMission")
 public class SpaceMissionController {
     private final SpaceMissionService spaceMissionService;
+    private final SpaceMissionManagement spaceMissionManagement;
 
-    public SpaceMissionController(SpaceMissionService spaceMissionService) {
+    public SpaceMissionController(SpaceMissionService spaceMissionService, SpaceMissionManagement spaceMissionManagement) {
         this.spaceMissionService = spaceMissionService;
+        this.spaceMissionManagement = spaceMissionManagement;
     }
 
     @GetMapping("/list")
@@ -100,6 +106,23 @@ public class SpaceMissionController {
         }
     }
 
-
+    @GetMapping("/{id}/getApprovingAgencies")
+    public List<AgencyDto> getApprovingAgencies(@PathVariable long id){
+        ArrayList<AgencyDto> result = new ArrayList<>();
+        List<Agency> entityList = spaceMissionService.getApprovingAgencies(id);
+        for(int i = 0; i < entityList.size(); i++){
+            Agency agency = entityList.get(i);
+            //BELOW IS TAKEN FROM AgencyController
+            AgencyDto agencyDto = new AgencyDto();
+            agencyDto.setUserId(agency.getId());
+            //agencyDto.setPassword(agency.getPassword());
+            agencyDto.setUserMail(agency.getMail());
+            agencyDto.setName(agency.getName());
+            agencyDto.setLogo(agency.getLogo());
+            agencyDto.setApproved(agency.isApproved());
+            result.add(agencyDto);
+        }
+        return result;
+    }
 
 }

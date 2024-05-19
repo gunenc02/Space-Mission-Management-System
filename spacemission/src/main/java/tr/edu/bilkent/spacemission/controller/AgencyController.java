@@ -40,13 +40,11 @@ public class AgencyController {
 
     @PostMapping("approveMission/{agencyId}/{missionId}")
     public void approveMission(@PathVariable long agencyId, @PathVariable long missionId){
-        boolean success = agencyService.approveMission(agencyId, missionId);
-        //ToDo
+        agencyService.approveMission(agencyId, missionId);
     }
     @PostMapping("approveAstronaut/{agencyId}/{astronautId}")
     public void evaluateAstronaut(@PathVariable long agencyId, @PathVariable long astronautId){
-        boolean success = agencyService.approveAstronaut(agencyId, astronautId);
-        //ToDo
+        agencyService.approveAstronaut(agencyId, astronautId);
     }
 
     private AgencyDto convertEntityToDto(Agency agency){
