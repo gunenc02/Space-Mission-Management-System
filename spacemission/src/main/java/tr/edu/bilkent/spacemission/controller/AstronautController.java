@@ -32,8 +32,14 @@ public class AstronautController {
     }
 
     @GetMapping("/list")
-    public List<Astronaut> getAstronauts() {
-        return astronautService.getAstronauts();
+    public List<AstronautDto> getAstronauts() {
+
+        ArrayList<Astronaut>list = (ArrayList<Astronaut>) astronautService.getAstronauts();
+        ArrayList<AstronautDto> returnedList = new ArrayList<>();
+        for(Astronaut element:list){
+            returnedList.add(convertEntityToDto(element));
+        }
+        return returnedList;
     }
 
     @PostMapping("/joinCompany/{companyId}/{userId}")
@@ -95,6 +101,8 @@ public class AstronautController {
         AstronautDto astronautDto = new AstronautDto();
         astronautDto.setUserId(astronaut.getId());
         astronautDto.setName(astronaut.getName());
+        astronautDto.setUserMail(astronaut.getMail());
+        astronautDto.setUserRole(astronaut.getUserRole());
         astronautDto.setImage(astronaut.getImage());
         astronautDto.setDateOfBirth(astronaut.getDateOfBirth());
         astronautDto.setOnDuty(astronaut.isOnDuty());

@@ -32,13 +32,21 @@ public class AstronautRepository {
     public Astronaut getAstronautProfile(long id) {
         Astronaut astronaut = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM astronaut WHERE astronaut_id = ?");
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT astronaut.*, " +
+                            "(SELECT user_mail FROM user WHERE user_id = astronaut.astronaut_id) AS user_mail, " +
+                            "(SELECT user_role FROM user WHERE user_id = astronaut.astronaut_id) AS user_role " +
+                            "FROM astronaut " +
+                            "WHERE astronaut.astronaut_id = ?"
+            );
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 astronaut = new Astronaut();
                 astronaut.setId(rs.getLong("astronaut_id"));
+                astronaut.setUserRole(rs.getString("user_role"));
+                astronaut.setMail(rs.getString("user_mail"));
                 astronaut.setName(rs.getString("astronaut_name"));
                 astronaut.setImage(rs.getBytes("astronaut_image"));
                 astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
