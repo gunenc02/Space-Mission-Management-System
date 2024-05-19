@@ -51,6 +51,14 @@ public class CompanyController {
     public void markSpaceMissionAsPerformed(@PathVariable long id, @PathVariable long missionId){
         companyService.markSpaceMissionAsPerformed(id, missionId);
     }
+    @DeleteMapping("/acceptAstronaut/{astronautId}/{missionId}")
+    public void acceptAstronautIntoMission(@PathVariable long astronautId, @PathVariable long missionId){
+        companyService.acceptAstronautIntoMission(astronautId, missionId);
+    }
+    @DeleteMapping("/declineAstronaut/{astronautId}/{missionId}")
+    public void declineAstronaut(@PathVariable long astronautId, @PathVariable long missionId){
+        companyService.declineAstronaut(astronautId, missionId);
+    }
 
     private Company convertDtoToEntity(CompanyDto companyDto) {
         Company company = new Company();

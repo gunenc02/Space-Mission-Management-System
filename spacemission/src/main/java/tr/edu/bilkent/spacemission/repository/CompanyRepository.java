@@ -241,4 +241,39 @@ public class CompanyRepository {
         }
         return list;
     }
+
+    public void acceptAstronautIntoMission(long astronautId, long missionId) {
+        try{
+            String query0 = "DELETE FROM astronaut_mission_join_request " +
+                    "WHERE astronaut_id = ? AND mission_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query0);
+            ps.setLong(1, astronautId);
+            ps.setLong(2, missionId);
+            ps.executeQuery();
+
+            //now insert the astronaut mission recording into the new table
+            String query1 = "INSERT INTO mission_astronaut_recordings(astronaut_id, mission_id VALUES(?, ?)";
+            PreparedStatement ps1 = connection.prepareStatement(query1);
+            ps.setLong(1, astronautId);
+            ps.setLong(2, missionId);
+            ps.executeUpdate();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void declineAstronaut(long astronautId, long missionId) {
+        try{
+            String query0 = "DELETE FROM astronaut_mission_join_request " +
+                    "WHERE astronaut_id = ? AND mission_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query0);
+            ps.setLong(1, astronautId);
+            ps.setLong(2, missionId);
+            ps.executeQuery();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
 }
