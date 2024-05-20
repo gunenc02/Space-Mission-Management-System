@@ -90,6 +90,52 @@ export default function SpaceMissionDetails() {
       });
   }, [id]);
 
+  const sendJoinRequestHandler = function(){
+    const userId = localStorage.getItem("userId");
+    const url = "http://localhost:8080/astronaut/ "+ userId + "/requestJoin/" + spaceMission?.id;
+
+    return fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(" ");
+        } else {
+          throw new Error(`Failed to send join request: ${response.statusText}`);
+        }
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        throw err;
+      });
+  }
+
+  const cancelJoinRequestHandler = function(){
+    const userId = localStorage.getItem("userId");
+    const url = "http://localhost:8080/astronaut/ "+ userId + "/deleteJoinRequest/" + spaceMission?.id;
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network respone was not ok");
+        } 
+      })
+      .catch((error) => {
+        // Handle errors here
+        console.error(
+          "There was a problem with the fetch (delete (acceptAstronaut)) operation:",
+          error
+        );
+      });
+  }
+
   // Fetch approving agencies
   useEffect(() => {
     const sentUrl =
@@ -146,6 +192,36 @@ export default function SpaceMissionDetails() {
     }
     return result;
   };
+  //returns true when the user has not made a request
+  const checkJoinRequestValidator = function(){
+    let result = false;
+    const userId = localStorage.getItem("userId");
+    const sentUrl = `http://localhost:8080/${userId}/astronaut/hasJoinRequest/${spaceMission?.id}`;
+
+    fetch(sentUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error(
+            `Failed to fetch hasJoinRequest astronaut: ${response.statusText}`
+          );
+        }
+      })
+        .then((data) => {
+          result = data === "true";
+        })
+      .catch((err) => {
+        console.error("Error:", err);
+        throw err;
+      });
+      return result;
+  }
   return (
     <div className="outer">
       <Header />
@@ -175,6 +251,16 @@ export default function SpaceMissionDetails() {
             Mark as performed
           </button>
         )}
+        {localStorage.getItem("userRole") === "ASTRONAUT" && !checkJoinRequestValidator() &&
+          (<button className="button" onClick={sendJoinRequestHandler}>
+            Send Join Request
+          </button>)
+        }
+        {localStorage.getItem("userRole") === "ASTRONAUT" && checkJoinRequestValidator() &&
+          <button className="button" onClick={cancelJoinRequestHandler}>
+            Cancel Join Request
+          </button>
+        }
         <div className="profile-header">
           <div className="profile-image">
             <img
