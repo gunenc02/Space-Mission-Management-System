@@ -73,6 +73,7 @@
   margin-left: auto;
   margin-right: 80px;
   margin-top: 10px;
+  color: white;
 }
 
 .details-image {
@@ -136,7 +137,6 @@
   text-align: center;
   width: 100%;
   margin-top: 20px;
-  margin-bottom: -10px;
 }
 
 .approving-agencies-row {
@@ -153,4 +153,6 @@
   height: 80px;
   margin-right: 10px;
   margin-left: 10px;
+  /* add rounding*/
+  border-radius: 50%;
 }

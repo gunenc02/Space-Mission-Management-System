@@ -116,9 +116,12 @@ export default function CompanyProfile() {
             <p>Country: {companyInfo.country}</p>
             <p>Budget: ${companyInfo.money.toLocaleString()}</p>
             {loginUserId === id && (
-                <button onClick={handleRegisterExpertClick} style={{ marginTop: '10px', color:"ButtonHighlight"}}>
-                  Register Expert
-                </button>
+              <button
+                onClick={handleRegisterExpertClick}
+                className="details-button"
+              >
+                Register Expert
+              </button>
             )}
           </div>
         </div>
