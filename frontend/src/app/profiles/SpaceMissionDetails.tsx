@@ -196,13 +196,15 @@ export default function SpaceMissionDetails() {
   const checkJoinRequestValidator = function(){
     let result = false;
     const userId = localStorage.getItem("userId");
-    const sentUrl = `http://localhost:8080/${userId}/astronaut/hasJoinRequest/${spaceMission?.id}`;
+    const missionId = spaceMission?.id;
+    const sentUrl = `http://localhost:8080/astronaut/${userId}/hasJoinRequest/${missionId}`;
 
     fetch(sentUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
+      mode: "no-cors",
     })
       .then((response) => {
         if (response.status === 200) {
