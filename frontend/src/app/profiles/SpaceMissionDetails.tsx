@@ -90,9 +90,13 @@ export default function SpaceMissionDetails() {
       });
   }, [id]);
 
-  const sendJoinRequestHandler = function(){
+  const sendJoinRequestHandler = function () {
     const userId = localStorage.getItem("userId");
-    const url = "http://localhost:8080/astronaut/ "+ userId + "/requestJoin/" + spaceMission?.id;
+    const url =
+      "http://localhost:8080/astronaut/ " +
+      userId +
+      "/requestJoin/" +
+      spaceMission?.id;
 
     return fetch(url, {
       method: "POST",
@@ -103,19 +107,24 @@ export default function SpaceMissionDetails() {
       .then((response) => {
         if (response.status === 200) {
           console.log(" ");
+          alert("Join request sent successfully");
+          window.location.reload();
         } else {
-          throw new Error(`Failed to send join request: ${response.statusText}`);
+          throw new Error(
+            `Failed to send join request: ${response.statusText}`
+          );
         }
       })
       .catch((err) => {
         console.error("Error:", err);
         throw err;
       });
-  }
+  };
 
-  const cancelJoinRequestHandler = function(){
+  const cancelJoinRequestHandler = function () {
     const userId = localStorage.getItem("userId");
-    const url = "http://localhost:8080/astronaut/"+ userId + "/deleteJoinRequest/" + id;
+    const url =
+      "http://localhost:8080/astronaut/" + userId + "/deleteJoinRequest/" + id;
     fetch(url, {
       method: "DELETE",
       headers: {
@@ -125,7 +134,7 @@ export default function SpaceMissionDetails() {
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network respone was not ok");
-        } 
+        }
       })
       .catch((error) => {
         // Handle errors here
@@ -134,7 +143,7 @@ export default function SpaceMissionDetails() {
           error
         );
       });
-  }
+  };
 
   // Fetch approving agencies
   useEffect(() => {
@@ -193,7 +202,7 @@ export default function SpaceMissionDetails() {
     return result;
   };
   //returns true when the user has not made a request
-  const checkJoinRequestValidator = function(){
+  const checkJoinRequestValidator = function () {
     let result = false;
     const userId = localStorage.getItem("userId");
     const missionId = spaceMission?.id;
@@ -205,7 +214,6 @@ export default function SpaceMissionDetails() {
         "Content-Type": "application/json",
         mode: "no-cors",
       },
-      
     })
       .then((response) => {
         console.log("Respone status is: " + response.status);
@@ -217,18 +225,18 @@ export default function SpaceMissionDetails() {
           );
         }
       })
-        .then((data) => {
-          result = data.toString() === "true";
-          
-          console.log("DATA IS " + data + " AND RESULT IS " + result);
-        })
+      .then((data) => {
+        result = data.toString() === "true";
+
+        console.log("DATA IS " + data + " AND RESULT IS " + result);
+      })
       .catch((err) => {
         console.error("Error:", err);
         throw err;
       });
-      console.log("checkRequestValidator returning " + result);
-      return result;
-  }
+    console.log("checkRequestValidator returning " + result);
+    return result;
+  };
   return (
     <div className="outer">
       <Header />
@@ -258,16 +266,21 @@ export default function SpaceMissionDetails() {
             Mark as performed
           </button>
         )}
-        {localStorage.getItem("userRole") === "ASTRONAUT" && checkJoinRequestValidator() &&
-          (<button className="button" onClick={sendJoinRequestHandler}>
-            Send Join Request
-          </button>)
-        }
-        {localStorage.getItem("userRole") === "ASTRONAUT" && !checkJoinRequestValidator() &&
-          <button className="button" onClick={cancelJoinRequestHandler}>
-            Cancel Join Request
-          </button>
-        }
+        {localStorage.getItem("userRole") === "ASTRONAUT" &&
+          checkJoinRequestValidator() && (
+            <button className="button" onClick={sendJoinRequestHandler}>
+              Send Join Request
+            </button>
+          )}
+        {localStorage.getItem("userRole") === "ASTRONAUT" &&
+          !checkJoinRequestValidator() && (
+            <button
+              className="cancel-button"
+              onClick={cancelJoinRequestHandler}
+            >
+              Cancel Join Request
+            </button>
+          )}
         <div className="profile-header">
           <div className="profile-image">
             <img
@@ -370,6 +383,17 @@ export default function SpaceMissionDetails() {
         margin-bottom: 10px;
         padding: 10px;
         border: 1px solid #ddd;
+      }
+      .cancel-button {
+        padding: 8px 16px;
+        width: 200px;
+        margin: 20px;
+        margin-left: auto;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
       }
       .button {
         padding: 8px 16px;
