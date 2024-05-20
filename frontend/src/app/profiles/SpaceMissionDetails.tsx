@@ -235,7 +235,8 @@ export default function SpaceMissionDetails() {
 
   const approveMissionHandler = function () {
     const userId = localStorage.getItem("userId");
-    const sentUrl = "http://localhost:8080/agency/approveMission/" + userId + "/" + id;
+    const sentUrl =
+      "http://localhost:8080/agency/approveMission/" + userId + "/" + id;
 
     fetch(sentUrl, {
       method: "POST",
@@ -245,6 +246,8 @@ export default function SpaceMissionDetails() {
     })
       .then((response) => {
         if (response.status === 200) {
+          alert("Mission approved successfully");
+          window.location.reload();
           return response.json();
         } else {
           throw new Error(
