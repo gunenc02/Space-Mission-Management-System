@@ -192,7 +192,15 @@ export default function AstronautProfile() {
             </button>
           )}
            {localStorage.getItem("userRole") === "AGENCY" &&
-          <button onClick={approveAstronautHandler}>
+          <button onClick={approveAstronautHandler} style={{
+            padding: '8px 16px',
+            width: '200px',
+            background: '#4CAF50',
+            color: 'white',
+            borderRadius: '4px',
+            marginLeft: "auto",
+            marginRight: '300px'
+          }}>
             Approve Astronaut
           </button>
         }

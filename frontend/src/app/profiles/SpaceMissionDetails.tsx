@@ -310,7 +310,15 @@ export default function SpaceMissionDetails() {
             </button>
           )}
         {localStorage.getItem("userRole") === "AGENCY" && (
-          <button onClick={approveMissionHandler} className="button">
+          <button onClick={approveMissionHandler} style={{
+            padding: '8px 16px',
+            width: '200px',
+            background: '#4CAF50',
+            color: 'white',
+            borderRadius: '4px',
+            marginLeft: "auto",
+            marginRight: '300px'
+          }} className="button">
             Approve Mission
           </button>
         )}
