@@ -285,6 +285,7 @@ public class AstronautRepository {
 
         return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
             AstronautDto astronaut = new AstronautDto();
+            astronaut.setUserId(rs.getLong("astronaut_id"));
             astronaut.setName(rs.getString("astronaut_name"));
             astronaut.setCountry(rs.getString("country"));
             astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
@@ -305,7 +306,7 @@ public class AstronautRepository {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 AstronautDto astronaut = new AstronautDto();
-                astronaut.setUserId(rs.getInt("astronaut_id"));
+                astronaut.setUserId(rs.getLong("astronaut_id"));
                 astronaut.setName(rs.getString("astronaut_name"));
                 astronaut.setImage(rs.getBytes("astronaut_image"));
                 astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
