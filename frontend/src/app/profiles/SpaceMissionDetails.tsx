@@ -25,10 +25,12 @@ export default function SpaceMissionDetails() {
   const [platform, setPlatform] = useState<Platform | null>(null);
   const [submitBidOpen, setSubmitBidOpen] = useState(false);
   const [approvingAgencies, setApprovingAgencies] = useState<Company[]>([]);
+  const [hasJoinRequest, setHasJoinRequest] = useState<boolean>(false);
 
   const handleSubmitBidClick = () => {
     setSubmitBidOpen(!submitBidOpen);
   };
+
   const markPerformedHandler = function () {
     const missionId = spaceMission?.id;
     const performerId = performerCompany?.userId;
@@ -45,7 +47,7 @@ export default function SpaceMissionDetails() {
           console.log("Marked mission as performed");
         } else {
           throw new Error(
-            `Failed to mark space mission as performeed: ${response.statusText}`
+            `Failed to mark space mission as performed: ${response.statusText}`
           );
         }
       })
@@ -93,7 +95,7 @@ export default function SpaceMissionDetails() {
   const sendJoinRequestHandler = function () {
     const userId = localStorage.getItem("userId");
     const url =
-      "http://localhost:8080/astronaut/ " +
+      "http://localhost:8080/astronaut/" +
       userId +
       "/requestJoin/" +
       spaceMission?.id;
@@ -132,18 +134,17 @@ export default function SpaceMissionDetails() {
       },
     })
       .then((response) => {
-        if (!response.ok) {
+        if (response.ok) {
           alert("Cancel request sent successfully");
           window.location.reload();
-          throw new Error("Network respone was not ok");
+        } else {
+          throw new Error(
+            `Failed to cancel join request: ${response.statusText}`
+          );
         }
       })
       .catch((error) => {
-        // Handle errors here
-        console.error(
-          "There was a problem with the fetch (delete (acceptAstronaut)) operation:",
-          error
-        );
+        console.error("There was a problem with the fetch (delete operation):", error);
       });
   };
 
@@ -173,7 +174,7 @@ export default function SpaceMissionDetails() {
         console.error("Error:", err);
         throw err;
       });
-  }, []);
+  }, [id]);
 
   const submitBidDisplayValidator = function () {
     let result = false;
@@ -182,8 +183,7 @@ export default function SpaceMissionDetails() {
     const creatorId = creatorCompany?.userId;
     if (userId !== null && performerId !== null && creatorId !== null) {
       const castedId = parseInt(userId);
-      const isPerformed = spaceMission?.performStatus === "performed"; //also do not display if its performed
-      //ONLY DO NOT DISPLAY TO THE CURRENT PERFORMER (THE PERFORMER OWNS THE MISSION)
+      const isPerformed = spaceMission?.performStatus === "performed";
       result =
         localStorage.getItem("userRole") === "COMPANY" &&
         castedId !== performerId &&
@@ -203,23 +203,20 @@ export default function SpaceMissionDetails() {
     }
     return result;
   };
-  //returns true when the user has not made a request
-  const checkJoinRequestValidator = function () {
-    let result = false;
+
+  // Check if user has already sent join request
+  useEffect(() => {
     const userId = localStorage.getItem("userId");
-    const missionId = spaceMission?.id;
     const sentUrl = `http://localhost:8080/astronaut/${userId}/hasJoinRequest/${id}`;
 
     fetch(sentUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        mode: "no-cors",
       },
     })
       .then((response) => {
-        console.log("Respone status is: " + response.status);
-        if (response.status === 200) {
+        if (response.ok) {
           return response.json();
         } else {
           throw new Error(
@@ -228,18 +225,15 @@ export default function SpaceMissionDetails() {
         }
       })
       .then((data) => {
-        result = data.toString() === "true";
-
-        console.log("DATA IS " + data + " AND RESULT IS " + result);
+        setHasJoinRequest(data === true);
       })
       .catch((err) => {
         console.error("Error:", err);
         throw err;
       });
-    console.log("checkRequestValidator returning " + result);
-    return result;
-  };
-  const approveMissionHandler = function(){
+  }, [id]);
+
+  const approveMissionHandler = function () {
     const userId = localStorage.getItem("userId");
     const sentUrl = "http://localhost:8080/agency/approveMission/" + userId + "/" + id;
 
@@ -247,28 +241,26 @@ export default function SpaceMissionDetails() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        mode: "no-cors",
       },
     })
       .then((response) => {
-        console.log("Respone status is: " + response.status);
         if (response.status === 200) {
           return response.json();
         } else {
           throw new Error(
-            `Failed to fetch approveMission agency: ${response.statusText}`
+            `Failed to approve mission: ${response.statusText}`
           );
         }
       })
       .then((data) => {
-        console.log("DATA IS " + data);
+        console.log("Mission approved:", data);
       })
       .catch((err) => {
         console.error("Error:", err);
         throw err;
       });
-    
-  }
+  };
+
   return (
     <div className="outer">
       <Header />
@@ -282,6 +274,7 @@ export default function SpaceMissionDetails() {
               <img
                 className="approving-agency-logo"
                 src={`data:image/jpeg;base64,${agency?.logo}`}
+                alt={agency.name}
               />
             </div>
           ))}
@@ -299,13 +292,13 @@ export default function SpaceMissionDetails() {
           </button>
         )}
         {localStorage.getItem("userRole") === "ASTRONAUT" &&
-          checkJoinRequestValidator() && (
+          !hasJoinRequest && (
             <button className="button" onClick={sendJoinRequestHandler}>
               Send Join Request
             </button>
           )}
         {localStorage.getItem("userRole") === "ASTRONAUT" &&
-          !checkJoinRequestValidator() && (
+          hasJoinRequest && (
             <button
               className="cancel-button"
               onClick={cancelJoinRequestHandler}
@@ -313,11 +306,11 @@ export default function SpaceMissionDetails() {
               Cancel Join Request
             </button>
           )}
-        {localStorage.getItem("userRole") === "AGENCY" &&
-          <button onClick={approveMissionHandler}>
+        {localStorage.getItem("userRole") === "AGENCY" && (
+          <button onClick={approveMissionHandler} className="button">
             Approve Mission
           </button>
-        }
+        )}
         <div className="profile-header">
           <div className="profile-image">
             <img
@@ -356,7 +349,7 @@ export default function SpaceMissionDetails() {
           </div>
           <div className="health-section">
             <h2>Details</h2>
-            <p>Objective: {spaceMission?.objective}</p>
+            <p>{spaceMission?.objective}</p>
             <p>Platform: {platform?.platformName || "N/A"}</p>
             <p>Budget: {spaceMission?.budget}</p>
           </div>
