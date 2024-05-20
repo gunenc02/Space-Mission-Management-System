@@ -239,9 +239,10 @@ export default function SpaceMissionDetails() {
     console.log("checkRequestValidator returning " + result);
     return result;
   };
-  const approveMissionHandler = function(){
+  const approveMissionHandler = function () {
     const userId = localStorage.getItem("userId");
-    const sentUrl = "http://localhost:8080/agency/approveMission/" + userId + "/" + id;
+    const sentUrl =
+      "http://localhost:8080/agency/approveMission/" + userId + "/" + id;
 
     fetch(sentUrl, {
       method: "POST",
@@ -253,6 +254,8 @@ export default function SpaceMissionDetails() {
       .then((response) => {
         console.log("Respone status is: " + response.status);
         if (response.status === 200) {
+          alert("Mission approved successfully");
+          window.location.reload();
           return response.json();
         } else {
           throw new Error(
@@ -267,8 +270,7 @@ export default function SpaceMissionDetails() {
         console.error("Error:", err);
         throw err;
       });
-    
-  }
+  };
   return (
     <div className="outer">
       <Header />
@@ -313,11 +315,9 @@ export default function SpaceMissionDetails() {
               Cancel Join Request
             </button>
           )}
-        {localStorage.getItem("userRole") === "AGENCY" &&
-          <button onClick={approveMissionHandler}>
-            Approve Mission
-          </button>
-        }
+        {localStorage.getItem("userRole") === "AGENCY" && (
+          <button onClick={approveMissionHandler}>Approve Mission</button>
+        )}
         <div className="profile-header">
           <div className="profile-image">
             <img
