@@ -133,6 +133,8 @@ export default function SpaceMissionDetails() {
     })
       .then((response) => {
         if (!response.ok) {
+          alert("Cancel request sent successfully");
+          window.location.reload();
           throw new Error("Network respone was not ok");
         }
       })
