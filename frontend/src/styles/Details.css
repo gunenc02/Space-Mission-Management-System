@@ -137,6 +137,7 @@
   text-align: center;
   width: 100%;
   margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .approving-agencies-row {
@@ -155,4 +156,15 @@
   margin-left: 10px;
   /* add rounding*/
   border-radius: 50%;
+  text-align: center;
+  justify-content: center;
+}
+
+.agency-entry {
+  width: 100px;
+  /*turn off text wrap*/
+  white-space: nowrap;
+  text-align: center;
+  margin-left: 5px;
+  margin-right: 5px;
 }

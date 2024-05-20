@@ -14,6 +14,7 @@ import {
   SpaceMission,
 } from "../../data-types/entities";
 import { getAstronautProfile } from "../../calling/astronautCaller";
+import "../../styles/Details.css";
 
 export default function AstronautProfile() {
   const [astronaut, setAstronaut] = useState<Astronaut>(null);
