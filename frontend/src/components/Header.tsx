@@ -49,6 +49,12 @@ export default function Header() {
                   >
                     Offered Bids
                   </Link>
+                  <Link
+                    to="/astronaut-requests"
+                    className="header-profile-dropdown-link"
+                  >
+                    Astronaut Requests
+                  </Link>
                 </>
               )}
               <Link to="/settings" className="header-profile-dropdown-link">

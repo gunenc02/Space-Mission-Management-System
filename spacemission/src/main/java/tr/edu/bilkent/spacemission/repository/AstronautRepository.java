@@ -340,7 +340,7 @@ public class AstronautRepository {
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setLong(1, missionId);
             ps.setLong(2, id);
-            ps.executeQuery();
+            ps.executeUpdate();
         }
         catch(Exception ex){
             System.out.println(ex.getMessage());
