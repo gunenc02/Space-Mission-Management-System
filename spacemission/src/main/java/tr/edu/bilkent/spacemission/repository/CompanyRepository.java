@@ -215,7 +215,7 @@ public class CompanyRepository {
                             "WHERE amjr.mission_id IN (" +
                             "    SELECT sm.mission_id " +
                             "    FROM space_mission sm " +
-                            "    WHERE sm.performer_id = ?" +
+                            "    WHERE sm.performer_id || creator_id = ?" +
                             ")"
             );
 
