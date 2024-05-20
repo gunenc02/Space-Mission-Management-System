@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
-      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/profiles/AstronautProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profiles/AstronautProfile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/profiles/SpaceMissionDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profiles/SpaceMissionDetails.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,8 +46,8 @@
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.SpaceMissionManagement.executor": "Debug",
-    "git-widget-placeholder": "main",
+    "Spring Boot.SpaceMissionManagement.executor": "Run",
+    "git-widget-placeholder": "new-features",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -157,18 +159,9 @@
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java</url>
-          <line>125</line>
-          <properties class="tr.edu.bilkent.spacemission.controller.AstronautController" method="deleteJoinMissionRequest">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="49" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java</url>
           <line>68</line>
-          <properties class="tr.edu.bilkent.spacemission.service.AstronautService" method="deleteJoinMissionRequest">
+          <properties class="tr.edu.bilkent.spacemission.service.AstronautService">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
@@ -177,7 +170,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
           <line>335</line>
-          <properties class="tr.edu.bilkent.spacemission.repository.AstronautRepository" method="deleteJoinMissionRequest">
+          <properties class="tr.edu.bilkent.spacemission.repository.AstronautRepository">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
@@ -362,11 +355,6 @@
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
           <line>184</line>
           <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java</url>
-          <line>126</line>
-          <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java</url>
