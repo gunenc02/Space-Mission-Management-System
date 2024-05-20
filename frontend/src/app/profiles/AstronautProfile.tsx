@@ -83,6 +83,35 @@ export default function AstronautProfile() {
         throw err;
       });
   };
+  const approveAstronautHandler = function(){
+      const userId = localStorage.getItem("userId");
+      const sentUrl = "http://localhost:8080/agency/approveAstronaut/" + userId + "/" + id;
+  
+      fetch(sentUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          mode: "no-cors",
+        },
+      })
+        .then((response) => {
+          console.log("Respone status is: " + response.status);
+          if (response.status === 200) {
+            return response.json();
+          } else {
+            throw new Error(
+              `Failed to fetch approveAstronaut agency: ${response.statusText}`
+            );
+          }
+        })
+        .then((data) => {
+          console.log("DATA IS " + data);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+          throw err;
+        });
+  }
 
   // Fetch approving agencies
   useEffect(() => {
@@ -162,6 +191,11 @@ export default function AstronautProfile() {
               Fire Astronaut
             </button>
           )}
+           {localStorage.getItem("userRole") === "AGENCY" &&
+          <button onClick={approveAstronautHandler}>
+            Approve Astronaut
+          </button>
+        }
       </div>
       <div className="approving-agencies-container">
         <p className="approving-agencies-title">Approving Agencies</p>

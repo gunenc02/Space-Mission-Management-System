@@ -2,9 +2,11 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.dto.AgencyDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionsInPortfolioDto;
+import tr.edu.bilkent.spacemission.entity.Agency;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 
 import javax.sql.DataSource;
@@ -311,5 +313,28 @@ public class SpaceMissionRepository {
             spaceMission.setPerformStatus(rs.getString("perform_status"));
             return spaceMission;
         });
+    }
+
+    public List<Agency> getApprovingAgencies(long id) {
+        ArrayList<Agency> list = new ArrayList<>();
+        try{
+            String query = "SELECT * FROM agency WHERE " +
+                            "agency_id IN (SELECT DISTINCT agency_id FROM agency_approve_space_mission WHERE mission_id = ?);";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Agency agency = new Agency();
+                agency.setId(rs.getLong("agency_id"));
+                agency.setName(rs.getString("agency_name"));
+                agency.setLogo(rs.getBytes("agency_logo"));
+                agency.setApproved(rs.getBoolean("is_approved"));
+                list.add(agency);
+            }
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return list;
     }
 }
