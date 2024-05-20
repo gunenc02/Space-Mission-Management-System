@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import "../../styles/App.css";
+import Header from "../../components/Header";
 
 export default function Settings() {
   const [name, setName] = useState("");
@@ -86,6 +87,7 @@ export default function Settings() {
 
   return (
     <div className="outer">
+      <Header />
       <Navbar />
       <div className=" mx-auto px-4 py-8">
         <h1 className="text-3xl font-semibold text-gray-800 mb-6">Settings</h1>

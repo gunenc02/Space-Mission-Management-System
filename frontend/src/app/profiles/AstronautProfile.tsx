@@ -83,35 +83,36 @@ export default function AstronautProfile() {
         throw err;
       });
   };
-  const approveAstronautHandler = function(){
-      const userId = localStorage.getItem("userId");
-      const sentUrl = "http://localhost:8080/agency/approveAstronaut/" + userId + "/" + id;
-  
-      fetch(sentUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          mode: "no-cors",
-        },
+  const approveAstronautHandler = function () {
+    const userId = localStorage.getItem("userId");
+    const sentUrl =
+      "http://localhost:8080/agency/approveAstronaut/" + userId + "/" + id;
+
+    fetch(sentUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        mode: "no-cors",
+      },
+    })
+      .then((response) => {
+        console.log("Respone status is: " + response.status);
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error(
+            `Failed to fetch approveAstronaut agency: ${response.statusText}`
+          );
+        }
       })
-        .then((response) => {
-          console.log("Respone status is: " + response.status);
-          if (response.status === 200) {
-            return response.json();
-          } else {
-            throw new Error(
-              `Failed to fetch approveAstronaut agency: ${response.statusText}`
-            );
-          }
-        })
-        .then((data) => {
-          console.log("DATA IS " + data);
-        })
-        .catch((err) => {
-          console.error("Error:", err);
-          throw err;
-        });
-  }
+      .then((data) => {
+        console.log("DATA IS " + data);
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        throw err;
+      });
+  };
 
   // Fetch approving agencies
   useEffect(() => {
@@ -185,25 +186,27 @@ export default function AstronautProfile() {
           </button>
         )}
 
-        {localStorage.getItem("userRole") === "COMPANY" &&
-          isCompAstronautMatch && (
-            <button className="top-button" onClick={handleFireAstronautClick}>
-              Fire Astronaut
-            </button>
-          )}
-           {localStorage.getItem("userRole") === "AGENCY" &&
-          <button onClick={approveAstronautHandler} style={{
-            padding: '8px 16px',
-            width: '200px',
-            background: '#4CAF50',
-            color: 'white',
-            borderRadius: '4px',
-            marginLeft: "auto",
-            marginRight: '300px'
-          }}>
+        {localStorage.getItem("userRole") === "COMPANY" && (
+          <button className="top-button" onClick={handleFireAstronautClick}>
+            Fire Astronaut
+          </button>
+        )}
+        {localStorage.getItem("userRole") === "AGENCY" && (
+          <button
+            onClick={approveAstronautHandler}
+            style={{
+              padding: "8px 16px",
+              width: "200px",
+              background: "#4CAF50",
+              color: "white",
+              borderRadius: "4px",
+              marginLeft: "auto",
+              marginRight: "300px",
+            }}
+          >
             Approve Astronaut
           </button>
-        }
+        )}
       </div>
       <div className="approving-agencies-container">
         <p className="approving-agencies-title">Approving Agencies</p>
