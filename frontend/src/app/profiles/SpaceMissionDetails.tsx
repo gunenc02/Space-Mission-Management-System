@@ -321,7 +321,7 @@ export default function SpaceMissionDetails() {
           </div>
           <div className="health-section">
             <h2>Details</h2>
-            <p>{spaceMission?.objective}</p>
+            <p>Objective: {spaceMission?.objective}</p>
             <p>Platform: {platform?.platformName || "N/A"}</p>
             <p>Budget: {spaceMission?.budget}</p>
           </div>
