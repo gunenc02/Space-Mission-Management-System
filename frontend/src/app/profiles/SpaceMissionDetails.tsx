@@ -203,10 +203,12 @@ export default function SpaceMissionDetails() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        mode: "no-cors",
       },
-      mode: "no-cors",
+      
     })
       .then((response) => {
+        console.log("Respone status is: " + response.status);
         if (response.status === 200) {
           return response.json();
         } else {
@@ -216,12 +218,15 @@ export default function SpaceMissionDetails() {
         }
       })
         .then((data) => {
-          result = data === "true";
+          result = data.toString() === "true";
+          
+          console.log("DATA IS " + data + " AND RESULT IS " + result);
         })
       .catch((err) => {
         console.error("Error:", err);
         throw err;
       });
+      console.log("checkRequestValidator returning " + result);
       return result;
   }
   return (
