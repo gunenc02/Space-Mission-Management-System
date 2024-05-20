@@ -69,4 +69,8 @@ public class AstronautService {
     public void deleteJoinMissionRequest(long id, long missionId){
         astronautRepository.deleteJoinMissionRequest(id, missionId);
     }
+
+    public boolean hasJoinRequest(long id, long missionId) {
+        return astronautRepository.hasJoinRequest(id, missionId);
+    }
 }
