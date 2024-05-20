@@ -32,7 +32,7 @@ export default function SpaceMissionDetails() {
   const markPerformedHandler = function () {
     const missionId = spaceMission?.id;
     const performerId = performerCompany?.userId;
-    const sentUrl = `http://localhost:8080/company/${performerId}/markPerformed/${missionId}`;
+    const sentUrl = `http://localhost:8080/company/${performerId}/markPerformed/${id}`;
 
     fetch(sentUrl, {
       method: "POST",
@@ -115,7 +115,7 @@ export default function SpaceMissionDetails() {
 
   const cancelJoinRequestHandler = function(){
     const userId = localStorage.getItem("userId");
-    const url = "http://localhost:8080/astronaut/ "+ userId + "/deleteJoinRequest/" + spaceMission?.id;
+    const url = "http://localhost:8080/astronaut/"+ userId + "/deleteJoinRequest/" + id;
     fetch(url, {
       method: "DELETE",
       headers: {
@@ -197,7 +197,7 @@ export default function SpaceMissionDetails() {
     let result = false;
     const userId = localStorage.getItem("userId");
     const missionId = spaceMission?.id;
-    const sentUrl = `http://localhost:8080/astronaut/${userId}/hasJoinRequest/${missionId}`;
+    const sentUrl = `http://localhost:8080/astronaut/${userId}/hasJoinRequest/${id}`;
 
     fetch(sentUrl, {
       method: "GET",
@@ -258,12 +258,12 @@ export default function SpaceMissionDetails() {
             Mark as performed
           </button>
         )}
-        {localStorage.getItem("userRole") === "ASTRONAUT" && !checkJoinRequestValidator() &&
+        {localStorage.getItem("userRole") === "ASTRONAUT" && checkJoinRequestValidator() &&
           (<button className="button" onClick={sendJoinRequestHandler}>
             Send Join Request
           </button>)
         }
-        {localStorage.getItem("userRole") === "ASTRONAUT" && checkJoinRequestValidator() &&
+        {localStorage.getItem("userRole") === "ASTRONAUT" && !checkJoinRequestValidator() &&
           <button className="button" onClick={cancelJoinRequestHandler}>
             Cancel Join Request
           </button>
