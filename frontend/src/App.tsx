@@ -18,6 +18,8 @@ import AgencyProfile from "./app/profiles/AgencyProfile.tsx";
 import SpaceMissionDetails from "./app/profiles/SpaceMissionDetails.tsx";
 import PlatformDetails from "./app/profiles/PlatformDetails.tsx";
 import Settings from "./app/pages/Settings.tsx";
+import Transactions from "./app/pages/Transactions.tsx";
+import AstronautRequest from "./app/pages/AstronautRequest.tsx";
 
 function App() {
   return (
@@ -41,7 +43,9 @@ function App() {
           <Route path="/test" element={<Login />} />
           <Route path="/received-bids" element={<ReceivedBids />} />
           <Route path="/offered-bids" element={<OfferedBids />} />
-          <Route path="/settings" element = {<Settings />} />
+          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/astronaut-requests" element={<AstronautRequest />} />
         </Routes>
       </BrowserRouter>
     </div>

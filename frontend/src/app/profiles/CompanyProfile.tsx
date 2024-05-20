@@ -23,6 +23,8 @@ export default function CompanyProfile() {
   const [error, setError] = useState("");
   const [registerExpertOpen, setRegisterExpertOpen] = useState<boolean>(false);
 
+  const loginUserId = localStorage.getItem("userId");
+
   useEffect(() => {
     if (!id) {
       setError("Company ID is missing");
@@ -103,7 +105,7 @@ export default function CompanyProfile() {
         <div className="profile-header">
           <div className="profile-image">
             <img
-              src={`data:image/jpeg;base64,${companyInfo.logo}`}
+              src={`data:image/jpeg;base64,${companyInfo?.logo}`}
               alt={`${companyInfo.name} logo`}
               style={{ width: "150px" }}
             />
@@ -113,44 +115,60 @@ export default function CompanyProfile() {
             <p>Email: {companyInfo.userMail}</p>
             <p>Country: {companyInfo.country}</p>
             <p>Budget: ${companyInfo.money.toLocaleString()}</p>
+            {loginUserId === id && (
+              <button
+                onClick={handleRegisterExpertClick}
+                className="details-button"
+              >
+                Register Expert
+              </button>
+            )}
           </div>
         </div>
         <div className="profile-details">
           <div className="missions-section scroll-container">
             <div className="subtitle">Space Missions</div>
             {spaceMissions ? (
-                <ul>
-                  {spaceMissions.map((mission) => (
-                      <Link to={"/space-mission/" + mission.id} key={mission.id} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <div className="mission-list-item">
-                          <h2>Mission Name: {mission.missionName}</h2>
-                          <p>Created by: {mission.companyName}</p>
-                          <p>Status: {mission.status}</p>
-                          <p>
-                            Start Date: {mission.startDate.toLocaleDateString()}
-                          </p>
-                          <p>End Date: {mission.endDate.toLocaleDateString()}</p>
-                          <img
-                              src={`data:image/jpeg;base64,${mission.image}`}
-                              alt={mission.missionName}
-                              style={{width: "100px"}}
-                          />
-                        </div>
-                      </Link>
-                  ))}
-                </ul>
+              <ul>
+                {spaceMissions.map((mission) => (
+                  <Link
+                    to={"/space-mission/" + mission.id}
+                    key={mission.id}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <div className="mission-list-item">
+                      <h2>Mission Name: {mission.missionName}</h2>
+                      <p>Created by: {mission.companyName}</p>
+                      <p>Status: {mission.status}</p>
+                      <p>
+                        Start Date: {mission.startDate.toLocaleDateString()}
+                      </p>
+                      <p>End Date: {mission.endDate.toLocaleDateString()}</p>
+                      <img
+                        src={`data:image/jpeg;base64,${mission.image}`}
+                        alt={mission.missionName}
+                        style={{ width: "100px" }}
+                      />
+                    </div>
+                  </Link>
+                ))}
+              </ul>
             ) : (
-                <div>Loading space missions...</div>
+              <div>Loading space missions...</div>
             )}
           </div>
           <div className="experts-section scroll-container">
             <div className="subtitle">Experts</div>
             {experts.map((expert) => (
-                <Link to={"/expert/" + expert.userId} key={expert.userId} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <div className="mission-list-item">
-                    <h2>Expert Name: {expert.name}</h2>
-                  </div>
-                </Link>
+              <Link
+                to={"/expert/" + expert.userId}
+                key={expert.userId}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <div className="mission-list-item">
+                  <h2>Expert Name: {expert.name}</h2>
+                </div>
+              </Link>
             ))}
           </div>
         </div>

@@ -73,6 +73,7 @@
   margin-left: auto;
   margin-right: 80px;
   margin-top: 10px;
+  color: white;
 }
 
 .details-image {
@@ -121,4 +122,37 @@
   padding: 5px;
   background-color: aliceblue;
   margin-right: 5px;
+}
+
+.approving-agencies-title {
+  font-size: 1.5rem;
+  justify-content: center;
+  text-align: center;
+}
+.approving-agencies-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.approving-agencies-row {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  justify-content: center;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.approving-agency-logo {
+  width: 80px;
+  height: 80px;
+  margin-right: 10px;
+  margin-left: 10px;
+  /* add rounding*/
+  border-radius: 50%;
 }

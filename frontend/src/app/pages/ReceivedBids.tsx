@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import { getReceivedBids, approveBid, rejectBid } from "../../calling/bidCaller";
+import {
+  getReceivedBids,
+  approveBid,
+  rejectBid,
+} from "../../calling/bidCaller";
 import { getCompanies } from "../../calling/companyCaller";
+import Header from "../../components/Header";
 
 interface Bid {
   id: number;
@@ -24,7 +29,14 @@ const ReceivedBids: React.FC = () => {
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     const userRole = localStorage.getItem("userRole");
-    console.log("Logged in user ID:", userId + " and role is: " + userRole + " and name is: " + localStorage.getItem("userName"));
+    console.log(
+      "Logged in user ID:",
+      userId +
+        " and role is: " +
+        userRole +
+        " and name is: " +
+        localStorage.getItem("userName")
+    );
 
     if (userRole !== "COMPANY" || !userId) {
       setError("Access denied. Only companies can view bids.");
@@ -62,7 +74,7 @@ const ReceivedBids: React.FC = () => {
     console.log("Offerer ID:", offererId);
     const company = companies.find((company) => company.userId === offererId);
     console.log("Company:", company);
-    return company ? company.name : 'Unknown';
+    return company ? company.name : "Unknown";
   };
 
   const handleApproveBid = (id: number) => {
@@ -94,35 +106,49 @@ const ReceivedBids: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="outer">
+      <Header />
       <Navbar />
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-semibold text-gray-800 my-6">Received Bids</h1>
+        <h1 className="text-3xl font-semibold text-gray-800 my-6">
+          Received Bids
+        </h1>
         <div className="space-y-4">
           {bids.map((bid) => (
-            <div key={bid.id} className="bg-white shadow-md rounded-md overflow-hidden cursor-pointer transition duration-300 hover:shadow-lg">
+            <div
+              key={bid.id}
+              className="bg-white shadow-md rounded-md overflow-hidden cursor-pointer transition duration-300 hover:shadow-lg"
+            >
               <div className="p-4 flex justify-between items-center">
                 <div>
                   <p className="text-lg font-semibold text-gray-800">
                     Offerer Company: {getCompanyNameById(bid.offererId)}
                   </p>
-                  <p className="text-sm text-gray-500">Bid Amount: {bid.price}</p>
-                  <p className="text-sm text-gray-500">Deadline: {new Date(bid.deadline).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-500">
+                    Bid Amount: {bid.price}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Deadline: {new Date(bid.deadline).toLocaleDateString()}
+                  </p>
                   <p className="text-sm text-gray-500">Status: {bid.status}</p>
                 </div>
                 <div className="flex space-x-4">
-                  { (bid.status === "pending") && (<button
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
-                    onClick={() => handleApproveBid(bid.id)}
-                  >
-                    Approve
-                  </button>)}
-                  { (bid.status === "pending") && (<button
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-                    onClick={() => handleRejectBid(bid.id)}
-                  >
-                    Reject
-                  </button>)}
+                  {bid.status === "pending" && (
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                      onClick={() => handleApproveBid(bid.id)}
+                    >
+                      Approve
+                    </button>
+                  )}
+                  {bid.status === "pending" && (
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                      onClick={() => handleRejectBid(bid.id)}
+                    >
+                      Reject
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

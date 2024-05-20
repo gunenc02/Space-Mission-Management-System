@@ -117,11 +117,12 @@ CREATE TABLE IF NOT EXISTS mission_astronaut_recordings (
 
 CREATE TABLE IF NOT EXISTS transaction (
      transaction_id INT AUTO_INCREMENT PRIMARY KEY,
-     fromcompany_id INT NOT NULL,
-     tocompany_id INT NOT NULL,
+     from_company_id INT NOT NULL,
+     to_company_id INT NOT NULL,
      transaction_amount DOUBLE NOT NULL,
-     FOREIGN KEY(fromcompany_id) REFERENCES company(company_id),
-     FOREIGN KEY(tocompany_id) REFERENCES company(company_id)
+    transaction_date DATE NOT NULL,
+     FOREIGN KEY(from_company_id) REFERENCES company(company_id),
+     FOREIGN KEY(to_company_id) REFERENCES company(company_id)
 ) ^;
 
 
@@ -155,6 +156,14 @@ CREATE TABLE IF NOT EXISTS bid (
      FOREIGN KEY (offerer_id) REFERENCES company(company_id),
      FOREIGN KEY (receiver_id) REFERENCES company(company_id),
      FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id)
+) ^;
+
+CREATE TABLE IF NOT EXISTS astronaut_mission_join_request(
+    join_request_id INT AUTO_INCREMENT PRIMARY KEY,
+    mission_id INT NOT NULL,
+    astronaut_id INT NOT NULL,
+    FOREIGN KEY (mission_id) REFERENCES space_mission(mission_id),
+    FOREIGN KEY (astronaut_id) REFERENCES astronaut(astronaut_id)
 ) ^;
 
 CREATE OR REPLACE VIEW company_mission_info AS

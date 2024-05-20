@@ -2,6 +2,8 @@ package tr.edu.bilkent.spacemission.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import tr.edu.bilkent.spacemission.dto.AstronautDto;
+import tr.edu.bilkent.spacemission.dto.AstronautForRequestListingDto;
 import tr.edu.bilkent.spacemission.dto.CompanyDto;
 import tr.edu.bilkent.spacemission.dto.Login;
 import tr.edu.bilkent.spacemission.entity.Company;
@@ -190,11 +192,88 @@ public class CompanyRepository {
         System.out.println("Executing query: " + query);
         return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
             CompanyDto company = new CompanyDto();
+            company.setUserId(rs.getInt("company_id")); // Ensure userId is set correctly
             company.setName(rs.getString("company_name"));
             company.setCountry(rs.getString("country"));
             company.setMoney(rs.getDouble("money"));
             company.setLogo(rs.getBytes("company_logo"));
             return company;
         });
+    }
+
+    public List<AstronautForRequestListingDto> getJoinRequests(long companyId) {
+        List<AstronautForRequestListingDto>list = new ArrayList<>();
+        try{
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT a.*, " +
+                            "(SELECT u.user_mail FROM user u WHERE u.user_id = a.astronaut_id) AS user_mail, " +
+                            "(SELECT u.user_role FROM user u WHERE u.user_id = a.astronaut_id) AS user_role, " +
+                            "amjr.mission_id, " +
+                            "(SELECT sm.mission_name FROM space_mission sm WHERE sm.mission_id = amjr.mission_id) AS mission_name " +
+                            "FROM astronaut a " +
+                            "JOIN astronaut_mission_join_request amjr ON a.astronaut_id = amjr.astronaut_id " +
+                            "WHERE amjr.mission_id IN (" +
+                            "    SELECT sm.mission_id " +
+                            "    FROM space_mission sm " +
+                            "    WHERE sm.performer_id = ?" +
+                            ")"
+            );
+
+            ps.setLong(1, companyId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                AstronautForRequestListingDto astronaut = new AstronautForRequestListingDto();
+                astronaut.setUserId(rs.getInt("astronaut_id"));
+                astronaut.setName(rs.getString("astronaut_name"));
+                astronaut.setImage(rs.getBytes("astronaut_image"));
+                astronaut.setUserRole("ASTRONAUT");
+                astronaut.setUserMail(rs.getString("user_mail"));
+                astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
+                astronaut.setOnDuty(rs.getBoolean("on_duty"));
+                astronaut.setCountry(rs.getString("country"));
+                astronaut.setSalary(rs.getDouble("salary"));
+                astronaut.setMissionName(rs.getString("mission_name"));
+                astronaut.setMissionId(rs.getLong("mission_id"));
+                list.add(astronaut);
+            }
+
+        }
+        catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return list;
+    }
+
+    public void acceptAstronautIntoMission(long astronautId, long missionId) {
+        try {
+            // Delete the join request from the astronaut_mission_join_request table
+            String query0 = "DELETE FROM astronaut_mission_join_request WHERE astronaut_id = ? AND mission_id = ?;";
+            PreparedStatement ps0 = connection.prepareStatement(query0);
+            ps0.setLong(1, astronautId);
+            ps0.setLong(2, missionId);
+            ps0.executeUpdate();
+
+            // Insert the astronaut mission recording into the mission_astronaut_recordings table
+            String query1 = "INSERT INTO mission_astronaut_recordings (astronaut_id, mission_id) VALUES (?, ?);";
+            PreparedStatement ps1 = connection.prepareStatement(query1);
+            ps1.setLong(1, astronautId);
+            ps1.setLong(2, missionId);
+            ps1.executeUpdate();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void declineAstronaut(long astronautId, long missionId) {
+        try {
+            String query0 = "DELETE FROM astronaut_mission_join_request WHERE astronaut_id = ? AND mission_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query0);
+            ps.setLong(1, astronautId);
+            ps.setLong(2, missionId);
+            ps.executeUpdate(); // Use executeUpdate() instead of executeQuery()
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }

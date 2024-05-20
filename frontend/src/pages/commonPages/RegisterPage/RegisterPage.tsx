@@ -101,6 +101,7 @@ const RegistrationPage: React.FC = () => {
 
       if (response.ok) {
         alert("Registration successful!");
+        history("/login");
       } else {
         throw new Error(`Registration failed: ${response.statusText}`);
       }

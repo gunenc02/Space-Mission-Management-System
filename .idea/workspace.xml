@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa3eff1d-0a5d-45a8-b3bc-8d93ac1bb70f" name="Changes" comment="Add some missing endpoints">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/profiles/SpaceMissionDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profiles/SpaceMissionDetails.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,8 +44,8 @@
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.SpaceMissionManagement.executor": "Run",
-    "git-widget-placeholder": "new-features",
+    "Spring Boot.SpaceMissionManagement.executor": "Debug",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -113,6 +112,7 @@
       <workItem from="1715933083649" duration="1414000" />
       <workItem from="1716039310260" duration="13079000" />
       <workItem from="1716144967814" duration="5188000" />
+      <workItem from="1716193898912" duration="2764000" />
     </task>
     <task id="LOCAL-00001" summary="Add some missing endpoints">
       <option name="closed" value="true" />
@@ -148,15 +148,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java</url>
-          <line>83</line>
-          <properties class="tr.edu.bilkent.spacemission.controller.AstronautController">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
           <line>160</line>
           <properties class="tr.edu.bilkent.spacemission.repository.BidRepository" method="approveBid">
@@ -165,10 +156,32 @@
           </properties>
           <option name="timeStamp" value="11" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java</url>
-          <line>84</line>
-          <option name="timeStamp" value="2" />
+          <line>125</line>
+          <properties class="tr.edu.bilkent.spacemission.controller.AstronautController" method="deleteJoinMissionRequest">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java</url>
+          <line>68</line>
+          <properties class="tr.edu.bilkent.spacemission.service.AstronautService" method="deleteJoinMissionRequest">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
+          <line>335</line>
+          <properties class="tr.edu.bilkent.spacemission.repository.AstronautRepository" method="deleteJoinMissionRequest">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
@@ -349,6 +362,46 @@
           <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/BidRepository.java</url>
           <line>184</line>
           <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/controller/AstronautController.java</url>
+          <line>126</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/service/AstronautService.java</url>
+          <line>69</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
+          <line>336</line>
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
+          <line>337</line>
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
+          <line>338</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
+          <line>339</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
+          <line>341</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/spacemission/src/main/java/tr/edu/bilkent/spacemission/repository/AstronautRepository.java</url>
+          <line>340</line>
+          <option name="timeStamp" value="59" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

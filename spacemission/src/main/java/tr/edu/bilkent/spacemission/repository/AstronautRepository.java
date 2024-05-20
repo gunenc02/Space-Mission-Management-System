@@ -285,6 +285,7 @@ public class AstronautRepository {
 
         return jdbcTemplate.query(query, params.toArray(), (rs, rowNum) -> {
             AstronautDto astronaut = new AstronautDto();
+            astronaut.setUserId(rs.getLong("astronaut_id"));
             astronaut.setName(rs.getString("astronaut_name"));
             astronaut.setCountry(rs.getString("country"));
             astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
@@ -305,7 +306,7 @@ public class AstronautRepository {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 AstronautDto astronaut = new AstronautDto();
-                astronaut.setUserId(rs.getInt("astronaut_id"));
+                astronaut.setUserId(rs.getLong("astronaut_id"));
                 astronaut.setName(rs.getString("astronaut_name"));
                 astronaut.setImage(rs.getBytes("astronaut_image"));
                 astronaut.setDateOfBirth(rs.getDate("date_of_birth"));
@@ -319,5 +320,48 @@ public class AstronautRepository {
             System.out.println(ex.getMessage());
         }
         return astronauts;
+    }
+
+    public void requestJoinMission(long id, long missionId) {
+        try{
+            String query = "INSERT INTO astronaut_mission_join_request(mission_id, astronaut_id) VALUES(?, ?);";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, missionId);
+            ps.setLong(2, id);
+            ps.executeUpdate();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+    public void deleteJoinMissionRequest(long id, long missionId) {
+        try{
+            String query = "DELETE FROM astronaut_mission_join_request WHERE mission_id = ? AND astronaut_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, missionId);
+            ps.setLong(2, id);
+            ps.executeUpdate();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public boolean hasJoinRequest(long id, long missionId) {
+        boolean result = false;
+        try{
+            String query = "SELECT * FROM astronaut_mission_join_request " +
+                    "WHERE mission_id = ? AND astronaut_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, missionId);
+            ps.setLong(2, id);
+            ResultSet rs = ps.executeQuery();
+
+            result = rs.next(); //check if we have an entry
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return result;
     }
 }

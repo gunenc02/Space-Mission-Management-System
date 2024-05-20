@@ -38,6 +38,10 @@ export default function Platforms() {
     setIsFilterModalOpen(false);
   };
 
+  const addPlatformDisplayValidator = function(){
+    const result = localStorage.getItem("userRole") === "COMPANY";
+    return result;
+  }
   return (
     <div className="outer flex flex-col items-center bg-blue-100 min-h-screen">
       <Header className="sticky top-0 z-50" />
@@ -57,12 +61,13 @@ export default function Platforms() {
             >
               Filter
             </button>
-            <button
+            
+            {addPlatformDisplayValidator() && (<button
               onClick={() => setIsAddPlatformOpen(true)}
               className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 min-w-[100px] text-sm sm:text-base"
             >
               Add Platform
-            </button>
+            </button>)}
           </div>
         </div>
         <div className="flex flex-col space-y-4">
