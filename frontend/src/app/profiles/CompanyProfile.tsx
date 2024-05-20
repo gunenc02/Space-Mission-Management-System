@@ -23,6 +23,8 @@ export default function CompanyProfile() {
   const [error, setError] = useState("");
   const [registerExpertOpen, setRegisterExpertOpen] = useState<boolean>(false);
 
+  const loginUserId = localStorage.getItem("userId");
+
   useEffect(() => {
     if (!id) {
       setError("Company ID is missing");
@@ -113,6 +115,11 @@ export default function CompanyProfile() {
             <p>Email: {companyInfo.userMail}</p>
             <p>Country: {companyInfo.country}</p>
             <p>Budget: ${companyInfo.money.toLocaleString()}</p>
+            {loginUserId === id && (
+                <button onClick={handleRegisterExpertClick} style={{ marginTop: '10px', color:"ButtonHighlight"}}>
+                  Register Expert
+                </button>
+            )}
           </div>
         </div>
         <div className="profile-details">
