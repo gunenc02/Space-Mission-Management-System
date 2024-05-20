@@ -79,8 +79,8 @@ public class AgencyRepository {
 
     //attempts to approve a space mission, approval status is returned as a boolean return value
     //Returns false when given mission is already approved by the given agency
-    public boolean approveMission(long agencyId, long missionId) {
-        boolean success = false;
+    public void approveMission(long agencyId, long missionId) {
+        /*boolean success = false;
         String query = "SELECT COUNT(*) FROM agency_approve_space_mission WHERE agency_id = ? AND " +
                 "space_mission_id = ?;";
         //if the execution of the first query yields 0, then we can insert a new tuple
@@ -98,7 +98,18 @@ public class AgencyRepository {
             rowsAffected = 0;
         }
         success = rowsAffected > 0;
-        return success;
+        return success;*/
+        try{
+            String query = "INSERT INTO agency_approve_space_mission (space_mission_id, agency_id) " +
+                    "VALUES (?, ?);";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, missionId);
+            ps.setLong(2, agencyId);
+            ps.executeUpdate();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     /*
@@ -106,8 +117,8 @@ public class AgencyRepository {
      * If there is already an entry matching agencyId and astronautId, then just update it based on the given approvedStatus
      * @return true whether update or insertion is successful
      */
-    public boolean approveAstronaut(long agencyId, long astronautId) {
-        boolean success = false; //query execution success
+    public void approveAstronaut(long agencyId, long astronautId) {
+        /*boolean success = false; //query execution success
         String query = "SELECT COUNT(*) FROM agency_approve_astronaut WHERE astronaut_id = ? AND agency_id = ?;";
         Integer count = jdbcTemplate.queryForObject(query, Integer.class, astronautId, agencyId);
 
@@ -121,7 +132,18 @@ public class AgencyRepository {
             // astronaut is already evaluated by the agency
             rowsAffected = 0;
         }
-        return rowsAffected > 0;
+        return rowsAffected > 0;*/
+        try {
+            String query = "INSERT INTO agency_approve_astronaut (astronaut_id, agency_id) " +
+                    "VALUES (?, ?);";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, astronautId);
+            ps.setLong(2, agencyId);
+            ps.executeUpdate();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     /**

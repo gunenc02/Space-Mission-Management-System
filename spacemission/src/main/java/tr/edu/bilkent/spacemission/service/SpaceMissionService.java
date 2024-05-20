@@ -1,8 +1,10 @@
 package tr.edu.bilkent.spacemission.service;
 
 import org.springframework.stereotype.Service;
+import tr.edu.bilkent.spacemission.dto.AgencyDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionDto;
 import tr.edu.bilkent.spacemission.dto.SpaceMissionsInPortfolioDto;
+import tr.edu.bilkent.spacemission.entity.Agency;
 import tr.edu.bilkent.spacemission.repository.SpaceMissionRepository;
 import tr.edu.bilkent.spacemission.entity.SpaceMission;
 
@@ -54,5 +56,9 @@ public class SpaceMissionService {
 
     public List<SpaceMissionDto> filterMissions(Double minBudget, Double maxBudget, String minCreateDate, String maxCreateDate, String minPerformDate, String maxPerformDate) {
         return spaceMissionRepository.filterSpaceMissions(minBudget, maxBudget, minCreateDate, maxCreateDate, minPerformDate, maxPerformDate);
+    }
+
+    public List<Agency> getApprovingAgencies(long id) {
+        return spaceMissionRepository.getApprovingAgencies(id);
     }
 }
