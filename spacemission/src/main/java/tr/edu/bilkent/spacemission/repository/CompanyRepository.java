@@ -266,15 +266,13 @@ public class CompanyRepository {
     }
 
     public void declineAstronaut(long astronautId, long missionId) {
-        try{
-            String query0 = "DELETE FROM astronaut_mission_join_request " +
-                    "WHERE astronaut_id = ? AND mission_id = ?;";
+        try {
+            String query0 = "DELETE FROM astronaut_mission_join_request WHERE astronaut_id = ? AND mission_id = ?;";
             PreparedStatement ps = connection.prepareStatement(query0);
             ps.setLong(1, astronautId);
             ps.setLong(2, missionId);
-            ps.executeQuery();
-        }
-        catch(Exception ex){
+            ps.executeUpdate(); // Use executeUpdate() instead of executeQuery()
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
