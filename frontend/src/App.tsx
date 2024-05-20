@@ -19,6 +19,7 @@ import SpaceMissionDetails from "./app/profiles/SpaceMissionDetails.tsx";
 import PlatformDetails from "./app/profiles/PlatformDetails.tsx";
 import Settings from "./app/pages/Settings.tsx";
 import Transactions from "./app/pages/Transactions.tsx";
+import AstronautRequest from "./app/pages/AstronautRequest.tsx";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="/offered-bids" element={<OfferedBids />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/astronaut-requests" element={<AstronautRequest />} />
         </Routes>
       </BrowserRouter>
     </div>

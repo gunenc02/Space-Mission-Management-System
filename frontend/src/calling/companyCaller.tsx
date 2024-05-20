@@ -141,3 +141,69 @@ export function filterCompanies(filters: {
       throw err;
     });
 }
+
+export function getJoinRequests(companyId: number): Promise<any[]> {
+  const sentUrl = `http://localhost:8080/company/getJoinRequest/${companyId}`;
+
+  return fetch(sentUrl, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`Failed to fetch join requests: ${response.statusText}`);
+      }
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      throw err;
+    });
+}
+
+export function acceptAstronaut(astronautId: number, missionId: number): Promise<void> {
+  const sentUrl = `http://localhost:8080/company/acceptAstronaut/${astronautId}/${missionId}`;
+
+  return fetch(sentUrl, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return;
+      } else {
+        throw new Error(`Failed to accept astronaut: ${response.statusText}`);
+      }
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      throw err;
+    });
+}
+
+export function declineAstronaut(astronautId: number, missionId: number): Promise<void> {
+  const sentUrl = `http://localhost:8080/company/declineAstronaut/${astronautId}/${missionId}`;
+
+  return fetch(sentUrl, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return;
+      } else {
+        throw new Error(`Failed to decline astronaut: ${response.statusText}`);
+      }
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      throw err;
+    });
+}
