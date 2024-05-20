@@ -246,22 +246,21 @@ public class CompanyRepository {
     }
 
     public void acceptAstronautIntoMission(long astronautId, long missionId) {
-        try{
-            String query0 = "DELETE FROM astronaut_mission_join_request " +
-                    "WHERE astronaut_id = ? AND mission_id = ?;";
-            PreparedStatement ps = connection.prepareStatement(query0);
-            ps.setLong(1, astronautId);
-            ps.setLong(2, missionId);
-            ps.executeQuery();
+        try {
+            // Delete the join request from the astronaut_mission_join_request table
+            String query0 = "DELETE FROM astronaut_mission_join_request WHERE astronaut_id = ? AND mission_id = ?;";
+            PreparedStatement ps0 = connection.prepareStatement(query0);
+            ps0.setLong(1, astronautId);
+            ps0.setLong(2, missionId);
+            ps0.executeUpdate();
 
-            //now insert the astronaut mission recording into the new table
-            String query1 = "INSERT INTO mission_astronaut_recordings(astronaut_id, mission_id VALUES(?, ?)";
+            // Insert the astronaut mission recording into the mission_astronaut_recordings table
+            String query1 = "INSERT INTO mission_astronaut_recordings (astronaut_id, mission_id) VALUES (?, ?);";
             PreparedStatement ps1 = connection.prepareStatement(query1);
-            ps.setLong(1, astronautId);
-            ps.setLong(2, missionId);
-            ps.executeUpdate();
-        }
-        catch(Exception ex){
+            ps1.setLong(1, astronautId);
+            ps1.setLong(2, missionId);
+            ps1.executeUpdate();
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
