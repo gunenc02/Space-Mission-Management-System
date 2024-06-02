@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: tr.edu.bilkent.spacemission.SpaceMissionManagmentTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.22 s -- in tr.edu.bilkent.spacemission.SpaceMissionManagmentTests
